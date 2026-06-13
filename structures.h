@@ -1,20 +1,25 @@
+//structures.h
 #pragma once
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
 
-struct gate 
-{
-	int		type;
-	int		gate;
-	int		x;
-	int		y;
-	bool	in0;
-	bool	in1;
-	bool	out;
+typedef struct Component Component;
+typedef struct Link Link; 
 
+typedef enum { SOURCE, DIODE, GATE_AND, GATE_OR, GATE_NOT } TypeComponent ;
 
-	if type == 0
+struct Link {
+    Component* src;
+    Component* dest;
+};
 
-		if (in0 && in1)
-			out = 1;
-		else
-			out = 0
-}
+struct Component {
+	TypeComponent type;
+	int	id;
+	int	x;
+	int	y;
+	int nb_in;
+	Link* in[2];
+	bool out;
+};

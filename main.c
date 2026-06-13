@@ -1,25 +1,52 @@
+//main.c
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
+
 #include "structures.h"
-#include "fonctions.h"
+#include "functions.h"
+#include "functions.c"
+
 
 int main(void) 
 {
-	bool element_source1 = source(1);
-	bool element_source2 = source(1);
-	
-	bool element_link1 = link(element_source1);
-	bool element_link2 = link(element_source2);
+	//Allocation of the components on the heap memory
+    Component* s1 = create_component(1, SOURCE);
+    Component* s2 = create_component(2, SOURCE);
+    Component* and_gate1 = create_component(3, GATE_AND);
+	Component* not_gate1 = create_component(4, GATE_NOT);
 
-	bool element_AND1 = gate_and(element_link1, element_link2);
+    if (!s1 || !s2 || !and_gate1 || !not_gate1)
+        return (1);
 
-	bool element_link3 = link(element_AND1);
+    //Manual activation of the sources
+    s1->out = true;
+    s2->out = true;
 
-	bool element_NOT1 = gate_not(element_link3);
+    //Dynamic link connexions
+    Link* l1 = connect_components(s1, and_gate1, 0);
+    Link* l2 = connect_components(s2, and_gate1, 1);
+	Link* l3 = connect_components(and_gate1, not_gate1, 0);
 
-	bool element_link4 = link(element_NOT1);
+    //manual evaluation of the logic gates
+    bool in_1 = (and_gate1->in[0] != NULL) ? and_gate1->in[0]->src->out : false;
+    bool in_2 = (and_gate1->in[1] != NULL) ? and_gate1->in[1]->src->out : false;
+    and_gate1->out = in_1 && in_2;
 
-	diode(element_link4);
+	bool in_3 = (not_gate1->in[0] != NULL) ? not_gate1->in[0]->src->out : false;
+	not_gate1->out = !in_3;
+    printf("Output of the NOT gate : %d \n", not_gate1->out);
 
+    //cleaning of the heap
+    free(l1);
+    free(l2);
+	free(l3);
+    free(s1);
+    free(s2);
+    free(and_gate1);
+	free(not_gate1);
 
+    return (0);
 }
+
+
