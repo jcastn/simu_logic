@@ -1,3 +1,5 @@
-build/main
+build
 tempCodeRunnerFile.c
 .DS_Store
+changelog.md
+old-main.c
