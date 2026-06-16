@@ -8,7 +8,14 @@ typedef struct Component Component;
 typedef struct Link Link;
 typedef struct Circuit Circuit;
 
-typedef enum { SOURCE, DIODE, GATE_NOT, GATE_AND, GATE_OR, GATE_NAND, GATE_NOR, GATE_XOR, GATE_NXOR } TypeComponent ;
+
+// Types of components 
+// accepted values : (SOURCE, DIODE, BUFFER, GATE_NOT, GATE_AND, GATE_OR, GATE_NAND, GATE_NOR, GATE_XOR, GATE_NXOR) 
+typedef enum {						SOURCE,		DIODE,		BUFFER,		GATE_NOT,	GATE_AND,	GATE_OR,	GATE_NAND,		GATE_NOR,	GATE_XOR,	GATE_NXOR } TypeComponent ;
+
+// Translation of TypeComponent enumeration to strings
+static char* ComponentNames[] = {	"SOURCE",	"DIODE",	"BUFFER",	"GATE_NOT",	"GATE_AND",	"GATE_OR",	"GATE_NAND",	"GATE_NOR",	"GATE_XOR",	"GATE_NXOR" };
+
 
 struct Link {
 	Component*		src;
@@ -20,6 +27,7 @@ struct Component {
 	int				id;
 	int				x;
 	int				y;
+	int				level;
 	int				nb_in;
 	int				nb_out;
 	bool			out_status;
@@ -28,7 +36,7 @@ struct Component {
 };
 
 struct Circuit {
-	int id;
+	int 		id;
 	Component**	components;
 	int			component_count;
 	Link**		links;

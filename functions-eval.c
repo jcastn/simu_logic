@@ -43,11 +43,14 @@ bool		generic_eval(Component* comp)
 	final_not = false;
 	switch (comp->type)
 	{
-	case GATE_NOT :
-		comp->out_status = !read_parent_status(comp, 0);
-		return comp->out_status;
 	case DIODE :
 		comp->out_status = read_parent_status(comp, 0);
+		return comp->out_status;
+	case BUFFER :
+		comp->out_status = read_parent_status(comp, 0);
+		return comp->out_status;
+	case GATE_NOT :
+		comp->out_status = !read_parent_status(comp, 0);
 		return comp->out_status;
 	case GATE_AND :
 		result = true;

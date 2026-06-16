@@ -5,7 +5,7 @@
 #include "functions-prototypes.h"
 #include "structures.h"
 
-// Function to create a component with his ID, his Type (source, diode, NOT/AND/OR/NAND/NOR/XOR/NXOR gates) and his number of incoming links
+// Function to create a component with his ID, his Type (SOURCE, DIODE, NOT / AND / OR / NAND / NOR / XOR / NXOR gates) and his number of incoming links
 Component*	create_component(int id, TypeComponent type, int in_nbr)
 {
 	int	i;
@@ -25,7 +25,7 @@ Component*	create_component(int id, TypeComponent type, int in_nbr)
 	{
 		c->nb_in = 0;
 	}
-	else if (type == GATE_NOT)
+	else if ((type == GATE_NOT) || (type == BUFFER ))
 	{
 		c->nb_in = 1;
 	}
@@ -294,4 +294,11 @@ void	delete_circuit(Circuit *circ)
 
     // 3. Libérer le conteneur principal
     free(circ);
+}
+
+Component*	update_coordinates(Component* comp, int x, int y)
+{
+	comp->x = x;
+	comp->y = y;
+	return comp;
 }

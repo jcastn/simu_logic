@@ -24,6 +24,18 @@ void	print_circuit_diodes(Circuit* circ)
 	}
 }
 
+void	print_circuit_components(Circuit* circ)
+{
+	printf("Components status (Circuit ID:%d) :\n", circ->id);
+	for (int i = 0; i<circ->component_count; i++)
+	{
+		Component* comp = circ->components[i];
+		printf("• Component %s (ID: %d) | Level : %d | Out Status : %s\n", ComponentNames[comp->type], comp->id, comp->level, comp->out_status ? "ON (true)" : "OFF (false)");		
+	}
+}
+
+
+
 /*
 
 void		save_circuit(Circuit *circ)
