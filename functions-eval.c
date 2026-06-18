@@ -8,7 +8,6 @@ static bool	op_and(bool a, bool b)
 {
 	return a && b; 
 }
-
 static bool	op_or(bool a, bool b) 
 {
 	return a || b; 
@@ -17,6 +16,11 @@ static bool	op_xor(bool a, bool b)
 {
 	return a ^ b;
 }
+static bool	op_imply(bool a, bool b) 
+{
+	return !a || b;
+}
+
 
 static bool	read_parent_status(Component* comp, int port_number)
 {
@@ -79,9 +83,14 @@ bool		generic_eval(Component* comp)
 		operation = op_xor;
 		final_not = true;
 		break;
+	case GATE_IMPLY :
+		comp->out_status = op_imply(read_parent_status(comp, 0), read_parent_status(comp, 1));
+		return comp->out_status;
+	case GATE_NIMPLY :
+		comp->out_status = !op_imply(read_parent_status(comp, 0), read_parent_status(comp, 1));
+		return comp->out_status;
 	default:
 		return false;
-		break;
 	}
 
 	i = 0;
@@ -95,7 +104,7 @@ bool		generic_eval(Component* comp)
 		}
 		i++;
 	}
-	// Flag for the gates that needs a final inversion with the NOT GATE (NAND, NOR, NXOR)
+	// final_not is a flag used by the gates needing a final inversion with the NOT GATE (NAND, NOR, NXOR, NIMPLY operations)
 	if (final_not)
 	{
 		result = !result;
@@ -103,3 +112,34 @@ bool		generic_eval(Component* comp)
 	comp->out_status = result;
 	return comp->out_status;
 }
+
+
+// Recursive function to propagate the modification of a binary status (WIP - It will be implemented in a future update)
+void	propagate_evaluation(Component* comp)
+{
+	int i;
+
+	if (!comp)
+		return;
+
+	// Update of the component out_status state
+	bool old_status = comp->out_status;
+	generic_eval(comp);
+	if (old_status == comp->out_status)
+	{
+		return;
+	}
+
+	// If the status changed, the evaluation is propagated to the nexts components
+	i = 0;
+	while  (i < comp->nb_out)
+	{
+		Link* link = comp->out_links[i];
+		if (link && link->dest)
+		{
+			propagate_evaluation(link->dest);
+		}
+		i+=1;
+	}
+}
+

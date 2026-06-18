@@ -5,86 +5,6 @@
 #include "functions-prototypes.h"
 #include "structures.h"
 
-// Function to create a component with his ID, his Type (SOURCE, DIODE, NOT / AND / OR / NAND / NOR / XOR / NXOR gates) and his number of incoming links
-Component*	create_component(int id, TypeComponent type, int in_nbr)
-{
-	int	i;
-
-	Component* c = malloc(sizeof(Component));
-	if (c == NULL)
-	{
-		return NULL;
-	}
-	c->id = id;
-	c->type = type;
-	c->out_status = 0;
-	c->nb_out = 0;
-	c->out_links = NULL;
-
-	if (type == SOURCE)
-	{
-		c->nb_in = 0;
-	}
-	else if ((type == GATE_NOT) || (type == BUFFER ))
-	{
-		c->nb_in = 1;
-	}
-	else
-	{
-		c->nb_in = in_nbr;
-	}
-
-	//Allocation of the table of link pointers 
-	if (c->nb_in > 0)
-	{
-		c->in_links = malloc(sizeof(Link*) * c->nb_in);
-		if (c->in_links == NULL)
-		{
-			free(c);
-			return NULL;
-		}
-		i = 0;
-		while (i < c->nb_in)
-		{
-			c->in_links[i] = NULL;
-			i++;
-		}
-	}
-	else 
-	{
-		c->in_links = NULL;
-	}
-	return c;
-}
-
-// Function to connect components by a Link 
-// Parameters : source component, destination component, port number of the destination
-Link*	create_link(Component* src, Component* dest, int port_number)
-{
-	if (port_number < 0 || port_number >= dest->nb_in)
-	{
-		return NULL;
-	}
-
-	Link* link = malloc(sizeof(Link));
-	if (link == NULL)
-	{
-		return NULL;
-	}
-
-	link->src = src;
-	link->dest = dest;
-
-	dest->in_links[port_number] = link;
-
-	src->out_links = realloc(src->out_links, sizeof(Link*) * (src->nb_out + 1));
-	src->out_links[src->nb_out] = link;
-	src->nb_out++;
-
-	return	link;
-}
-
-
 Circuit*	create_circuit(int id)
 {
 	Circuit* circ = malloc(sizeof(Circuit));
@@ -138,6 +58,102 @@ bool	add_link_to_circuit(Circuit* circ, Link* link)
 	circ->link_count++;
 	return true;
 }
+
+// Function to create a component with : 
+// • its Type (SOURCE, DIODE, NOT / AND / OR / NAND / NOR / XOR / NXOR gates),
+// • its number of inbound links (0 if it's a SOURCE ; 1 if it's a NOT_GATE or a BUFFER)
+// • the circuit where the component is included
+Component*	create_component(TypeComponent type, int in_nbr, Circuit* circ)
+{
+	int	i;
+	static int next_id = 1;
+
+	Component* comp = malloc(sizeof(Component));
+	comp->coordinates = malloc(sizeof(Coordinates));
+	if (!circ || !comp || (comp->coordinates == NULL) )
+	{
+		return NULL;
+	}
+
+	comp->id = next_id++;
+	comp->type = type;
+	comp->out_status = false;
+	comp->nb_out = 0;
+	comp->out_links = NULL;
+
+	if (type == SOURCE)
+	{
+		comp->nb_in = 0;
+	}
+	else if ((type == GATE_NOT) || (type == BUFFER ))
+	{
+		comp->nb_in = 1;
+	}
+	else if ((type == GATE_IMPLY) || (type == GATE_NIMPLY))
+	{
+		comp->nb_in = 2;
+	}	
+	else
+	{
+		comp->nb_in = in_nbr;
+	}
+
+	//Allocation of the table of link pointers 
+	if (comp->nb_in > 0)
+	{
+		comp->in_links = malloc(sizeof(Link*) * comp->nb_in);
+		if (comp->in_links == NULL)
+		{
+			free(comp);
+			return NULL;
+		}
+		i = 0;
+		while (i < comp->nb_in)
+		{
+			comp->in_links[i] = NULL;
+			i++;
+		}
+	}
+	else 
+	{
+		comp->in_links = NULL;
+	}
+
+	add_component_to_circuit(circ, comp);
+
+	return comp;
+}
+
+// Function to connect components by a Link 
+// Parameters : source component, destination component, port number of the destination
+Link*	create_link(Component* src, Component* dest, int port_number, Circuit* circ)
+{
+	if (!circ || !dest || port_number < 0 || port_number >= dest->nb_in)
+	{
+		return NULL;
+	}
+
+	Link* link = malloc(sizeof(Link));
+	if (!link)
+	{
+		return NULL;
+		free(link);
+	}
+
+	link->src = src;
+	link->dest = dest;
+
+	dest->in_links[port_number] = link;
+
+	src->out_links = realloc(src->out_links, sizeof(Link*) * (src->nb_out + 1));
+	src->out_links[src->nb_out] = link;
+	src->nb_out++;
+
+	add_link_to_circuit(circ, link);
+	return	link;
+}
+
+
 
 
 bool	delete_link(Circuit* circ, Link* link)
@@ -257,7 +273,8 @@ bool	delete_component(Circuit* circ, Component* comp)
 		free(comp->out_links);
 	}
 
-	// Destruction du composant et retrait du circuit
+	// Deletion of the component et retrait du circuit
+	free(comp->coordinates);
 	free(comp);
 	// Décalage du tableau de pointeurs vers la gauche
 	shift_pointer_array((void**)circ->components, index, circ->component_count);
@@ -279,26 +296,37 @@ void	delete_circuit(Circuit *circ)
 		return;
 	}
 
-    // 1. Libérer tous les liens (delete_link s'occupe de free chaque link)
-    // On consomme le tableau par le début car la taille diminue à chaque appel
-    while (circ->link_count > 0)
+	while (circ->link_count > 0)
     {
         delete_link(circ, circ->links[0]);
     }
 
-    // 2. Libérer tous les composants (delete_component s'occupe de free chaque component)
     while (circ->component_count > 0)
     {
         delete_component(circ, circ->components[0]);
     }
 
-    // 3. Libérer le conteneur principal
     free(circ);
 }
 
-Component*	update_coordinates(Component* comp, int x, int y)
+Component*	invert_source_state(Component* comp)
 {
-	comp->x = x;
-	comp->y = y;
+	if (comp->type == SOURCE)
+	{
+		comp->out_status = !comp->out_status;
+	}
 	return comp;
 }
+
+
+void	simulate_circuit(Circuit* circ)
+{
+	if (!circ)
+		return;
+
+	for (int i = 0; i < circ->component_count; i++)
+	{
+		generic_eval(circ->components[i]);
+	}
+}
+

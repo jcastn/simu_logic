@@ -2,18 +2,21 @@
 #include "structures.h"
 
 //Prototypes
-Component*	create_component(int id, TypeComponent type, int in_nbr);
-Link*		create_link(Component* src, Component* dest, int port_number);
+Component*	create_component(TypeComponent type, int in_nbr, Circuit* circ);
+Link*		create_link(Component* src, Component* dest, int port_number, Circuit* circ);
 Circuit*	create_circuit(int id);
 bool		add_component_to_circuit(Circuit* circ, Component* comp);
 bool		add_link_to_circuit(Circuit* circ, Link* link);
 bool		delete_link(Circuit* circ, Link* link);
 bool		delete_component(Circuit* circ, Component* comp);
 void		delete_circuit(Circuit *circ);
-Component*	update_coordinates(Component* comp, int x, int y);
+Component*	invert_source_state(Component* comp);
+void		simulate_circuit(Circuit* circ);
+
 
 // Eval
 bool		generic_eval(Component* comp);
+void		propagate_evaluation(Component* comp);
 
 
 
@@ -26,4 +29,12 @@ void		print_circuit_components(Circuit* circ);
 
 // Helper 
 void		shift_pointer_array(void** array, int start_index, int current_count);
+
+
+
+
+// Rearrange circuit
+Component*	update_coordinates(Component* comp, int x, int y);
+void		rearange_circuit(Circuit* circ);
 void		topological_sort(Circuit* circ);
+//void    	new_topological_sort(Circuit* circ);

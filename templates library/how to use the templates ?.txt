@@ -1,0 +1,3 @@
+For now, to use the templates library, you need to copy paste the code of the model you want to try in the main.c file. 
+
+I know it's a bad system, but it's temporary, it will be upgraded in a future update, I promiss ! 
