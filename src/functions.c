@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "functions-prototypes.h"
+#include "prototypes.h"
 #include "structures.h"
 
 Circuit*	create_circuit(int id)
@@ -181,8 +181,8 @@ bool	delete_link(Circuit* circ, Link* link)
 	{
 		return false;
 	}
-	// 2. Déconnexion matérielle des composants
-	// (Retrait du lien chez le dest)
+
+	// Loop to remove inbound links 
 	i = 0;
 	while (i < link->dest->nb_in) 
 	{
@@ -192,7 +192,8 @@ bool	delete_link(Circuit* circ, Link* link)
 		}
 		i+=1;
 	}
-	// (Retrait du lien chez la source avec notre outil)
+
+	// Loop to remove outbound links 
 	i = 0;
 	while (i < link->src->nb_out) 
 	{
@@ -205,7 +206,6 @@ bool	delete_link(Circuit* circ, Link* link)
 		i+=1;
 	}
 
-	// 3. Destruction physique et retrait du circuit
 	free(link);
 	shift_pointer_array((void**)circ->links, index, circ->link_count);
 	

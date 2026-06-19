@@ -26,5 +26,13 @@ List of supported components :
 
 
 Commands : 
-- Complilation : 
-`cd "PATH/TO/FOLDER/simu_logic/" && mkdir -p build &&  gcc -Wall -Wextra -Werror main.c functions.c functions-eval.c functions-helper.c functions-in-out.c functions-rearrange-circuit.c -o build/main && ./build/main`
+
+- Build the project with cmake :
+`cmake -B build`
+
+- Compile the project and run it :
+`cmake --build build`
+
+- Run it : 
+`./build/simu-logic-app`
+

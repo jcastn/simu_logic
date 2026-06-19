@@ -23,6 +23,8 @@ void		propagate_evaluation(Component* comp);
 // In/Out 
 void		print_circuit_diodes(Circuit* circ);
 void		print_circuit_components(Circuit* circ);
+int			import_file(char* file_path);
+
 
 //void		save_circuit(Circuit *circ);
 //void		import_circuit(Circuit *circ);

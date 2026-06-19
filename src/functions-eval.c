@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "functions-prototypes.h"
+#include "prototypes.h"
 #include "structures.h"
 
 static bool	op_and(bool a, bool b) 

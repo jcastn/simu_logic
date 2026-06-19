@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "functions-prototypes.h"
+#include "prototypes.h"
 #include "structures.h"
 
 Component*	update_coordinates(Component* comp, int x, int y)

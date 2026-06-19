@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #include "structures.h"
-#include "functions-prototypes.h"
+#include "prototypes.h"
 
 int main(void) 
 {
@@ -107,5 +107,8 @@ int main(void)
 	print_circuit_components(circuit2);
 
 	delete_circuit(circuit2);
+
+	//import_file(NULL);
+	import_file("templates library/test.txt");
     return (0);
 }

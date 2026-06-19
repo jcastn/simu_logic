@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #include "structures.h"
-#include "functions-prototypes.h"
+#include "prototypes.h"
 
 int main(void) 
 {
