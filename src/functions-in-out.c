@@ -36,10 +36,10 @@ void	print_circuit_diodes(Circuit* circ)
 
 void	print_circuit_components(Circuit* circ)
 {
-	printf("The circuit with ID %d contains : %d Levels, %d Components, %d Links \n\n", circ->id, circ->max_level, circ->component_count, circ->link_count);
-	printf("•-------------•-------•-----•-------•-------•--------•--------•------------------•\n");
-	printf("| Components  | State | ID  | Level | Align | x      | y      | Links            |\n");
-	printf("•-------------•-------•-----•-------•-------•--------•--------•------------------•\n");
+	printf("The circuit %d contains : %d Components and %d Links on %d Levels, \n\n", circ->id, circ->component_count, circ->link_count, circ->max_level);
+	printf("•---------------•-------•-----•-------•-------•--------•--------•------------------•\n");
+	printf("| Components    | State | ID  | Level | Align | x      | y      | Links            |\n");
+	printf("•---------------•-------•-----•-------•-------•--------•--------•------------------•\n");
 
 
 	for (int i = 0; i<circ->component_count; i++)
@@ -55,7 +55,7 @@ void	print_circuit_components(Circuit* circ)
 			current_color = TERMINAL_MAGENTA;
 		}
 
-		printf("| %s%-11s " TERMINAL_DEFAULT "| %s%-5s" TERMINAL_DEFAULT " | %-3d | %-5d | %-5d | %-6d | %-6d | In:%-4d Out:%-4d |\n", 
+		printf("| %s%-13s " TERMINAL_DEFAULT "| %s%-5s" TERMINAL_DEFAULT " | %-3d | %-5d | %-5d | %-6d | %-6d | In:%-4d Out:%-4d |\n", 
 			current_color, 
 			ComponentNames[comp->type],
 			comp->out_status ? TERMINAL_GREEN : TERMINAL_RED, 
@@ -69,7 +69,7 @@ void	print_circuit_components(Circuit* circ)
 			comp->nb_out);
 
 	}
-	printf("•-------------•-------•-----•-------•-------•--------•--------•------------------•\n");
+	printf("•---------------•-------•-----•-------•-------•--------•--------•------------------•\n");
 }
 
 
@@ -110,7 +110,7 @@ static char* nfd_import_file_popup()
 	return returned_path;
 }
 
-static void read_file_content(file_path)
+static void read_file_content(char* file_path)
 {
 	printf("The choosen file is : %s\n", file_path);
 

@@ -108,7 +108,9 @@ int main(void)
 
 	delete_circuit(circuit2);
 
+	// To import a file : 
 	//import_file(NULL);
-	import_file("templates library/test.txt");
+	//import_file("templates library/test.txt");
+
     return (0);
 }
