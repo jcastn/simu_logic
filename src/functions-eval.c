@@ -112,34 +112,3 @@ bool		generic_eval(Component* comp)
 	comp->out_status = result;
 	return comp->out_status;
 }
-
-
-// Recursive function to propagate the modification of a binary status (WIP - It will be implemented in a future update)
-void	propagate_evaluation(Component* comp)
-{
-	int i;
-
-	if (!comp)
-		return;
-
-	// Update of the component out_status state
-	bool old_status = comp->out_status;
-	generic_eval(comp);
-	if (old_status == comp->out_status)
-	{
-		return;
-	}
-
-	// If the status changed, the evaluation is propagated to the nexts components
-	i = 0;
-	while  (i < comp->nb_out)
-	{
-		Link* link = comp->out_links[i];
-		if (link && link->dest)
-		{
-			propagate_evaluation(link->dest);
-		}
-		i+=1;
-	}
-}
-

@@ -7,11 +7,12 @@
 #include "prototypes.h"
 #include "structures.h"
 
-#define TERMINAL_RED		"\033[0;31m"
-#define TERMINAL_GREEN		"\033[0;32m"
-#define	TERMINAL_BLUE		"\x1b[34m"
-#define TERMINAL_MAGENTA	"\x1b[35m"
-#define TERMINAL_CYAN		"\x1b[36m"
+#define TERMINAL_BLACK		"\033[30m"
+#define TERMINAL_RED		"\033[31m"
+#define TERMINAL_GREEN		"\033[32m"
+#define	TERMINAL_BLUE		"\033[34m"
+#define TERMINAL_MAGENTA	"\033[35m"
+#define TERMINAL_CYAN		"\033[36m"
 #define TERMINAL_DEFAULT   	"\033[0m"
 
 void	print_circuit_diodes(Circuit* circ)
@@ -37,9 +38,9 @@ void	print_circuit_diodes(Circuit* circ)
 void	print_circuit_components(Circuit* circ)
 {
 	printf("The circuit %d contains : %d Components and %d Links on %d Levels, \n\n", circ->id, circ->component_count, circ->link_count, circ->max_level);
-	printf("•---------------•-------•-----•-------•-------•--------•--------•------------------•\n");
-	printf("| Components    | State | ID  | Level | Align | x      | y      | Links            |\n");
-	printf("•---------------•-------•-----•-------•-------•--------•--------•------------------•\n");
+	printf("•------------------•------------------•-------•-----•-------•-------•--------•--------•------------------•\n");
+	printf("| Component Label  | Component Type   | State | ID  | Level | Align | x      | y      | Links            |\n");
+	printf("•------------------•------------------•-------•-----•-------•-------•--------•--------•------------------•\n");
 
 
 	for (int i = 0; i<circ->component_count; i++)
@@ -55,8 +56,10 @@ void	print_circuit_components(Circuit* circ)
 			current_color = TERMINAL_MAGENTA;
 		}
 
-		printf("| %s%-13s " TERMINAL_DEFAULT "| %s%-5s" TERMINAL_DEFAULT " | %-3d | %-5d | %-5d | %-6d | %-6d | In:%-4d Out:%-4d |\n", 
-			current_color, 
+		printf("| %s%-16s" TERMINAL_DEFAULT " | %s%-16s" TERMINAL_DEFAULT " | %s%-5s" TERMINAL_DEFAULT " | %-3d | %-5d | %-5d | %-6d | %-6d | In:%-4d Out:%-4d |\n", 
+			current_color,
+			comp->label,
+			current_color,
 			ComponentNames[comp->type],
 			comp->out_status ? TERMINAL_GREEN : TERMINAL_RED, 
 			comp->out_status ? "ON" : "OFF",
@@ -69,7 +72,7 @@ void	print_circuit_components(Circuit* circ)
 			comp->nb_out);
 
 	}
-	printf("•---------------•-------•-----•-------•-------•--------•--------•------------------•\n");
+	printf("•------------------•------------------•-------•-----•-------•-------•--------•--------•------------------•\n");
 }
 
 

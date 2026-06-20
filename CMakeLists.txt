@@ -6,7 +6,10 @@ add_subdirectory(third_party/nfd)
 
 add_executable(simu-logic-app
 	src/main.c 
-	src/functions.c 
+	src/functions-models.c
+	src/functions-circuits.c 
+	src/functions-components.c 
+	src/functions-links.c 
 	src/functions-eval.c 
 	src/functions-helper.c 
 	src/functions-in-out.c 

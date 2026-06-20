@@ -7,11 +7,13 @@
 typedef struct Coordinates Coordinates;
 typedef struct Component Component;
 typedef struct Link Link;
+typedef struct TypeCounter TypeCounter;
 typedef struct Circuit Circuit;
+typedef struct Model Model;
 
 
-// Types of components 
-// accepted values : (SOURCE, DIODE, BUFFER, GATE_NOT, GATE_AND, GATE_OR, GATE_NAND, GATE_NOR, GATE_XOR, GATE_NXOR) 
+// Types of components (12 possibilities)
+// accepted values : (SOURCE, DIODE, BUFFER, GATE_NOT, GATE_AND, GATE_OR, GATE_NAND, GATE_NOR, GATE_XOR, GATE_NXOR, GATE_IMPLY, GATE_NIMPLY) 
 typedef enum {
 	SOURCE,		
 	DIODE,
@@ -26,6 +28,8 @@ typedef enum {
 	GATE_IMPLY,
 	GATE_NIMPLY
 } TypeComponent;
+
+
 
 // Translation of TypeComponent enumeration to strings
 static char* ComponentNames[] = {
@@ -52,7 +56,7 @@ struct	Coordinates {
 
 
 struct Link {
-	Component*		src;
+	Component*		src;	
 	Component*		dest;
 };
 
@@ -60,15 +64,16 @@ struct Component {
 	TypeComponent	type;
 	int				id;
 	Coordinates*	coordinates;
-	//int				x;
-	//int				y;
-	//int				level;
-	//int				alignment;
 	int				nb_in;
 	int				nb_out;
 	bool			out_status;
 	Link**			out_links;
 	Link**			in_links;
+	char			label[16];
+};
+
+struct TypeCounter{
+	int				count;
 };
 
 struct Circuit {
@@ -78,4 +83,11 @@ struct Circuit {
 	Link**			links;
 	int				link_count;
 	int				max_level;
+	TypeCounter		type_counter[12];
+	char			label[16];
+};
+
+struct Model {
+	int				circuits_count;
+	Circuit**		circuits;
 };
