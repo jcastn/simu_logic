@@ -15,17 +15,17 @@
 Component*	create_component(TypeComponent type, int in_nbr, Circuit* circ)
 {
 	int	i;
-	static int next_id = 1;
+	static int next_comp_id = 0;
 
 	Component* comp = malloc(sizeof(Component));
 	comp->coordinates = malloc(sizeof(Coordinates));
 	if (!circ || !comp || (comp->coordinates == NULL) )
 	{
-		printf("/!\\ ERROR : Circuit or component (Function create_component)\n");
+		printf("/!\\ ERROR : Circuit or component not find (Function create_component)\n");
 		return NULL;
 	}
 
-	comp->id = next_id++;
+	comp->id = next_comp_id += 1;
 	comp->type = type;
 	comp->out_status = false;
 	comp->nb_out = 0;
@@ -84,7 +84,7 @@ Component*	create_component(TypeComponent type, int in_nbr, Circuit* circ)
 	
 	snprintf(comp->label, sizeof(comp->label), "%s_%d", ComponentNames[type], circ->type_counter[type].count);
 
-	printf("%s\n", comp->label);
+	printf("▷ Component created : %s\n", comp->label);
 
 	return comp;
 }
@@ -171,6 +171,7 @@ void rename_component(Component* comp, const char* new_name)
 	strncpy(comp->label, new_name, sizeof(comp->label) - 1);
 
 	comp->label[sizeof(comp->label) - 1] = '\0'; 
+	printf("▷ Component renamed  : %s\n", comp->label);
 }
 
 Component* get_component_by_label(const char* given_label, Circuit* circ)
@@ -202,6 +203,7 @@ Component*	invert_source_state(Component* comp)
 	if (comp->type == SOURCE)
 	{
 		comp->out_status = !comp->out_status;
+		printf("▷ Component status inverted  : %s\n", comp->label);
 	}
 	return comp;
 }

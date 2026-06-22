@@ -1,0 +1,29 @@
+// This circuit is a XOR GATE, built with 2 NOT_GATEs, 2 AND_GATEs and 1 OR_GATE.
+// Read README.md file to learn how to use it ! 
+
+
+$Circuit$ "circuit_xor_gate"
+	$Components$ : 
+		//TypeComponent, "label", nb_in, x, y
+		SOURCE, "SOURCE_1", 0, 0, 0
+		SOURCE, "SOURCE_2", 0, 0, 0
+		GATE_NOT, "GATE_NOT_1", 1, 0, 0
+		GATE_NOT, "GATE_NOT_2", 1, 0, 0
+		GATE_AND, "GATE_AND_1", 2, 0, 0
+		GATE_AND, "GATE_AND_2", 2, 0, 0
+		GATE_OR, "GATE_OR_1", 2, 0, 0
+		DIODE, "DIODE_1", 1, 0, 0
+
+	$Inversions$
+		"SOURCE_1"
+
+	$Links$
+		"SOURCE_1", "GATE_NOT_1", 0
+		"SOURCE_2", "GATE_NOT_2", 0
+		"SOURCE_1", "GATE_AND_2", 0
+		"SOURCE_2", "GATE_AND_1", 0
+		"GATE_NOT_1", "GATE_AND_1", 1
+		"GATE_NOT_2", "GATE_AND_2", 1
+		"GATE_AND_1", "GATE_OR_1", 0
+		"GATE_AND_2", "GATE_OR_1", 1
+		"GATE_OR_1", "DIODE_1", 0

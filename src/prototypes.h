@@ -7,9 +7,11 @@
 //Functions-models 
 Model*			create_model();
 void			delete_model(Model* model);
+void			simulate_model(Model *model);
+
 
 //Functions-circuits
-Circuit*		create_circuit(int id, Model* model);
+Circuit*		create_circuit(Model* model);
 void			rename_circuit(Circuit* circuit, const char* new_name);
 Circuit*		get_circuit_by_label(const char* label, Model* model);
 void			delete_circuit(Circuit *circ);
@@ -37,7 +39,9 @@ void			propagate_evaluation(Component* comp);
 // In/Out 
 void			print_circuit_diodes(Circuit* circ);
 void			print_circuit_components(Circuit* circ);
-int				import_file(char* file_path);
+void			print_model_components(Model *model);
+int				import_file(char* file_path, Model* model);
+
 
 
 //void			save_circuit(Circuit *circ);
@@ -45,6 +49,7 @@ int				import_file(char* file_path);
 
 // Helper 
 void			shift_pointer_array(void** array, int start_index, int current_count);
+TypeComponent	string_to_typecomponent(const char* type_str, bool* found);
 
 
 

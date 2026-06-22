@@ -47,50 +47,50 @@ bool		generic_eval(Component* comp)
 	final_not = false;
 	switch (comp->type)
 	{
-	case DIODE :
-		comp->out_status = read_parent_status(comp, 0);
-		return comp->out_status;
-	case BUFFER :
-		comp->out_status = read_parent_status(comp, 0);
-		return comp->out_status;
-	case GATE_NOT :
-		comp->out_status = !read_parent_status(comp, 0);
-		return comp->out_status;
-	case GATE_AND :
-		result = true;
-		operation = op_and;
-		break;
-	case GATE_OR :
-		result = false;
-		operation = op_or;
-		break;
-	case GATE_NAND :
-		result = true;
-		operation = op_and;
-		final_not = true;
-		break;
-	case GATE_NOR :
-		result = false;
-		operation = op_or;
-		final_not = true;
-		break;
-	case GATE_XOR :
-		result = false;
-		operation = op_xor;
-		break;
-	case GATE_NXOR :
-		result = false;
-		operation = op_xor;
-		final_not = true;
-		break;
-	case GATE_IMPLY :
-		comp->out_status = op_imply(read_parent_status(comp, 0), read_parent_status(comp, 1));
-		return comp->out_status;
-	case GATE_NIMPLY :
-		comp->out_status = !op_imply(read_parent_status(comp, 0), read_parent_status(comp, 1));
-		return comp->out_status;
-	default:
-		return false;
+		case DIODE :
+			comp->out_status = read_parent_status(comp, 0);
+			return comp->out_status;
+		case BUFFER :
+			comp->out_status = read_parent_status(comp, 0);
+			return comp->out_status;
+		case GATE_NOT :
+			comp->out_status = !read_parent_status(comp, 0);
+			return comp->out_status;
+		case GATE_AND :
+			result = true;
+			operation = op_and;
+			break;
+		case GATE_OR :
+			result = false;
+			operation = op_or;
+			break;
+		case GATE_NAND :
+			result = true;
+			operation = op_and;
+			final_not = true;
+			break;
+		case GATE_NOR :
+			result = false;
+			operation = op_or;
+			final_not = true;
+			break;
+		case GATE_XOR :
+			result = false;
+			operation = op_xor;
+			break;
+		case GATE_NXOR :
+			result = false;
+			operation = op_xor;
+			final_not = true;
+			break;
+		case GATE_IMPLY :
+			comp->out_status = op_imply(read_parent_status(comp, 0), read_parent_status(comp, 1));
+			return comp->out_status;
+		case GATE_NIMPLY :
+			comp->out_status = !op_imply(read_parent_status(comp, 0), read_parent_status(comp, 1));
+			return comp->out_status;
+		default:
+			return false;
 	}
 
 	i = 0;

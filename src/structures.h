@@ -26,7 +26,15 @@ typedef enum {
 	GATE_XOR,
 	GATE_NXOR,
 	GATE_IMPLY,
-	GATE_NIMPLY
+	GATE_NIMPLY,
+	STOCK_1,
+	STOCK_2,
+	STOCK_3,
+	STOCK_4,
+	STOCK_5,
+	STOCK_6,
+	STOCK_7,
+	STOCK_8
 } TypeComponent;
 
 
@@ -44,8 +52,24 @@ static char* ComponentNames[] = {
 	"GATE_XOR",
 	"GATE_NXOR",
 	"GATE_IMPLY",
-	"GATE_NIMPLY"
+	"GATE_NIMPLY",
+	"STOCK_1",
+	"STOCK_2",
+	"STOCK_3",
+	"STOCK_4",
+	"STOCK_5",
+	"STOCK_6",
+	"STOCK_7",
+	"STOCK_8"
 };
+
+typedef enum {
+    STATE_NONE,
+    STATE_COMPONENTS,
+    STATE_INVERSIONS,
+    STATE_LINKS
+} ParseState;
+
 
 struct	Coordinates {
 	int				x;
@@ -84,7 +108,7 @@ struct Circuit {
 	int				link_count;
 	int				max_level;
 	TypeCounter		type_counter[12];
-	char			label[16];
+	char			label[32];
 };
 
 struct Model {

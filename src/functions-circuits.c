@@ -7,7 +7,7 @@
 #include "prototypes.h"
 #include "structures.h"
 
-Circuit*	create_circuit(int id, Model* model)
+Circuit*	create_circuit(Model* model)
 {
 	Circuit* circ = malloc(sizeof(Circuit));
 	if (circ == NULL)
@@ -15,7 +15,8 @@ Circuit*	create_circuit(int id, Model* model)
 		return NULL;
 	}
 
-	circ->id = id;
+	static int next_circ_id = 0;
+	circ->id = next_circ_id +=1;
 	circ->components = NULL;
 	circ->component_count = 0;
 	circ->links = NULL ;
@@ -35,6 +36,7 @@ Circuit*	create_circuit(int id, Model* model)
 	model->circuits[model->circuits_count] = circ;
 	model->circuits_count += 1; 
 
+	printf("◌ Circuit created : %s\n", circ->label);
 	return circ;
 }
 
@@ -42,12 +44,15 @@ void rename_circuit(Circuit* circuit, const char* new_name)
 {
     if (!circuit || !new_name)
     {
+		printf("/!\\ ERROR : No circuit or no new name find (Function rename_circuit)\n");
         return;
     }
 
     strncpy(circuit->label, new_name, sizeof(circuit->label) - 1);
     
     circuit->label[sizeof(circuit->label) - 1] = '\0'; 
+	printf("◌ Circuit renamed : %s\n", circuit->label);
+
 }
 
 Circuit* get_circuit_by_label(const char* given_label, Model* model)

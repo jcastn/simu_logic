@@ -38,6 +38,8 @@ Link*	create_link(Component* src, Component* dest, int port_number, Circuit* cir
 	circ->links[circ->link_count] = link;
 	circ->link_count++;
 
+	printf("▷ Link created : '%s' -> '%s' (%d)\n", src->label, dest->label, port_number);
+
 	return	link;
 }
 

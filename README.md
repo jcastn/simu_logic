@@ -46,4 +46,14 @@ Other components will be added in the next updates !
 
 ### III. Templates 
 
-The repository contain a `templates` folder, it contains a few cirucits models you can simulate in the `main.c` file. 
+The repository contain a `/templates` folder, it contains a few cirucits you can import and simulate in a model in the `main.c` file. 
+
+
+A Model is structure that contains multiple circuits and a circuit contains multiple linked components. 
+
+The circuits files can be imported using the `import_file()` function in the `main.c` file. 
+
+With this function, you can specify : 
+- a NULL value : `import_file(NULL, my_model);`. A popup will appear and let you choose a file to import from the File Explorer. 
+- a relative path (from simu_logic folder) : `import_file("templates/circuit_XXX.txt", my_model);`. The specified file will be directly open. 
+

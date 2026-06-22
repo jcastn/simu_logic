@@ -40,3 +40,15 @@ void		delete_model(Model* model)
 
     free(model);
 }
+
+void	simulate_model(Model *model)
+{
+	int i;
+	
+	i = 0;
+	while(i < model->circuits_count)
+	{
+		simulate_circuit(model->circuits[i]);
+		i++;
+	}
+}
