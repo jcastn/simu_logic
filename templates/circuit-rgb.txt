@@ -1,0 +1,31 @@
+// This circuit is a XOR GATE, built with 2 NOT_GATEs, 2 AND_GATEs and 1 OR_GATE.
+// Read README.md file to learn how to use it ! 
+
+
+$Circuit$ "circuit_rgb"
+	$Components$ : 
+		//TypeComponent, "label", nb_in, x, y
+		SOURCE, "SOURCE_1", 0, 0, 0
+		SOURCE, "SOURCE_2", 0, 0, 0
+		SOURCE, "SOURCE_3", 0, 0, 0
+		DIODE_RGB, "DIODE_RGB_1", 3, 0, 0
+		SOURCE, "SOURCE_4", 0, 0, 0
+		SOURCE, "SOURCE_5", 0, 0, 0
+		SOURCE, "SOURCE_6", 0, 0, 0
+		DIODE_RGB, "DIODE_RGB_2", 3, 0, 0
+
+	$Inversions$
+		//"SOURCE_1"
+		"SOURCE_2"
+		"SOURCE_3"
+		//"SOURCE_4"
+		"SOURCE_5"
+		"SOURCE_6"
+
+	$Links$
+		"SOURCE_1", "DIODE_RGB_1", 0
+		"SOURCE_2", "DIODE_RGB_1", 1
+		"SOURCE_3", "DIODE_RGB_1", 2
+		"SOURCE_4", "DIODE_RGB_2", 0
+		"SOURCE_5", "DIODE_RGB_2", 1
+		"SOURCE_6", "DIODE_RGB_2", 2

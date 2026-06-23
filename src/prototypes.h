@@ -50,8 +50,7 @@ int				import_file(char* file_path, Model* model);
 // Helper 
 void			shift_pointer_array(void** array, int start_index, int current_count);
 TypeComponent	string_to_typecomponent(const char* type_str, bool* found);
-
-
+bool			read_parent_status(Component* comp, int port_number);
 
 
 // Rearrange circuit

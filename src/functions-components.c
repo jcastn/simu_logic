@@ -7,10 +7,37 @@
 #include "prototypes.h"
 #include "structures.h"
 
+static int	auto_nb_in(TypeComponent type, int in_nbr)
+{
+	if (type == SOURCE)
+	{
+		return 0;
+	}
+	else if ((type == DIODE) || (type == GATE_NOT) || (type == BUFFER ))
+	{
+		return 1;
+	}
+	else if ((type == GATE_IMPLY) || (type == GATE_NIMPLY))
+	{
+		return 2;
+	}
+	else if (type == DIODE_RGB)
+	{
+		return 3;
+	}
+	else if (in_nbr >= 10)
+	{
+		return 10;
+	}
+	else
+	{
+		return in_nbr;
+	}
+}
 
 // Function to create a component with : 
 // • its Type (SOURCE, DIODE, NOT / AND / OR / NAND / NOR / XOR / NXOR gates),
-// • its number of inbound links (0 if it's a SOURCE ; 1 if it's a NOT_GATE or a BUFFER)
+// • its number of inbound links 
 // • the circuit where the component is included
 Component*	create_component(TypeComponent type, int in_nbr, Circuit* circ)
 {
@@ -30,23 +57,7 @@ Component*	create_component(TypeComponent type, int in_nbr, Circuit* circ)
 	comp->out_status = false;
 	comp->nb_out = 0;
 	comp->out_links = NULL;
-
-	if (type == SOURCE)
-	{
-		comp->nb_in = 0;
-	}
-	else if ((type == GATE_NOT) || (type == BUFFER ))
-	{
-		comp->nb_in = 1;
-	}
-	else if ((type == GATE_IMPLY) || (type == GATE_NIMPLY))
-	{
-		comp->nb_in = 2;
-	}	
-	else
-	{
-		comp->nb_in = in_nbr;
-	}
+	comp->nb_in = auto_nb_in(type, in_nbr);
 
 	//Allocation of the table of link pointers 
 	if (comp->nb_in > 0)

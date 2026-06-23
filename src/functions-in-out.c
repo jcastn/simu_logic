@@ -1,3 +1,4 @@
+//functions-in-out.c
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,13 +8,15 @@
 #include "prototypes.h"
 #include "structures.h"
 
-#define TERMINAL_BLACK		"\033[30m"
-#define TERMINAL_RED		"\033[31m"
-#define TERMINAL_GREEN		"\033[32m"
-#define	TERMINAL_BLUE		"\033[34m"
-#define TERMINAL_MAGENTA	"\033[35m"
-#define TERMINAL_CYAN		"\033[36m"
-#define TERMINAL_DEFAULT   	"\033[0m"
+#define TERMINAL_BLACK		"\e[0;30m"
+#define TERMINAL_RED		"\e[0;31m"
+#define TERMINAL_GREEN		"\e[0;32m"
+#define TERMINAL_YELLOW     "\e[0;33m"
+#define	TERMINAL_BLUE		"\e[0;34m"
+#define TERMINAL_MAGENTA	"\e[0;35m"
+#define TERMINAL_CYAN		"\e[0;36m"
+#define TERMINAL_WHITE      "\e[0;37m"
+#define TERMINAL_DEFAULT   	"\e[0;0m"
 
 void	print_circuit_diodes(Circuit* circ)
 {
@@ -37,32 +40,78 @@ void	print_circuit_diodes(Circuit* circ)
 
 void	print_circuit_components(Circuit* circ)
 {
+	int i;
 	printf("\nCircuit %d (\"%s\"):\n%d Components and %d Links on %d Levels, \n", circ->id, circ->label, circ->component_count, circ->link_count, circ->max_level);
-	printf("•------------------•------------------•-------•-----•-------•-------•--------•--------•------------------•\n");
-	printf("| Component Label  | Component Type   | State | ID  | Level | Align | x      | y      | Links            |\n");
-	printf("•------------------•------------------•-------•-----•-------•-------•--------•--------•------------------•\n");
+	printf("•------------------•------------------•-------------•-----•-------•-------•--------•--------•------------------•\n");
+	printf("| Component Label  | Component Type   | State       | ID  | Level | Align | x      | y      | Links            |\n");
+	printf("•------------------•------------------•-------------•-----•-------•-------•--------•--------•------------------•\n");
 
 
-	for (int i = 0; i<circ->component_count; i++)
+	i = 0;
+	while(i<circ->component_count)
 	{
-		const char* current_color;
+		const char* component_color;
 		Component* comp = circ->components[i];
 
+		// Component Label and Component Type color 
 		if (comp->type <= 1){
-			current_color = TERMINAL_CYAN;
+			component_color = TERMINAL_CYAN;
 		}
 		else 
 		{
-			current_color = TERMINAL_MAGENTA;
+			component_color = TERMINAL_MAGENTA;
 		}
 
-		printf("| %s%-16s" TERMINAL_DEFAULT " | %s%-16s" TERMINAL_DEFAULT " | %s%-5s" TERMINAL_DEFAULT " | %-3d | %-5d | %-5d | %-6d | %-6d | In:%-4d Out:%-4d |\n", 
-			current_color,
+		// Out-Status State
+		const char* state_color = comp->out_status ? TERMINAL_GREEN : TERMINAL_RED;
+		const char* state_text = comp->out_status ? "ON" : "OFF";
+
+		if (comp->type == DIODE_RGB)
+		{
+			if (read_parent_status(comp, 0) && read_parent_status(comp, 1) && read_parent_status(comp, 2))
+			{
+				state_color = TERMINAL_WHITE;
+				state_text = "ON (white)"; 
+			}
+			else if (read_parent_status(comp, 0) && read_parent_status(comp, 1))
+			{
+				state_color = TERMINAL_YELLOW;
+				state_text = "ON (yellow)";
+			}
+			else if (read_parent_status(comp, 0) && read_parent_status(comp, 2))
+			{
+				state_color = TERMINAL_MAGENTA;
+				state_text = "ON (magenta)";
+			}
+			else if (read_parent_status(comp, 1) && read_parent_status(comp, 2))
+			{
+				state_color = TERMINAL_CYAN;
+				state_text = "ON (cyan)";
+			}
+			else if (read_parent_status(comp, 0))     
+			{
+				state_color = TERMINAL_RED;
+				state_text = "ON (red)";
+			}
+			else if (read_parent_status(comp, 1))     
+			{
+				state_color = TERMINAL_GREEN;
+				state_text = "ON (green)";
+			}
+			else if (read_parent_status(comp, 2))     
+			{
+				state_color = TERMINAL_BLUE;
+				state_text = "ON (blue)";
+			}
+		}
+		
+		printf("| %s%-16s" TERMINAL_DEFAULT " | %s%-16s" TERMINAL_DEFAULT " | %s%-12s" TERMINAL_DEFAULT "| %-3d | %-5d | %-5d | %-6d | %-6d | In:%-4d Out:%-4d |\n", 
+			component_color,
 			comp->label,
-			current_color,
+			component_color,
 			ComponentNames[comp->type],
-			comp->out_status ? TERMINAL_GREEN : TERMINAL_RED, 
-			comp->out_status ? "ON" : "OFF",
+			state_color,
+			state_text,
 			comp->id, 
 			comp->coordinates->level, 
 			comp->coordinates->alignment, 
@@ -70,9 +119,10 @@ void	print_circuit_components(Circuit* circ)
 			comp->coordinates->y,
 			comp->nb_in,
 			comp->nb_out);
-
+		
+		i++;
 	}
-	printf("•------------------•------------------•-------•-----•-------•-------•--------•--------•------------------•\n");
+	printf("•------------------•------------------•-------------•-----•-------•-------•--------•--------•------------------•\n");
 }
 
 void	print_model_components(Model *model)

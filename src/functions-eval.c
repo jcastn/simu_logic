@@ -21,16 +21,6 @@ static bool	op_imply(bool a, bool b)
 	return !a || b;
 }
 
-
-static bool	read_parent_status(Component* comp, int port_number)
-{
-    if (comp->in_links[port_number] != NULL)
-    {
-        return comp->in_links[port_number]->src->out_status;
-    }
-    return false;
-}
-
 bool		generic_eval(Component* comp)
 {
 	int		i;
@@ -49,6 +39,9 @@ bool		generic_eval(Component* comp)
 	{
 		case DIODE :
 			comp->out_status = read_parent_status(comp, 0);
+			return comp->out_status;
+		case DIODE_RGB :
+			comp->out_status = read_parent_status(comp, 0) || read_parent_status(comp, 1) || read_parent_status(comp, 2);
 			return comp->out_status;
 		case BUFFER :
 			comp->out_status = read_parent_status(comp, 0);

@@ -33,3 +33,13 @@ TypeComponent string_to_typecomponent(const char* type_str, bool* found)
 	printf("/!\\ ERROR : TypeComponent not found (string_to_typecomponent() function)");
     return SOURCE;
 }
+
+
+bool		read_parent_status(Component* comp, int port_number)
+{
+	if (comp->in_links[port_number] != NULL)
+	{
+		return comp->in_links[port_number]->src->out_status;
+	}
+	return false;
+}

@@ -11,7 +11,7 @@ int main(void)
 
 	Model* my_model = create_model();
 
-	import_file("templates/circuit-xor.txt", my_model);
+	import_file("templates/circuit-rgb.txt", my_model);
 
 
 	print_model_components(my_model);

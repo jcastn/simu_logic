@@ -12,11 +12,12 @@ typedef struct Circuit Circuit;
 typedef struct Model Model;
 
 
-// Types of components (12 possibilities)
-// accepted values : (SOURCE, DIODE, BUFFER, GATE_NOT, GATE_AND, GATE_OR, GATE_NAND, GATE_NOR, GATE_XOR, GATE_NXOR, GATE_IMPLY, GATE_NIMPLY) 
+// Types of components (13 possibilities)
+// accepted values : (SOURCE, DIODE, DIODE_RGB, BUFFER, GATE_NOT, GATE_AND, GATE_OR, GATE_NAND, GATE_NOR, GATE_XOR, GATE_NXOR, GATE_IMPLY, GATE_NIMPLY) 
 typedef enum {
-	SOURCE,		
+	SOURCE,	
 	DIODE,
+	DIODE_RGB,
 	BUFFER,
 	GATE_NOT,
 	GATE_AND,
@@ -33,8 +34,7 @@ typedef enum {
 	STOCK_4,
 	STOCK_5,
 	STOCK_6,
-	STOCK_7,
-	STOCK_8
+	STOCK_7
 } TypeComponent;
 
 
@@ -43,6 +43,7 @@ typedef enum {
 static char* ComponentNames[] = {
 	"SOURCE",
 	"DIODE",
+	"DIODE_RGB",
 	"BUFFER",
 	"GATE_NOT",
 	"GATE_AND",
@@ -59,8 +60,7 @@ static char* ComponentNames[] = {
 	"STOCK_4",
 	"STOCK_5",
 	"STOCK_6",
-	"STOCK_7",
-	"STOCK_8"
+	"STOCK_7"
 };
 
 typedef enum {
@@ -107,7 +107,7 @@ struct Circuit {
 	Link**			links;
 	int				link_count;
 	int				max_level;
-	TypeCounter		type_counter[12];
+	TypeCounter		type_counter[20];
 	char			label[32];
 };
 
