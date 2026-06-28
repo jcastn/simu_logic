@@ -40,7 +40,8 @@ void			propagate_evaluation(Component* comp);
 void			print_circuit_diodes(Circuit* circ);
 void			print_circuit_components(Circuit* circ);
 void			print_model_components(Model *model);
-int				import_file(char* file_path, Model* model);
+int				file_process(char* file_path, FileMode file_mode, Model* model);
+
 
 
 

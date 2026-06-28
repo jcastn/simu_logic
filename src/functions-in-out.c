@@ -11,12 +11,12 @@
 #define TERMINAL_BLACK		"\e[0;30m"
 #define TERMINAL_RED		"\e[0;31m"
 #define TERMINAL_GREEN		"\e[0;32m"
-#define TERMINAL_YELLOW     "\e[0;33m"
+#define TERMINAL_YELLOW		"\e[0;33m"
 #define	TERMINAL_BLUE		"\e[0;34m"
 #define TERMINAL_MAGENTA	"\e[0;35m"
 #define TERMINAL_CYAN		"\e[0;36m"
-#define TERMINAL_WHITE      "\e[0;37m"
-#define TERMINAL_DEFAULT   	"\e[0;0m"
+#define TERMINAL_WHITE		"\e[0;37m"
+#define TERMINAL_DEFAULT	"\e[0;0m"
 
 void	print_circuit_diodes(Circuit* circ)
 {
@@ -136,61 +136,71 @@ void	print_model_components(Model *model)
 	}
 }
 
-static char* nfd_import_file_popup()
+static char* nfd_file(FileMode mode)
 {
 	if (NFD_Init() != NFD_OKAY) {
-        printf("Error: %s\n", NFD_GetError());
-        return NULL;
+		printf("/!\\ Error with nfd_file() : %s\n", NFD_GetError());
+		return NULL;
+	}
+
+	char* path = NULL;
+	nfdu8char_t *outPath = NULL;
+	nfdu8filteritem_t filters[1] = { {"Text file", "txt,json"} };
+	nfdresult_t result;
+
+    if (mode == IMPORT)
+    {
+        nfdopendialogu8args_t open_args = {0};
+        open_args.filterList = filters;
+        open_args.filterCount = 1;
+        result = NFD_OpenDialogU8_With(&outPath, &open_args);
     }
-
-	char* returned_path = NULL;
-
-
-    nfdu8char_t *outPath;
-    nfdu8filteritem_t filters[1] = { {"Text file", "txt,json"} };
-    nfdopendialogu8args_t args = {0};
-    args.filterList = filters;
-    args.filterCount = 1;
-
-    nfdresult_t result = NFD_OpenDialogU8_With(&outPath, &args);
+    else
+    {
+        nfdsavedialogu8args_t save_args = {0};
+        save_args.filterList = filters;
+        save_args.filterCount = 1;
+        save_args.defaultName = "modele_simu_logic.txt";
+        result = NFD_SaveDialogU8_With(&outPath, &save_args);
+    }
 	
-    if (result == NFD_OKAY)
-    {
-        printf("Success! File found : %s\n", outPath);
-		returned_path = strdup(outPath);
-        NFD_FreePathU8(outPath);
-    }
-    else if (result == NFD_CANCEL)
-    {
-        printf("User pressed cancel");
-    }
-    else 
-    {
-        printf("Error: %s\n", NFD_GetError());
-    }
+	if (result == NFD_OKAY)
+	{
+		printf("(i) INFO : File found with nfd_file() : %s\n", outPath);
+		path = strdup(outPath);
+		NFD_FreePathU8(outPath);
+	}
+	else if (result == NFD_CANCEL)
+	{
+		printf("(i) INFO : nfd_file() - User pressed cancel");
+	}
+	else 
+	{
+		printf("/!\\ Error: %s\n", NFD_GetError());
+	}
 
-    NFD_Quit();
-	return returned_path;
+	NFD_Quit();
+	return path;
 }
 
-static void read_file_content(char* file_path, Model* model)
+static void	read_file_content(char* file_path, Model* model)
 {
-	printf("The choosen file is : %s\n", file_path);
+	printf("⬇︎ File open : %s\n", file_path);
 
-    FILE *file = fopen(file_path, "r");
+	FILE *file = fopen(file_path, "r");
 	if (!file) 
 	{
-        printf("/!\\ ERROR : Impossible to open the file");
+		printf("/!\\ ERROR : Impossible to open the file");
 		return;
-    }
+	}
 
 	char line[100];
 	char type_str[16];
-    char comp_label[16];
-    char comp_label2[16];
-    int port = 0;
+	char comp_label[16];
+	char comp_label2[16];
+	int port = 0;
 
-    int nb_in = 0;
+	int nb_in = 0;
 	int x = 0;
 	int y = 0;
 	TypeComponent comp_type = SOURCE;
@@ -201,7 +211,7 @@ static void read_file_content(char* file_path, Model* model)
 	while(fgets(line, sizeof(line), file))
 	{
 		if (line[0] == '\n' || line[0] == '\r' || strstr(line, "//") == line) 
-    	{
+		{
 			continue;
 		}
 
@@ -230,13 +240,12 @@ static void read_file_content(char* file_path, Model* model)
 			printf("STEP 2 : STATE_INVERSIONS\n");
 			continue;
 		}
-        else if (strstr(line, "$Links$"))
+		else if (strstr(line, "$Links$"))
 		{
 			current_state = STATE_LINKS;
 			printf("STEP 3 : STATE_LINKS\n");
 			continue;
 		}
-
 
 		if (!current_circ) 
 		{
@@ -247,7 +256,7 @@ static void read_file_content(char* file_path, Model* model)
 		{
 			case STATE_COMPONENTS:
 			{
-				if (sscanf(line, " %[^,], \"%[^\"]\", %d, %d, %d", type_str, comp_label, &nb_in, &x, &y) >= 3)
+				if (sscanf(line, " %15[^,], \"%15[^\"]\", %d, %d, %d", type_str, comp_label, &nb_in, &x, &y) >= 3)
 				{
 					type_found = false;
 					comp_type = string_to_typecomponent(type_str, &type_found);
@@ -267,7 +276,7 @@ static void read_file_content(char* file_path, Model* model)
 			}
 			case STATE_INVERSIONS:
 			{
-				if (sscanf(line, " \"%[^\"]\"", comp_label) == 1)
+				if (sscanf(line, " \"%15[^\"]\"", comp_label) == 1)
 				{
 					Component* comp = get_component_by_label(comp_label, current_circ);
 					if (comp)
@@ -284,19 +293,18 @@ static void read_file_content(char* file_path, Model* model)
 			case STATE_LINKS:
 			{
 				if (sscanf(line, " \"%[^\"]\", \"%[^\"]\", %d", comp_label, comp_label2, &port) == 3)
-                {
-					
-                    Component* src = get_component_by_label(comp_label, current_circ);
-                    Component* dest = get_component_by_label(comp_label2, current_circ);
-                    if (src && dest && port >= 0)
-                    {
-                        create_link(src, dest, port, current_circ);
-                    }
+				{
+					Component* src = get_component_by_label(comp_label, current_circ);
+					Component* dest = get_component_by_label(comp_label2, current_circ);
+					if (src && dest && port >= 0)
+					{
+						create_link(src, dest, port, current_circ);
+					}
 					else 
 					{
 						printf("/!\\ ERROR : Unknown component name source '%s', or dest '%s', or port '%d' : No link created, please review the line in the import file. \n", src->label, dest->label, port);
 					}
-                }
+				}
 				break;
 			}
 			default:
@@ -314,26 +322,88 @@ static void read_file_content(char* file_path, Model* model)
 	fclose(file);
 }
 
-
-
-
-/*
-void		save_circuit(Circuit *circ)
+static void	write_file_content(char* file_path, Model *model)
 {
-	//Export a circuit to a .txt or .json file 
-}
-*/
+	if(model->circuits_count == 0){
+		printf("/!\\ Error ! The selected model contains no circuits, so there's nothing to export.");
+		return;
+	}
+	int circ;
+	int comp;
 
-// Function to import a file : 
-// 1. Use `import_file(NULL);` to import a file choosen by the user from a File Explorer popup (with NFD module)
-// 2. Use `import_file("path/to/file.txt");` to import a file from a relative path 
-int		import_file(char* file_path, Model* model)
+	circ = 0;
+	FILE *file = fopen(file_path, "w");
+	
+
+	if (file == NULL) {
+		printf("/!\\ Error ! File is NULL (function write_file_content()) ! \n");
+		return;
+	}
+	while(circ < model->circuits_count)
+	{
+		fprintf(file, "$Circuit$ \"%s\"\n", model->circuits[circ]->label);
+
+		fprintf(file, "\t$Components$\n");
+		comp = 0;
+		while(comp < model->circuits[circ]->component_count)
+		{
+			fprintf(file, "\t\t%s, \"%s\", %d, %d, %d\n", 
+				ComponentNames[model->circuits[circ]->components[comp]->type],
+				model->circuits[circ]->components[comp]->label,
+				model->circuits[circ]->components[comp]->nb_in,
+				model->circuits[circ]->components[comp]->coordinates->x,
+				model->circuits[circ]->components[comp]->coordinates->y);
+			comp++;
+		}
+
+		comp = 0;
+		fprintf(file, "\n\t$Inversions$\n");
+		while(comp < model->circuits[circ]->component_count)
+		{
+			if((model->circuits[circ]->components[comp]->type == SOURCE) && (model->circuits[circ]->components[comp]->out_status == 1))
+			{
+				fprintf(file, "\t\t\"%s\"\n",model->circuits[circ]->components[comp]->label);
+			}
+			
+			comp++;
+		}
+
+		comp = 0;
+		fprintf(file, "\n\t$Links$\n");
+		while(comp < model->circuits[circ]->link_count)
+		{
+			fprintf(file, "\t\t\"%s\", \"%s\", %d\n", 
+				model->circuits[circ]->links[comp]->src->label,
+				model->circuits[circ]->links[comp]->dest->label,
+				model->circuits[circ]->links[comp]->port_number);
+			comp++;
+		}
+		printf("(i) INFO : Circuit %d added to file !\n", circ);
+		circ++;
+	}
+
+
+	fclose(file);
+	
+	printf("(i) INFO : File '%s' is generated with success. It contains %d circuits.\n", file_path, circ);
+
+	return;
+}
+
+
+// Function to import/export a file with 3 arguments : 
+// - Argument 1 : File_path 
+// -> If it's a string, the function will use this string as a file_path
+// -> If it's NULL, the user will select the file from a NFD Popup. 
+// - Argument 2 : FileMode (IMPORT or EXPORT)
+// - Argument 3 : Model
+int		file_process(char* file_path, FileMode file_mode, Model* model)
 {
 	bool needs_free = false;
-	// If the function import_file is called with a NULL value, the nfd_import_file() function is used to allow the user to choose a file from the File Explorer
+	// If the function file_process is called with a NULL value, the nfd_file_process() function is used to allow the user to choose a file from the File Explorer
 	if (file_path == NULL)
 	{
-		file_path = nfd_import_file_popup();
+		file_path = nfd_file(file_mode);
 
 		if (file_path == NULL)
 		{
@@ -342,21 +412,28 @@ int		import_file(char* file_path, Model* model)
 		}
 		needs_free = true;
 	}
-    
 
-    if (file_path != NULL) {
-        read_file_content(file_path, model);
+
+	if (file_path != NULL) {
+		printf("⬇︎ File open : %s\n", file_path);
+
+		if (file_mode == IMPORT)
+		{
+			read_file_content(file_path, model);
+		}
+		else
+		{
+			write_file_content(file_path, model);
+		}
 
 		if (needs_free)
 		{
 			free(file_path);
 		}
-    } 
+	} 
 	else {
-        printf("ERROR : No file were imported.\n");
-    }
+		printf("ERROR : No file were imported.\n");
+	}
 
-    return 0;
+	return 0;
 }
-
-

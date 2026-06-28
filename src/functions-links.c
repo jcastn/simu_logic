@@ -21,6 +21,7 @@ Link*	create_link(Component* src, Component* dest, int port_number, Circuit* cir
 
 	link->src = src;
 	link->dest = dest;
+	link->port_number = port_number;
 
 	dest->in_links[port_number] = link;
 

@@ -64,12 +64,16 @@ static char* ComponentNames[] = {
 };
 
 typedef enum {
-    STATE_NONE,
-    STATE_COMPONENTS,
-    STATE_INVERSIONS,
-    STATE_LINKS
+	STATE_NONE,
+	STATE_COMPONENTS,
+	STATE_INVERSIONS,
+	STATE_LINKS
 } ParseState;
 
+typedef enum {
+	IMPORT,
+	EXPORT
+} FileMode;
 
 struct	Coordinates {
 	int				x;
@@ -82,6 +86,7 @@ struct	Coordinates {
 struct Link {
 	Component*		src;	
 	Component*		dest;
+	int				port_number;
 };
 
 struct Component {
@@ -114,4 +119,5 @@ struct Circuit {
 struct Model {
 	int				circuits_count;
 	Circuit**		circuits;
+	char			label[32];
 };
