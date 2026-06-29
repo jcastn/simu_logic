@@ -148,21 +148,21 @@ static char* nfd_file(FileMode mode)
 	nfdu8filteritem_t filters[1] = { {"Text file", "txt,json"} };
 	nfdresult_t result;
 
-    if (mode == IMPORT)
-    {
-        nfdopendialogu8args_t open_args = {0};
-        open_args.filterList = filters;
-        open_args.filterCount = 1;
-        result = NFD_OpenDialogU8_With(&outPath, &open_args);
-    }
-    else
-    {
-        nfdsavedialogu8args_t save_args = {0};
-        save_args.filterList = filters;
-        save_args.filterCount = 1;
-        save_args.defaultName = "modele_simu_logic.txt";
-        result = NFD_SaveDialogU8_With(&outPath, &save_args);
-    }
+	if (mode == IMPORT)
+	{
+		nfdopendialogu8args_t open_args = {0};
+		open_args.filterList = filters;
+		open_args.filterCount = 1;
+		result = NFD_OpenDialogU8_With(&outPath, &open_args);
+	}
+	else
+	{
+		nfdsavedialogu8args_t save_args = {0};
+		save_args.filterList = filters;
+		save_args.filterCount = 1;
+		save_args.defaultName = "modele_simu_logic.txt";
+		result = NFD_SaveDialogU8_With(&outPath, &save_args);
+	}
 	
 	if (result == NFD_OKAY)
 	{
@@ -231,19 +231,19 @@ static void	read_file_content(char* file_path, Model* model)
 		if (strstr(line, "$Components$"))
 		{
 			current_state = STATE_COMPONENTS;
-			printf("STEP 1 : STATE_COMPONENTS\n");
+			printf("\nSTEP 1 : STATE_COMPONENTS\n");
 			continue;
 		}
 		else if (strstr(line, "$Inversions$"))
 		{
 			current_state = STATE_INVERSIONS;
-			printf("STEP 2 : STATE_INVERSIONS\n");
+			printf("\nSTEP 2 : STATE_INVERSIONS\n");
 			continue;
 		}
 		else if (strstr(line, "$Links$"))
 		{
 			current_state = STATE_LINKS;
-			printf("STEP 3 : STATE_LINKS\n");
+			printf("\nSTEP 3 : STATE_LINKS\n");
 			continue;
 		}
 
@@ -378,7 +378,6 @@ static void	write_file_content(char* file_path, Model *model)
 				model->circuits[circ]->links[comp]->port_number);
 			comp++;
 		}
-		printf("(i) INFO : Circuit %d added to file !\n", circ);
 		circ++;
 	}
 

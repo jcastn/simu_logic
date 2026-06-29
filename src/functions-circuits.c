@@ -42,64 +42,64 @@ Circuit*	create_circuit(Model* model)
 
 void rename_circuit(Circuit* circuit, const char* new_name)
 {
-    if (!circuit || !new_name)
-    {
+	if (!circuit || !new_name)
+	{
 		printf("/!\\ ERROR : No circuit or no new name find (Function rename_circuit)\n");
-        return;
-    }
+		return;
+	}
 
-    strncpy(circuit->label, new_name, sizeof(circuit->label) - 1);
-    
-    circuit->label[sizeof(circuit->label) - 1] = '\0'; 
+	strncpy(circuit->label, new_name, sizeof(circuit->label) - 1);
+	
+	circuit->label[sizeof(circuit->label) - 1] = '\0'; 
 	printf("◌ Circuit renamed : %s\n", circuit->label);
 
 }
 
 Circuit* get_circuit_by_label(const char* given_label, Model* model)
 {
-    if (!given_label || !model->circuits)
-    {
+	if (!given_label || !model->circuits)
+	{
 		printf("/!\\ ERROR : Circuit not found in get_circuit_by_label() function.\n");
-        return NULL;
-    }
+		return NULL;
+	}
 
-    for (int i = 0; i < model->circuits_count; i++)
-    {
-        // On vérifie que le composant et son label existent bien
-        if (model->circuits[i])
-        {
-            if (strcmp(model->circuits[i]->label, given_label) == 0)
-            {
-                return model->circuits[i];
-            }
-        }
-    }
+	for (int i = 0; i < model->circuits_count; i++)
+	{
+		// On vérifie que le composant et son label existent bien
+		if (model->circuits[i])
+		{
+			if (strcmp(model->circuits[i]->label, given_label) == 0)
+			{
+				return model->circuits[i];
+			}
+		}
+	}
 
-    printf("/!\\ ERROR : Component with label '%s' not found in get_component_by_label() function.\n", given_label);
-    return NULL;
+	printf("/!\\ ERROR : Component with label '%s' not found in get_component_by_label() function.\n", given_label);
+	return NULL;
 }
 
 
 void	delete_circuit(Circuit *circ)
 {
-    if (!circ)
-    {
+	if (!circ)
+	{
 		return;
 	}
 
 	// Delete all the circuit links 
 	while (circ->link_count > 0)
-    {
-        delete_link(circ, circ->links[0]);
-    }
+	{
+		delete_link(circ, circ->links[0]);
+	}
 
 	// Delete all the circuit components 
-    while (circ->component_count > 0)
-    {
-        delete_component(circ, circ->components[0]);
-    }
+	while (circ->component_count > 0)
+	{
+		delete_component(circ, circ->components[0]);
+	}
 
-    free(circ);
+	free(circ);
 }
 
 void	simulate_circuit(Circuit* circ)

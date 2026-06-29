@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#define COMPONENTS_COUNT 15
+
 typedef struct Coordinates Coordinates;
 typedef struct Component Component;
 typedef struct Link Link;
@@ -12,10 +14,10 @@ typedef struct Circuit Circuit;
 typedef struct Model Model;
 
 
-// Types of components (13 possibilities)
+// Types of components 
 // accepted values : (SOURCE, DIODE, DIODE_RGB, BUFFER, GATE_NOT, GATE_AND, GATE_OR, GATE_NAND, GATE_NOR, GATE_XOR, GATE_NXOR, GATE_IMPLY, GATE_NIMPLY) 
 typedef enum {
-	SOURCE,	
+	SOURCE,
 	DIODE,
 	DIODE_RGB,
 	BUFFER,
@@ -28,13 +30,8 @@ typedef enum {
 	GATE_NXOR,
 	GATE_IMPLY,
 	GATE_NIMPLY,
-	STOCK_1,
-	STOCK_2,
-	STOCK_3,
-	STOCK_4,
-	STOCK_5,
-	STOCK_6,
-	STOCK_7
+	INPUT,
+	OUTPUT,
 } TypeComponent;
 
 
@@ -54,13 +51,8 @@ static char* ComponentNames[] = {
 	"GATE_NXOR",
 	"GATE_IMPLY",
 	"GATE_NIMPLY",
-	"STOCK_1",
-	"STOCK_2",
-	"STOCK_3",
-	"STOCK_4",
-	"STOCK_5",
-	"STOCK_6",
-	"STOCK_7"
+	"INPUT",
+	"OUTPUT",
 };
 
 typedef enum {
@@ -112,7 +104,7 @@ struct Circuit {
 	Link**			links;
 	int				link_count;
 	int				max_level;
-	TypeCounter		type_counter[20];
+	TypeCounter		type_counter[COMPONENTS_COUNT];
 	char			label[32];
 };
 

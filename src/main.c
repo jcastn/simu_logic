@@ -6,7 +6,7 @@
 #include "structures.h"
 #include "prototypes.h"
 
-int main(void) 
+int main(void)
 {
 	Model* my_model = create_model();
 

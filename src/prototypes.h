@@ -1,4 +1,4 @@
-//functions.h
+//prototypes.h
 #include "structures.h"
 
 //Prototypes
@@ -26,7 +26,8 @@ Component*		invert_source_state(Component* comp);
 
 //Functions-links 
 Link*			create_link(Component* src, Component* dest, int port_number, Circuit* circ);
-bool			delete_link(Circuit* circ, Link* link);
+void			delete_link(Circuit* circ, Link* link);
+
 
 
 
@@ -42,12 +43,6 @@ void			print_circuit_components(Circuit* circ);
 void			print_model_components(Model *model);
 int				file_process(char* file_path, FileMode file_mode, Model* model);
 
-
-
-
-//void			save_circuit(Circuit *circ);
-//void			import_circuit(Circuit *circ);
-
 // Helper 
 void			shift_pointer_array(void** array, int start_index, int current_count);
 TypeComponent	string_to_typecomponent(const char* type_str, bool* found);
@@ -58,4 +53,4 @@ bool			read_parent_status(Component* comp, int port_number);
 Component*		update_coordinates(Component* comp, int x, int y);
 void			rearange_circuit(Circuit* circ);
 void			topological_sort(Circuit* circ);
-//void    		new_topological_sort(Circuit* circ);
+//void			new_topological_sort(Circuit* circ);

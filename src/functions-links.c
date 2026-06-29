@@ -47,14 +47,15 @@ Link*	create_link(Component* src, Component* dest, int port_number, Circuit* cir
 
 
 
-bool	delete_link(Circuit* circ, Link* link)
+void	delete_link(Circuit* circ, Link* link)
 {
 	int	i;
 	int	index;
 
 	if (!circ || !link)
 	{
-		return false;
+		printf("/!\\ ERROR : No circuit or link find when trying to delete a link.");
+		return;
 	}
 	// 1. Trouver l'index du lien
 	index = -1;
@@ -70,7 +71,7 @@ bool	delete_link(Circuit* circ, Link* link)
 	}
 	if (index == -1)
 	{
-		return false;
+		return;
 	}
 
 	// Loop to remove inbound links 
@@ -106,5 +107,5 @@ bool	delete_link(Circuit* circ, Link* link)
 		free(circ->links); 
 		circ->links = NULL;
 	}
-	return true;
+	return;
 }

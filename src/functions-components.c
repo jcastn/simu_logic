@@ -13,7 +13,7 @@ static int	auto_nb_in(TypeComponent type, int in_nbr)
 	{
 		return 0;
 	}
-	else if ((type == DIODE) || (type == GATE_NOT) || (type == BUFFER ))
+	else if ((type == DIODE) || (type == GATE_NOT) || (type == BUFFER ) || (type == INPUT) || (type == OUTPUT))
 	{
 		return 1;
 	}
@@ -52,6 +52,7 @@ Component*	create_component(TypeComponent type, int in_nbr, Circuit* circ)
 		return NULL;
 	}
 
+	//Init of the component values
 	comp->id = next_comp_id += 1;
 	comp->type = type;
 	comp->out_status = false;
@@ -84,7 +85,7 @@ Component*	create_component(TypeComponent type, int in_nbr, Circuit* circ)
 	Component** tmp = realloc(circ->components, sizeof(Component*) * (circ->component_count + 1));
 	if (tmp == NULL)
 	{
-		printf("/!\\ ERROR : Realloc of the array of link pointers (function create_component)\n");
+		printf("/!\\ ERROR : Realloc of the array of link pointers failed (function create_component)\n");
 		return NULL;
 	}
 	circ->components = tmp;
@@ -127,7 +128,7 @@ bool	delete_component(Circuit* circ, Component* comp)
 	}	
 
 
-	// Loops to delete links with delete_link()
+	// Loops to delete inbound and outbound links with delete_link()
 	if (comp->in_links) 
 	{
 		i = 0;
@@ -182,31 +183,31 @@ void rename_component(Component* comp, const char* new_name)
 	strncpy(comp->label, new_name, sizeof(comp->label) - 1);
 
 	comp->label[sizeof(comp->label) - 1] = '\0'; 
-	printf("▷ Component renamed  : %s\n", comp->label);
+	printf("▷ Component renamed : %s\n", comp->label);
 }
 
 Component* get_component_by_label(const char* given_label, Circuit* circ)
 {
-    if (!circ || !given_label || !circ->components)
-    {
+	if (!circ || !given_label || !circ->components)
+	{
 		printf("/!\\ ERROR : Circuit, or component is not found in get_component_by_label() function.\n");
-        return NULL;
-    }
+		return NULL;
+	}
 
-    for (int i = 0; i < circ->component_count; i++)
-    {
-        // On vérifie que le composant et son label existent bien
-        if (circ->components[i])
-        {
-            if (strcmp(circ->components[i]->label, given_label) == 0)
-            {
-                return circ->components[i];
-            }
-        }
-    }
+	for (int i = 0; i < circ->component_count; i++)
+	{
+		// On vérifie que le composant et son label existent bien
+		if (circ->components[i])
+		{
+			if (strcmp(circ->components[i]->label, given_label) == 0)
+			{
+				return circ->components[i];
+			}
+		}
+	}
 
-    printf("/!\\ ERROR : Component with label '%s' not found in get_component_by_label() function.\n", given_label);
-    return NULL;
+	printf("/!\\ ERROR : Component with label '%s' not found in get_component_by_label() function.\n", given_label);
+	return NULL;
 }
 
 Component*	invert_source_state(Component* comp)

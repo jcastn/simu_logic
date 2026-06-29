@@ -1,3 +1,4 @@
+//functions-eval.c
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,7 +32,7 @@ bool		generic_eval(Component* comp)
 
 	if (!comp || comp->type == SOURCE)
 	{
-        return false;
+		return false;
 	}
 
 	final_not = false;
@@ -42,6 +43,12 @@ bool		generic_eval(Component* comp)
 			return comp->out_status;
 		case DIODE_RGB :
 			comp->out_status = read_parent_status(comp, 0) || read_parent_status(comp, 1) || read_parent_status(comp, 2);
+			return comp->out_status;
+		case OUTPUT :
+			comp->out_status = read_parent_status(comp, 0);
+			return comp->out_status;
+		case INPUT :
+			comp->out_status = read_parent_status(comp, 0);
 			return comp->out_status;
 		case BUFFER :
 			comp->out_status = read_parent_status(comp, 0);
@@ -91,7 +98,7 @@ bool		generic_eval(Component* comp)
 	{
 		// The logic evaluation only happen if the port is linked to a component (the status can be true or false, but not NULL)
 		if (comp->in_links[i] != NULL)
-        {
+		{
 			val = read_parent_status(comp, i);
 			result = operation(result, val);
 		}

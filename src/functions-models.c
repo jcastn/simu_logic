@@ -21,24 +21,24 @@ Model*		create_model()
 
 void		delete_model(Model* model)
 {
-    if (!model)
-    {
-        return;
-    }
+	if (!model)
+	{
+		return;
+	}
 
 	if (model->circuits)
-    {
-        for (int i = 0; i < model->circuits_count; i++)
-        {
-            if (model->circuits[i])
-            {
-                delete_circuit(model->circuits[i]);
-            }
-        }
-        free(model->circuits);
-    }
+	{
+		for (int i = 0; i < model->circuits_count; i++)
+		{
+			if (model->circuits[i])
+			{
+				delete_circuit(model->circuits[i]);
+			}
+		}
+		free(model->circuits);
+	}
 
-    free(model);
+	free(model);
 }
 
 void	simulate_model(Model *model)
