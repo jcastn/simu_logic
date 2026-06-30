@@ -39,9 +39,13 @@ void			propagate_evaluation(Component* comp);
 
 // In/Out 
 void			print_circuit_diodes(Circuit* circ);
-void			print_circuit_components(Circuit* circ);
-void			print_model_components(Model *model);
+void			show_components_from_circuit(Circuit* circ);
+void			show_components_from_model(Model *model);
 int				file_process(char* file_path, FileMode file_mode, Model* model);
+
+// Run-loop
+//void			run_loop(Model *model);
+
 
 // Helper 
 void			shift_pointer_array(void** array, int start_index, int current_count);

@@ -65,7 +65,7 @@ Circuit* get_circuit_by_label(const char* given_label, Model* model)
 
 	for (int i = 0; i < model->circuits_count; i++)
 	{
-		// On vérifie que le composant et son label existent bien
+		// Check if the component and the label exist
 		if (model->circuits[i])
 		{
 			if (strcmp(model->circuits[i]->label, given_label) == 0)

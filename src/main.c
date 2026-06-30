@@ -10,12 +10,14 @@ int main(void)
 {
 	Model* my_model = create_model();
 
-	file_process(NULL, IMPORT, my_model);
+	file_process("templates/circuit-xor.txt", IMPORT, my_model);
 
 	simulate_model(my_model);
 	rearange_circuit(my_model->circuits[0]);
-	print_model_components(my_model);
-
+	show_components_from_model(my_model);
+	
+	//run_loop(my_model);
+	
 	file_process(NULL, EXPORT, my_model);
 
 	delete_model(my_model);

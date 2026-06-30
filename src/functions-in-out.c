@@ -38,7 +38,7 @@ void	print_circuit_diodes(Circuit* circ)
 	}
 }
 
-void	print_circuit_components(Circuit* circ)
+void	show_components_from_circuit(Circuit* circ)
 {
 	int i;
 	printf("\nCircuit %d (\"%s\"):\n%d Components and %d Links on %d Levels, \n", circ->id, circ->label, circ->component_count, circ->link_count, circ->max_level);
@@ -125,13 +125,13 @@ void	print_circuit_components(Circuit* circ)
 	printf("•------------------•------------------•-------------•-----•-------•-------•--------•--------•------------------•\n");
 }
 
-void	print_model_components(Model *model)
+void	show_components_from_model(Model *model)
 {
 	int i = 0;
 
 	while (i<model->circuits_count)
 	{
-		print_circuit_components(model->circuits[i]);
+		show_components_from_circuit(model->circuits[i]);
 		i++;
 	}
 }
@@ -185,8 +185,6 @@ static char* nfd_file(FileMode mode)
 
 static void	read_file_content(char* file_path, Model* model)
 {
-	printf("⬇︎ File open : %s\n", file_path);
-
 	FILE *file = fopen(file_path, "r");
 	if (!file) 
 	{
@@ -414,14 +412,14 @@ int		file_process(char* file_path, FileMode file_mode, Model* model)
 
 
 	if (file_path != NULL) {
-		printf("⬇︎ File open : %s\n", file_path);
-
 		if (file_mode == IMPORT)
 		{
+			printf("(⬇︎) File open : %s\n", file_path);
 			read_file_content(file_path, model);
 		}
-		else
+		else	//file_mode == EXPORT
 		{
+			printf("(+) File created : %s\n", file_path);
 			write_file_content(file_path, model);
 		}
 
