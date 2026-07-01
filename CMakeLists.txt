@@ -14,6 +14,7 @@ add_executable(simu-logic-app
 	src/functions-helper.c 
 	src/functions-in-out.c 
 	src/functions-rearrange-circuit.c
+	src/functions-run-loop.c
 )
 
 target_compile_options(simu-logic-app PRIVATE -Wall -Wextra -Werror)

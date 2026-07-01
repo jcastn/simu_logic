@@ -1,4 +1,5 @@
 //prototypes.h
+#pragma once
 #include "structures.h"
 
 //Prototypes
@@ -44,7 +45,7 @@ void			show_components_from_model(Model *model);
 int				file_process(char* file_path, FileMode file_mode, Model* model);
 
 // Run-loop
-//void			run_loop(Model *model);
+void			run_loop(Model *model);
 
 
 // Helper 

@@ -5,6 +5,9 @@
 #include <stdlib.h>
 
 #define COMPONENTS_COUNT 15
+#define MAX_COMMAND_WORDS 5
+#define APP_VERSION "v0.11"
+#define APP_NAME "simu-logic"
 
 typedef struct Coordinates Coordinates;
 typedef struct Component Component;
@@ -12,10 +15,16 @@ typedef struct Link Link;
 typedef struct TypeCounter TypeCounter;
 typedef struct Circuit Circuit;
 typedef struct Model Model;
+typedef struct CommandMap CommandMap;
+
+
+
+// Enumerations 
 
 
 // Types of components 
-// accepted values : (SOURCE, DIODE, DIODE_RGB, BUFFER, GATE_NOT, GATE_AND, GATE_OR, GATE_NAND, GATE_NOR, GATE_XOR, GATE_NXOR, GATE_IMPLY, GATE_NIMPLY) 
+// accepted values : (SOURCE, DIODE, DIODE_RGB, BUFFER, GATE_NOT, GATE_AND, GATE_OR, GATE_NAND, GATE_NOR, GATE_XOR, GATE_NXOR, GATE_IMPLY, GATE_NIMPLY)
+// Please edit COMPONENTS_COUNT and ComponentsNames[] when adding, removing or editing a component ! 
 typedef enum {
 	SOURCE,
 	DIODE,
@@ -67,6 +76,12 @@ typedef enum {
 	EXPORT
 } FileMode;
 
+typedef void (*Command)(char* words[MAX_COMMAND_WORDS], Model* model);
+
+
+// Structures 
+
+
 struct	Coordinates {
 	int				x;
 	int				y;
@@ -112,4 +127,10 @@ struct Model {
 	int				circuits_count;
 	Circuit**		circuits;
 	char			label[32];
+	bool			run_loop;
+};
+
+struct CommandMap {
+	const char*		name;
+	Command 		function;
 };

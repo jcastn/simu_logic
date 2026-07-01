@@ -14,12 +14,12 @@ int main(void)
 
 	simulate_model(my_model);
 	rearange_circuit(my_model->circuits[0]);
-	show_components_from_model(my_model);
+	//show_components_from_model(my_model);
+	run_loop(my_model);
 	
-	//run_loop(my_model);
-	
-	file_process(NULL, EXPORT, my_model);
 
+
+	//file_process(NULL, EXPORT, my_model);
 	delete_model(my_model);
 
 

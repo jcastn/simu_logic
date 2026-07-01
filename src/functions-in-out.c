@@ -127,6 +127,10 @@ void	show_components_from_circuit(Circuit* circ)
 
 void	show_components_from_model(Model *model)
 {
+	if (model->circuits_count == 0)
+	{
+		printf("(i) INFO : There's no circuit in this model !");
+	}
 	int i = 0;
 
 	while (i<model->circuits_count)
