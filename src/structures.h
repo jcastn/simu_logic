@@ -6,7 +6,7 @@
 
 #define COMPONENTS_COUNT 15
 #define MAX_COMMAND_WORDS 5
-#define APP_VERSION "v0.11"
+#define APP_VERSION "v0.11.1"
 #define APP_NAME "simu-logic"
 
 typedef struct Coordinates Coordinates;
@@ -128,6 +128,7 @@ struct Model {
 	Circuit**		circuits;
 	char			label[32];
 	bool			run_loop;
+	Circuit*		active_circuit;
 };
 
 struct CommandMap {

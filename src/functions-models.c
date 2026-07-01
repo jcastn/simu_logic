@@ -15,6 +15,7 @@ Model*		create_model()
 	}
 	model->circuits = NULL;
 	model->circuits_count = 0;
+	model->active_circuit = NULL;
 	
 	return model;
 }
@@ -38,6 +39,7 @@ void		delete_model(Model* model)
 		free(model->circuits);
 	}
 
+	free(model->active_circuit);
 	free(model);
 }
 

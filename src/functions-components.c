@@ -37,9 +37,10 @@ static int	auto_nb_in(TypeComponent type, int in_nbr)
 
 // Function to create a component with : 
 // • its Type (SOURCE, DIODE, NOT / AND / OR / NAND / NOR / XOR / NXOR gates),
+// • its Label (set it to "NULL" to auto-generate a new label with the circuit type_counter)
 // • its number of inbound links 
 // • the circuit where the component is included
-Component*	create_component(TypeComponent type, int in_nbr, Circuit* circ)
+Component*	create_component(TypeComponent type, const char* label, int in_nbr, Circuit* circ)
 {
 	int	i;
 	static int next_comp_id = 0;
@@ -94,9 +95,18 @@ Component*	create_component(TypeComponent type, int in_nbr, Circuit* circ)
 	circ->component_count += 1;
 	circ->type_counter[type].count += 1;
 	
-	snprintf(comp->label, sizeof(comp->label), "%s_%d", ComponentNames[type], circ->type_counter[type].count);
+	// If the label value is empty, we generate a component label with the component id
+	if (strcmp(label, "NULL") == 0)
+	{
+		snprintf(comp->label, sizeof(comp->label), "%s_%d", ComponentNames[type], circ->type_counter[type].count);
+	}
+	// If the label value is not empty, we use the label value as a component label.
+	else
+	{
+		snprintf(comp->label, sizeof(comp->label), "%s", label);
+	}
 
-	printf("▷ Component created : %s\n", comp->label);
+	printf("▷ %s Component created : '%s'\n", ComponentNames[type], comp->label);
 
 	return comp;
 }

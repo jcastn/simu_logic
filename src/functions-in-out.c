@@ -265,8 +265,8 @@ static void	read_file_content(char* file_path, Model* model)
 
 					if (type_found)
 					{
-						Component* comp = create_component(comp_type, nb_in, current_circ);
-						rename_component(comp, comp_label);
+						Component* comp = create_component(comp_type, comp_label, nb_in, current_circ);
+						//rename_component(comp, comp_label);
 						update_coordinates(comp, x, y);
 					}
 					else

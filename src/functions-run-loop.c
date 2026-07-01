@@ -22,7 +22,7 @@ static void command_help(char* words[MAX_COMMAND_WORDS], Model *model)
 	}
 	if (strcmp(words[1], "commands") == 0)
 	{
-		printf("\nList of commands :\n• 'help' : User guide of the app\n• 'list' : List of all the currently loaded circuits.\n• 'quit' : Close the application proprely.\n• 'show' : Show the components of a circuit (or of all circuits)\n");
+		printf("\nList of commands :\n• 'help'   : User guide of the app\n• 'list'   : List of all the currently loaded circuits.\n• 'select' : Select an active circuit.\n• 'show'   : Show the components of a circuit (or of all circuits)\n• 'quit'   : Close the application properly.\n");
 		return;
 	}
 
@@ -34,23 +34,31 @@ static void command_list(char* words[MAX_COMMAND_WORDS], Model *model)
 {
 	if (words[1] == NULL)
 	{
-		printf("\n/!\\ WRONG SYNTAX !\nPlease type :\n• 'list circuits' to list all loaded circuits.\n");
+		printf("\n/!\\ WRONG SYNTAX !\nPlease type :\n• 'list help' to learn how to use this command.\n");
 		return;
 	}
 
 	// If the parameter is "help"
 	if (strcmp(words[1], "help") == 0)
 	{
-		printf("\n(i) 'list' command  : It displays a list of all the loaded cirucits (with their label, their components count and their links count)\n You can type :\n• 'list circuits'\n");
+		printf("\n(i) 'list' command  : It displays a list of all the loaded circuits (with their label, their components count and their links count)\n You can type :\n• 'list circuits'\n");
 		return;
 	}
 	
+	// If the parameter is "circuits"
 	if (strcmp(words[1], "circuits") == 0)
 	{
+		int active_circuit_id = -1 ;
+
 		if (model->circuits_count == 0)
 		{
 			printf("\n(i) INFO : No circuits are currently loaded\n");
 			return;
+		}
+
+		if (model->active_circuit != NULL)
+		{
+			active_circuit_id = model->active_circuit->id;
 		}
 		int i;
 
@@ -59,9 +67,17 @@ static void command_list(char* words[MAX_COMMAND_WORDS], Model *model)
 		printf("\nLoaded circuits :\n");
 		while(i < model->circuits_count)
 		{
-			printf("• Circuit %d : \"%s\" (%d Components and %d Links)\n", i, model->circuits[i]->label, model->circuits[i]->component_count, model->circuits[i]->link_count);
+			if (active_circuit_id == model->circuits[i]->id)
+			{
+				printf("• Circuit %d (ACTIVE) : \"%s\" (%d Components and %d Links)\n", model->circuits[i]->id, model->circuits[i]->label, model->circuits[i]->component_count, model->circuits[i]->link_count);
+			}
+			else
+			{
+				printf("• Circuit %d : \"%s\" (%d Components and %d Links)\n", model->circuits[i]->id, model->circuits[i]->label, model->circuits[i]->component_count, model->circuits[i]->link_count);
+			}
 			i++;
 		}
+		return;
 		
 	}
 
@@ -69,20 +85,83 @@ static void command_list(char* words[MAX_COMMAND_WORDS], Model *model)
 	return;
 }
 
-// Command show 
-static void	command_show(char* words[MAX_COMMAND_WORDS], Model *model)
+// Command select 
+static void command_select(char* words[MAX_COMMAND_WORDS], Model *model)
 {
-	// If there's no parameters after show 
+
+	// If there's no parameter after select 
 	if (words[1] == NULL)
 	{
-		printf("\n/!\\ WRONG SYNTAX !\nPlease type :\n• 'show all' to show all circuits \n• 'show circuit circuit_name' to show a precise circuit.\n");
+		printf("\n/!\\ WRONG SYNTAX !\nPlease type :\n• 'select help' to learn how to use this command.\n");
 		return;
 	}
 
 	// If the parameter is "help"
 	if (strcmp(words[1], "help") == 0)
 	{
-		printf("\n(i) 'show' command  : It displays all the components of a cirucit (or of all the circuits) as a table, containing all components propreties.\nYou can type :\n• 'show all' to show all circuits \n• 'show circuit circuit_name' to show a precise circuit.\n");
+		printf("\n(i) 'select' command  : It changes the active circuit. \nYou can type :\n• 'select circuit circuit_name' to define the active circuit\n• 'select none' to unselect the active circuit.\n");
+		return;
+	}
+
+
+	// If the parameter is "circuit"
+	if (strcmp(words[1], "circuit") == 0)
+	{
+		if (words[2] == NULL)
+		{
+			printf("\n/!\\ WRONG SYNTAX ! Please type a valid circuit name 'select circuit circuit_name' ! If you don't know the name of a circuit, you can use 'show all' to show all the circuits or you can use 'list circuits' to list the loaded circuits.\n");
+			return;
+		}
+	
+		// Searching the circuit corresponding to the circuit label
+		model->active_circuit = get_circuit_by_label(words[2], model);
+
+		if (model->active_circuit != NULL)
+		{
+			printf("\n(i) The active circuit is now : '%s'\n", model->active_circuit->label);
+			return;
+		}
+		
+		//printf("\n/!\\ INVALID CIRCUIT NAME ! '%s' is not a valid circuit name. If you don't know the name of a circuit, you can use 'show all' to show all the circuits or you can use 'list circuits' to list the loaded circuits.\n", words[2]);
+		return;
+	}
+
+	// If the parameter is "none"
+	if (strcmp(words[1], "none") == 0)
+	{
+		if (model->active_circuit != NULL)
+		{
+			model->active_circuit = NULL;
+			printf("\n(i) There's no longer an active circuit.\n");
+			return;
+		}
+		
+		printf("\n(i) There's already no active circuits.\n");
+		return;
+		
+	}
+	
+
+	printf("\n/!\\ Unknown 'select' command parameter : '%s'. Type 'select help' to see available parameters with 'select'.\n", words[1]);
+	return;
+}
+
+
+// Command show 
+static void	command_show(char* words[MAX_COMMAND_WORDS], Model *model)
+{
+	// If there's no parameters after show 
+	if (words[1] == NULL)
+	{
+		printf("\n/!\\ WRONG SYNTAX !\nPlease type :\n• 'show help' to learn how to use this command.\n");
+		return;
+	}
+
+	// If the parameter is "help"
+	if (strcmp(words[1], "help") == 0)
+	{
+		printf("\n(i) 'show' command  : It displays all the components of a circuit (or of all the circuits) as a table, containing all components propreties.\n");
+		printf("\nYou can type :\n• 'show all' to show all circuits \n• 'show circuit circuit_name' to show a precise circuit.\n• 'show active' to show the active circuit.\n");
 		return;
 	}
 
@@ -103,7 +182,7 @@ static void	command_show(char* words[MAX_COMMAND_WORDS], Model *model)
 			return;
 		}
 	
-		// Searching the circuit corresponding to the cirucit label
+		// Searching the circuit corresponding to the circuit label
 		Circuit* circ = get_circuit_by_label(words[2], model);			
 		if (circ != NULL)
 		{
@@ -111,6 +190,20 @@ static void	command_show(char* words[MAX_COMMAND_WORDS], Model *model)
 		}
 		return;
 	}
+
+	// If the parameter is 'active'
+	if (strcmp(words[1], "active") == 0)
+	{
+		if (model->active_circuit != NULL)
+		{
+			show_components_from_circuit(model->active_circuit);
+			return;
+		}
+		
+		printf("\n(i) There's no active circuits, please use 'select' command to set an active circuit.\n");
+		return;
+	}
+
 
 	printf("\n/!\\ Unknown 'show' command parameter : '%s'. Type 'show help' to see available parameters with 'show'.\n", words[1]);
 	return;
@@ -137,6 +230,7 @@ static void exec_command(char* words[MAX_COMMAND_WORDS], Model *model)
 		{"help", command_help},
 		{"list", command_list},
 		{"quit", command_quit},
+		{"select", command_select},
 		{"show", command_show}
 	};
 
@@ -153,7 +247,7 @@ static void exec_command(char* words[MAX_COMMAND_WORDS], Model *model)
 	}
 
 	// If the command don't exit
-	printf("\n(i) The command you wrote dosen't exit. Please use 'help' command to know the available commands.\n");
+	printf("\n(i) The command you wrote doesn't exit. Please use 'help' command to know the available commands.\n");
 	return;
 }
 

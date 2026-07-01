@@ -19,7 +19,7 @@ void			delete_circuit(Circuit *circ);
 void			simulate_circuit(Circuit* circ);
 
 //Functions-components
-Component*		create_component(TypeComponent type, int in_nbr, Circuit* circ);
+Component*		create_component(TypeComponent type, const char* label, int in_nbr, Circuit* circ);
 bool			delete_component(Circuit* circ, Component* comp);
 void			rename_component(Component* comp, const char* new_name);
 Component*		get_component_by_label(const char* label, Circuit* circ);
