@@ -9,6 +9,19 @@
 #define APP_VERSION "v0.11.1"
 #define APP_NAME "simu-logic"
 
+#define MESS_ERROR "\n/!\\ ERROR : "
+#define MESS_SYNTAXE "\n /!\\ WRONG SYNTAXE : "
+#define MESS_INFO "\n(i) INFO : "
+#define MESS_TIP "\n(i) : "
+
+
+
+// LABEL_SIZE_NUM is a number coverted to a string, we can use it like it's "15" or add numbers to it (LABEL_SIZE_NUM + 1 = "16")
+#define LABEL_SIZE_NUM 15
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+#define LABEL_SIZE TOSTRING(LABEL_SIZE_NUM)
+
 typedef struct Coordinates Coordinates;
 typedef struct Component Component;
 typedef struct Link Link;
@@ -105,7 +118,7 @@ struct Component {
 	bool			out_status;
 	Link**			out_links;
 	Link**			in_links;
-	char			label[16];
+	char			label[LABEL_SIZE_NUM+1];
 };
 
 struct TypeCounter{

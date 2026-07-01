@@ -105,7 +105,7 @@ void	show_components_from_circuit(Circuit* circ)
 			}
 		}
 		
-		printf("| %s%-16s" TERMINAL_DEFAULT " | %s%-16s" TERMINAL_DEFAULT " | %s%-12s" TERMINAL_DEFAULT "| %-3d | %-5d | %-5d | %-6d | %-6d | In:%-4d Out:%-4d |\n", 
+		printf("| %s%-"LABEL_SIZE"s" TERMINAL_DEFAULT " | %s%-"LABEL_SIZE"s" TERMINAL_DEFAULT " | %s%-12s" TERMINAL_DEFAULT "| %-3d | %-5d | %-5d | %-6d | %-6d | In:%-4d Out:%-4d |\n", 
 			component_color,
 			comp->label,
 			component_color,
@@ -143,7 +143,7 @@ void	show_components_from_model(Model *model)
 static char* nfd_file(FileMode mode)
 {
 	if (NFD_Init() != NFD_OKAY) {
-		printf("/!\\ Error with nfd_file() : %s\n", NFD_GetError());
+		printf(MESS_ERROR"Error with nfd_file() : %s\n", NFD_GetError());
 		return NULL;
 	}
 
@@ -180,7 +180,7 @@ static char* nfd_file(FileMode mode)
 	}
 	else 
 	{
-		printf("/!\\ Error: %s\n", NFD_GetError());
+		printf(MESS_ERROR"Error: %s\n", NFD_GetError());
 	}
 
 	NFD_Quit();
@@ -192,7 +192,7 @@ static void	read_file_content(char* file_path, Model* model)
 	FILE *file = fopen(file_path, "r");
 	if (!file) 
 	{
-		printf("/!\\ ERROR : Impossible to open the file");
+		printf(MESS_ERROR"ERROR : Impossible to open the file\n");
 		return;
 	}
 
@@ -220,7 +220,7 @@ static void	read_file_content(char* file_path, Model* model)
 		char circ_name[16];
 
 		// New circuit detection
-		if (sscanf(line, "$Circuit$ \"%[^\"]\"", circ_name))
+		if (sscanf(line, "$Circuit$ \"%"LABEL_SIZE"[^\"]\"", circ_name))
 		{
 			current_circ = create_circuit(model);
 			rename_circuit(current_circ, circ_name);
@@ -258,7 +258,7 @@ static void	read_file_content(char* file_path, Model* model)
 		{
 			case STATE_COMPONENTS:
 			{
-				if (sscanf(line, " %15[^,], \"%15[^\"]\", %d, %d, %d", type_str, comp_label, &nb_in, &x, &y) >= 3)
+				if (sscanf(line, " %"LABEL_SIZE"[^,], \"%"LABEL_SIZE"[^\"]\", %d, %d, %d", type_str, comp_label, &nb_in, &x, &y) >= 3)
 				{
 					type_found = false;
 					comp_type = string_to_typecomponent(type_str, &type_found);
@@ -271,14 +271,14 @@ static void	read_file_content(char* file_path, Model* model)
 					}
 					else
 					{
-						printf("/!\\ ERROR : Unknown component type '%s'. Component not created, please review the line in the import file. \n", type_str);
+						printf(MESS_ERROR"ERROR : Unknown component type '%s'. Component not created, please review the line in the import file. \n", type_str);
 					}
 				}
 				break;
 			}
 			case STATE_INVERSIONS:
 			{
-				if (sscanf(line, " \"%15[^\"]\"", comp_label) == 1)
+				if (sscanf(line, " \"%"LABEL_SIZE"[^\"]\"", comp_label) == 1)
 				{
 					Component* comp = get_component_by_label(comp_label, current_circ);
 					if (comp)
@@ -287,14 +287,14 @@ static void	read_file_content(char* file_path, Model* model)
 					}
 					else 
 					{
-						printf("/!\\ ERROR : Unknown component name '%s', no component inverted, please review the line in the import file. \n", comp->label);
+						printf(MESS_ERROR"ERROR : Unknown component name '%s', no component inverted, please review the line in the import file. \n", comp_label);
 					}
 				}
 				break;
 			}
 			case STATE_LINKS:
 			{
-				if (sscanf(line, " \"%[^\"]\", \"%[^\"]\", %d", comp_label, comp_label2, &port) == 3)
+				if (sscanf(line, " \"%"LABEL_SIZE"[^\"]\", \"%"LABEL_SIZE"[^\"]\", %d", comp_label, comp_label2, &port) == 3)
 				{
 					Component* src = get_component_by_label(comp_label, current_circ);
 					Component* dest = get_component_by_label(comp_label2, current_circ);
@@ -304,7 +304,7 @@ static void	read_file_content(char* file_path, Model* model)
 					}
 					else 
 					{
-						printf("/!\\ ERROR : Unknown component name source '%s', or dest '%s', or port '%d' : No link created, please review the line in the import file. \n", src->label, dest->label, port);
+						printf(MESS_ERROR"ERROR : Unknown component name source '%s', or dest '%s', or port '%d' : No link created, please review the line in the import file. \n", comp_label, comp_label2, port);
 					}
 				}
 				break;
@@ -327,7 +327,7 @@ static void	read_file_content(char* file_path, Model* model)
 static void	write_file_content(char* file_path, Model *model)
 {
 	if(model->circuits_count == 0){
-		printf("/!\\ Error ! The selected model contains no circuits, so there's nothing to export.");
+		printf(MESS_ERROR"Error ! The selected model contains no circuits, so there's nothing to export.");
 		return;
 	}
 	int circ;
@@ -338,7 +338,7 @@ static void	write_file_content(char* file_path, Model *model)
 	
 
 	if (file == NULL) {
-		printf("/!\\ Error ! File is NULL (function write_file_content()) ! \n");
+		printf(MESS_ERROR"Error ! File is NULL (function write_file_content()) ! \n");
 		return;
 	}
 	while(circ < model->circuits_count)
@@ -386,7 +386,7 @@ static void	write_file_content(char* file_path, Model *model)
 
 	fclose(file);
 	
-	printf("(i) INFO : File '%s' is generated with success. It contains %d circuits.\n", file_path, circ);
+	printf(MESS_INFO"File '%s' is generated with success. It contains %d circuits.\n", file_path, circ);
 
 	return;
 }
@@ -398,7 +398,7 @@ static void	write_file_content(char* file_path, Model *model)
 // -> If it's NULL, the user will select the file from a NFD Popup. 
 // - Argument 2 : FileMode (IMPORT or EXPORT)
 // - Argument 3 : Model
-int		file_process(char* file_path, FileMode file_mode, Model* model)
+void		file_process(char* file_path, FileMode file_mode, Model* model)
 {
 	bool needs_free = false;
 	// If the function file_process is called with a NULL value, the nfd_file_process() function is used to allow the user to choose a file from the File Explorer
@@ -408,16 +408,20 @@ int		file_process(char* file_path, FileMode file_mode, Model* model)
 
 		if (file_path == NULL)
 		{
-			printf("Error ! No file find ! \n");
-			return -1;
+			printf(MESS_ERROR"No file find ! \n");
+			return;
 		}
 		needs_free = true;
 	}
 
 
 	if (file_path != NULL) {
+		
 		if (file_mode == IMPORT)
 		{
+			if (!check_path(file_path)){
+				return; 
+			}
 			printf("(⬇︎) File open : %s\n", file_path);
 			read_file_content(file_path, model);
 		}
@@ -431,10 +435,10 @@ int		file_process(char* file_path, FileMode file_mode, Model* model)
 		{
 			free(file_path);
 		}
-	} 
+	}
 	else {
-		printf("ERROR : No file were imported.\n");
+		printf(MESS_ERROR"No file were imported.\n");
 	}
 
-	return 0;
+	return;
 }

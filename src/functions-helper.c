@@ -31,7 +31,7 @@ TypeComponent string_to_typecomponent(const char* type_str, bool* found)
 		}
 		i++;
 	}
-	printf("/!\\ ERROR : TypeComponent not found (string_to_typecomponent() function)");
+	printf(MESS_ERROR"TypeComponent not found (string_to_typecomponent() function)");
 	return SOURCE;
 }
 
@@ -42,5 +42,23 @@ bool		read_parent_status(Component* comp, int port_number)
 	{
 		return comp->in_links[port_number]->src->out_status;
 	}
+	return false;
+}
+
+bool		check_path(const char* path){
+	if (path == NULL || path[0] == '\0')
+	{
+		printf(MESS_ERROR"The file path is NULL !");
+		return false;
+	}
+
+	FILE* file = fopen(path, "r");
+	if (file != NULL)
+	{
+		fclose(file);
+		return true;
+	}
+
+	printf(MESS_ERROR"The file path '%s' is invalid !", path);
 	return false;
 }

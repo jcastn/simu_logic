@@ -39,7 +39,6 @@ void		delete_model(Model* model)
 		free(model->circuits);
 	}
 
-	free(model->active_circuit);
 	free(model);
 }
 

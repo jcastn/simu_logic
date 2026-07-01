@@ -15,8 +15,8 @@ Link*	create_link(Component* src, Component* dest, int port_number, Circuit* cir
 	Link* link = malloc(sizeof(Link));
 	if (!link || !circ || !dest || port_number < 0 || port_number >= dest->nb_in)
 	{
-		return NULL;
 		free(link);
+		return NULL;
 	}
 
 	link->src = src;
@@ -33,13 +33,13 @@ Link*	create_link(Component* src, Component* dest, int port_number, Circuit* cir
 	Link** tmp = realloc(circ->links, sizeof(Link*) * (circ->link_count + 1));
 	if (tmp == NULL)
 	{
-		return false;
+		return NULL;
 	}
 	circ->links = tmp;
 	circ->links[circ->link_count] = link;
 	circ->link_count++;
 
-	printf("▷ Link created : '%s' -> '%s' (%d)\n", src->label, dest->label, port_number);
+	printf("(▷) Link created : '%s' -> '%s' (%d)\n", src->label, dest->label, port_number);
 
 	return	link;
 }
@@ -54,7 +54,7 @@ void	delete_link(Circuit* circ, Link* link)
 
 	if (!circ || !link)
 	{
-		printf("/!\\ ERROR : No circuit or link find when trying to delete a link.");
+		printf(MESS_ERROR"No circuit or link find when trying to delete a link.");
 		return;
 	}
 	// 1. Trouver l'index du lien

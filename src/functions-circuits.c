@@ -27,7 +27,7 @@ Circuit*	create_circuit(Model* model)
 	Circuit** tmp = realloc(model->circuits, sizeof(Circuit*) * (model->circuits_count + 1));
 	if (tmp == NULL)
 	{
-		printf("\n/!\\ ERROR : Realloc of circuits array failed (Function create_circuit)\n");
+		printf(MESS_ERROR"Realloc of circuits array failed (Function create_circuit)\n");
 		free(circ);
 		return NULL;
 	}
@@ -36,7 +36,7 @@ Circuit*	create_circuit(Model* model)
 	model->circuits[model->circuits_count] = circ;
 	model->circuits_count += 1; 
 
-	printf("◌ Circuit created : %s\n", circ->label);
+	printf("(◌) Circuit created : %s\n", circ->label);
 	return circ;
 }
 
@@ -44,14 +44,14 @@ void rename_circuit(Circuit* circuit, const char* new_name)
 {
 	if (!circuit || !new_name)
 	{
-		printf("\n/!\\ ERROR : No circuit or no new name find (Function rename_circuit)\n");
+		printf(MESS_ERROR "No circuit or no new name find (Function rename_circuit)\n");
 		return;
 	}
 
 	strncpy(circuit->label, new_name, sizeof(circuit->label) - 1);
 	
 	circuit->label[sizeof(circuit->label) - 1] = '\0'; 
-	printf("◌ Circuit renamed : %s\n", circuit->label);
+	printf("(◌) Circuit renamed : %s\n", circuit->label);
 
 }
 
@@ -59,7 +59,7 @@ Circuit* get_circuit_by_label(const char* given_label, Model* model)
 {
 	if (!given_label || !model->circuits)
 	{
-		printf("\n/!\\ ERROR : Circuit with label '%s' not found.\n", given_label);
+		printf(MESS_ERROR"Circuit with label '%s' not found.\n", given_label);
 		return NULL;
 	}
 
@@ -75,7 +75,7 @@ Circuit* get_circuit_by_label(const char* given_label, Model* model)
 		}
 	}
 
-	printf("\n/!\\ ERROR : Circuit with label '%s' not found.\n", given_label);
+	printf(MESS_ERROR"Circuit with label '%s' not found.\n", given_label);
 	return NULL;
 }
 

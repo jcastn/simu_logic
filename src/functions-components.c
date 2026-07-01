@@ -17,13 +17,13 @@ static int	auto_nb_in(TypeComponent type, int in_nbr)
 	{
 		return 1;
 	}
-	else if ((type == GATE_IMPLY) || (type == GATE_NIMPLY))
-	{
-		return 2;
-	}
 	else if (type == DIODE_RGB)
 	{
 		return 3;
+	}
+	else if ((type == GATE_IMPLY) || (type == GATE_NIMPLY) || (in_nbr <= 2))
+	{
+		return 2;
 	}
 	else if (in_nbr >= 10)
 	{
@@ -46,10 +46,18 @@ Component*	create_component(TypeComponent type, const char* label, int in_nbr, C
 	static int next_comp_id = 0;
 
 	Component* comp = malloc(sizeof(Component));
-	comp->coordinates = malloc(sizeof(Coordinates));
-	if (!circ || !comp || (comp->coordinates == NULL) )
+
+	if (!circ || !comp)
 	{
-		printf("/!\\ ERROR : Circuit or component not find (Function create_component)\n");
+		free(comp);
+		printf(MESS_ERROR"Circuit or component not find (Function create_component)\n");
+		return NULL;
+	}
+
+	comp->coordinates = malloc(sizeof(Coordinates));
+	if (!comp->coordinates)
+	{
+		free(comp);
 		return NULL;
 	}
 
@@ -86,7 +94,7 @@ Component*	create_component(TypeComponent type, const char* label, int in_nbr, C
 	Component** tmp = realloc(circ->components, sizeof(Component*) * (circ->component_count + 1));
 	if (tmp == NULL)
 	{
-		printf("/!\\ ERROR : Realloc of the array of link pointers failed (function create_component)\n");
+		printf(MESS_ERROR"Realloc of the array of link pointers failed (function create_component)\n");
 		return NULL;
 	}
 	circ->components = tmp;
@@ -106,7 +114,7 @@ Component*	create_component(TypeComponent type, const char* label, int in_nbr, C
 		snprintf(comp->label, sizeof(comp->label), "%s", label);
 	}
 
-	printf("▷ %s Component created : '%s'\n", ComponentNames[type], comp->label);
+	printf("(▷) %s Component created : '%s'\n", ComponentNames[type], comp->label);
 
 	return comp;
 }
@@ -193,20 +201,20 @@ void rename_component(Component* comp, const char* new_name)
 	strncpy(comp->label, new_name, sizeof(comp->label) - 1);
 
 	comp->label[sizeof(comp->label) - 1] = '\0'; 
-	printf("▷ Component renamed : %s\n", comp->label);
+	printf("(▷) Component renamed : %s\n", comp->label);
 }
 
 Component* get_component_by_label(const char* given_label, Circuit* circ)
 {
 	if (!circ || !given_label || !circ->components)
 	{
-		printf("/!\\ ERROR : Circuit, or component is not found in get_component_by_label() function.\n");
+		printf(MESS_ERROR"Circuit, or component is not found in get_component_by_label() function.\n");
 		return NULL;
 	}
 
 	for (int i = 0; i < circ->component_count; i++)
 	{
-		// On vérifie que le composant et son label existent bien
+		// We check if the component and the label exist
 		if (circ->components[i])
 		{
 			if (strcmp(circ->components[i]->label, given_label) == 0)
@@ -216,7 +224,7 @@ Component* get_component_by_label(const char* given_label, Circuit* circ)
 		}
 	}
 
-	printf("/!\\ ERROR : Component with label '%s' not found in get_component_by_label() function.\n", given_label);
+	printf(MESS_ERROR"Component with label '%s' not found in get_component_by_label() function.\n", given_label);
 	return NULL;
 }
 
@@ -225,7 +233,7 @@ Component*	invert_source_state(Component* comp)
 	if (comp->type == SOURCE)
 	{
 		comp->out_status = !comp->out_status;
-		printf("▷ Component status inverted  : %s\n", comp->label);
+		printf("(▷) Component status inverted  : %s\n", comp->label);
 	}
 	return comp;
 }

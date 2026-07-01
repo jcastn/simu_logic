@@ -58,10 +58,12 @@ void	topological_sort(Circuit* circ)
 {
 	int i;
 
-	circ->max_level = 0;
-
 	if (!circ || circ->component_count <= 1)
+	{
 		return;
+	}
+
+	circ->max_level = 0;
 
 	// Init of every root nodes (level == 0)
 	i = 0;

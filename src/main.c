@@ -12,8 +12,15 @@ int main(void)
 
 	file_process("templates/circuit-xor.txt", IMPORT, my_model);
 
+	int i = 0;
+	while(i < my_model->circuits_count)
+	{
+		rearange_circuit(my_model->circuits[0]);
+		i++;
+	}
+
 	simulate_model(my_model);
-	rearange_circuit(my_model->circuits[0]);
+	
 	//show_components_from_model(my_model);
 	run_loop(my_model);
 	

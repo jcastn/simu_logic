@@ -42,7 +42,7 @@ void			propagate_evaluation(Component* comp);
 void			print_circuit_diodes(Circuit* circ);
 void			show_components_from_circuit(Circuit* circ);
 void			show_components_from_model(Model *model);
-int				file_process(char* file_path, FileMode file_mode, Model* model);
+void			file_process(char* file_path, FileMode file_mode, Model* model);
 
 // Run-loop
 void			run_loop(Model *model);
@@ -52,6 +52,7 @@ void			run_loop(Model *model);
 void			shift_pointer_array(void** array, int start_index, int current_count);
 TypeComponent	string_to_typecomponent(const char* type_str, bool* found);
 bool			read_parent_status(Component* comp, int port_number);
+bool			check_path(const char* path);
 
 
 // Rearrange circuit

@@ -17,16 +17,16 @@ static void command_help(char* words[MAX_COMMAND_WORDS], Model *model)
 
 	if (words[1] == NULL)
 	{
-		printf("\nTip : You can type 'help' after the name of a command to learn how to use it !\n\nYou can use :\n• 'help commands' to see the list of commands.\n• 'help components' to see the list of available components and how they work (not yet implemented).\n• 'help links' to see how the links work (not yet implemented).\n");
+		printf(MESS_TIP"Tip : You can type 'help' after the name of a command to learn how to use it !\n\nYou can use :\n• 'help commands' to see the list of commands.\n• 'help components' to see the list of available components and how they work (not yet implemented).\n• 'help links' to see how the links work (not yet implemented).\n");
 		return;
 	}
 	if (strcmp(words[1], "commands") == 0)
 	{
-		printf("\nList of commands :\n• 'help'   : User guide of the app\n• 'list'   : List of all the currently loaded circuits.\n• 'select' : Select an active circuit.\n• 'show'   : Show the components of a circuit (or of all circuits)\n• 'quit'   : Close the application properly.\n");
+		printf(MESS_TIP"List of commands :\n• 'help'   : User guide of the app\n• 'list'   : List of all the currently loaded circuits.\n• 'select' : Select an active circuit.\n• 'show'   : Show the components of a circuit (or of all circuits)\n• 'quit'   : Close the application properly.\n");
 		return;
 	}
 
-	printf("\n/!\\ Unknown help topic '%s'. Type 'help' to see all available topics.\n", words[1]);
+	printf(MESS_ERROR"Unknown help topic '%s'. Type 'help' to see all available topics.\n", words[1]);
 }
 
 // Command list
@@ -34,14 +34,14 @@ static void command_list(char* words[MAX_COMMAND_WORDS], Model *model)
 {
 	if (words[1] == NULL)
 	{
-		printf("\n/!\\ WRONG SYNTAX !\nPlease type :\n• 'list help' to learn how to use this command.\n");
+		printf(MESS_SYNTAXE"Please type :\n• 'list help' to learn how to use this command.\n");
 		return;
 	}
 
 	// If the parameter is "help"
 	if (strcmp(words[1], "help") == 0)
 	{
-		printf("\n(i) 'list' command  : It displays a list of all the loaded circuits (with their label, their components count and their links count)\n You can type :\n• 'list circuits'\n");
+		printf(MESS_TIP"'list' command  : It displays a list of all the loaded circuits (with their label, their components count and their links count)\n You can type :\n• 'list circuits'\n");
 		return;
 	}
 	
@@ -52,7 +52,7 @@ static void command_list(char* words[MAX_COMMAND_WORDS], Model *model)
 
 		if (model->circuits_count == 0)
 		{
-			printf("\n(i) INFO : No circuits are currently loaded\n");
+			printf(MESS_INFO"No circuits are currently loaded\n");
 			return;
 		}
 
@@ -81,25 +81,24 @@ static void command_list(char* words[MAX_COMMAND_WORDS], Model *model)
 		
 	}
 
-	printf("\n/!\\ Unknown 'list' command parameter : '%s'. Type 'list help' to see available parameters with 'list'.\n", words[1]);
+	printf(MESS_ERROR"Unknown 'list' command parameter : '%s'. Type 'list help' to see available parameters with 'list'.\n", words[1]);
 	return;
 }
 
 // Command select 
 static void command_select(char* words[MAX_COMMAND_WORDS], Model *model)
 {
-
 	// If there's no parameter after select 
 	if (words[1] == NULL)
 	{
-		printf("\n/!\\ WRONG SYNTAX !\nPlease type :\n• 'select help' to learn how to use this command.\n");
+		printf(MESS_SYNTAXE"Please type :\n• 'select help' to learn how to use this command.\n");
 		return;
 	}
 
 	// If the parameter is "help"
 	if (strcmp(words[1], "help") == 0)
 	{
-		printf("\n(i) 'select' command  : It changes the active circuit. \nYou can type :\n• 'select circuit circuit_name' to define the active circuit\n• 'select none' to unselect the active circuit.\n");
+		printf(MESS_TIP"'select' command  : It changes the active circuit. \nYou can type :\n• 'select circuit circuit_name' to define the active circuit\n• 'select none' to unselect the active circuit.\n");
 		return;
 	}
 
@@ -109,7 +108,7 @@ static void command_select(char* words[MAX_COMMAND_WORDS], Model *model)
 	{
 		if (words[2] == NULL)
 		{
-			printf("\n/!\\ WRONG SYNTAX ! Please type a valid circuit name 'select circuit circuit_name' ! If you don't know the name of a circuit, you can use 'show all' to show all the circuits or you can use 'list circuits' to list the loaded circuits.\n");
+			printf(MESS_SYNTAXE"Please type a valid circuit name 'select circuit circuit_name' ! If you don't know the name of a circuit, you can use 'show all' to show all the circuits or you can use 'list circuits' to list the loaded circuits.\n");
 			return;
 		}
 	
@@ -118,11 +117,11 @@ static void command_select(char* words[MAX_COMMAND_WORDS], Model *model)
 
 		if (model->active_circuit != NULL)
 		{
-			printf("\n(i) The active circuit is now : '%s'\n", model->active_circuit->label);
+			printf(MESS_INFO"The active circuit is now : '%s'\n", model->active_circuit->label);
 			return;
 		}
 		
-		//printf("\n/!\\ INVALID CIRCUIT NAME ! '%s' is not a valid circuit name. If you don't know the name of a circuit, you can use 'show all' to show all the circuits or you can use 'list circuits' to list the loaded circuits.\n", words[2]);
+		//printf(MESS_ERROR"INVALID CIRCUIT NAME ! '%s' is not a valid circuit name. If you don't know the name of a circuit, you can use 'show all' to show all the circuits or you can use 'list circuits' to list the loaded circuits.\n", words[2]);
 		return;
 	}
 
@@ -132,17 +131,17 @@ static void command_select(char* words[MAX_COMMAND_WORDS], Model *model)
 		if (model->active_circuit != NULL)
 		{
 			model->active_circuit = NULL;
-			printf("\n(i) There's no longer an active circuit.\n");
+			printf(MESS_INFO"There's no longer an active circuit.\n");
 			return;
 		}
 		
-		printf("\n(i) There's already no active circuits.\n");
+		printf(MESS_INFO"There's already no active circuits.\n");
 		return;
 		
 	}
 	
 
-	printf("\n/!\\ Unknown 'select' command parameter : '%s'. Type 'select help' to see available parameters with 'select'.\n", words[1]);
+	printf(MESS_ERROR"Unknown 'select' command parameter : '%s'. Type 'select help' to see available parameters with 'select'.\n", words[1]);
 	return;
 }
 
@@ -153,14 +152,14 @@ static void	command_show(char* words[MAX_COMMAND_WORDS], Model *model)
 	// If there's no parameters after show 
 	if (words[1] == NULL)
 	{
-		printf("\n/!\\ WRONG SYNTAX !\nPlease type :\n• 'show help' to learn how to use this command.\n");
+		printf(MESS_SYNTAXE"Please type :\n• 'show help' to learn how to use this command.\n");
 		return;
 	}
 
 	// If the parameter is "help"
 	if (strcmp(words[1], "help") == 0)
 	{
-		printf("\n(i) 'show' command  : It displays all the components of a circuit (or of all the circuits) as a table, containing all components propreties.\n");
+		printf(MESS_INFO"'show' command  : It displays all the components of a circuit (or of all the circuits) as a table, containing all components propreties.\n");
 		printf("\nYou can type :\n• 'show all' to show all circuits \n• 'show circuit circuit_name' to show a precise circuit.\n• 'show active' to show the active circuit.\n");
 		return;
 	}
@@ -178,7 +177,7 @@ static void	command_show(char* words[MAX_COMMAND_WORDS], Model *model)
 		// If there's no parameter after "show circuit"
 		if (words[2] == NULL)
 		{
-			printf("\n/!\\ WRONG SYNTAX ! Please type a circuit name 'show circuit circuit_name' ! If you don't know the name of a circuit, you can use 'show all' to show all circuits or you can use 'list circuits' to list the loaded circuits.\n");
+			printf(MESS_ERROR"WRONG SYNTAX ! Please type a circuit name 'show circuit circuit_name' ! If you don't know the name of a circuit, you can use 'show all' to show all circuits or you can use 'list circuits' to list the loaded circuits.\n");
 			return;
 		}
 	
@@ -200,12 +199,12 @@ static void	command_show(char* words[MAX_COMMAND_WORDS], Model *model)
 			return;
 		}
 		
-		printf("\n(i) There's no active circuits, please use 'select' command to set an active circuit.\n");
+		printf(MESS_INFO"There's no active circuits, please use 'select' command to set an active circuit.\n");
 		return;
 	}
 
 
-	printf("\n/!\\ Unknown 'show' command parameter : '%s'. Type 'show help' to see available parameters with 'show'.\n", words[1]);
+	printf(MESS_ERROR"Unknown 'show' command parameter : '%s'. Type 'show help' to see available parameters with 'show'.\n", words[1]);
 	return;
 }
 
@@ -215,7 +214,7 @@ static void	command_quit(char* words[MAX_COMMAND_WORDS], Model *model)
 	(void)words;
 
 	printf("\nBye !\n");
-	printf("\n(i) INFO : The run_loop has been stopped by the user.\n");
+	printf(MESS_INFO"The run_loop has been stopped by the user.\n");
 
 	model->run_loop = false;
 	return;
@@ -247,7 +246,7 @@ static void exec_command(char* words[MAX_COMMAND_WORDS], Model *model)
 	}
 
 	// If the command don't exit
-	printf("\n(i) The command you wrote doesn't exit. Please use 'help' command to know the available commands.\n");
+	printf(MESS_INFO"The command you wrote doesn't exit. Please use 'help' command to know the available commands.\n");
 	return;
 }
 
