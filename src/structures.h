@@ -4,23 +4,33 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define COMPONENTS_COUNT 15
-#define MAX_COMMAND_WORDS 5
-#define APP_VERSION "v0.11.1"
-#define APP_NAME "simu-logic"
+#define TERMINAL_BLACK		"\e[0;30m"
+#define TERMINAL_RED		"\e[0;31m"
+#define TERMINAL_GREEN		"\e[0;32m"
+#define TERMINAL_YELLOW		"\e[0;33m"
+#define	TERMINAL_BLUE		"\e[0;34m"
+#define TERMINAL_MAGENTA	"\e[0;35m"
+#define TERMINAL_CYAN		"\e[0;36m"
+#define TERMINAL_WHITE		"\e[0;37m"
+#define TERMINAL_DEFAULT	"\e[0;0m"
 
-#define MESS_ERROR "\n/!\\ ERROR : "
-#define MESS_SYNTAXE "\n /!\\ WRONG SYNTAXE : "
-#define MESS_INFO "\n(i) INFO : "
-#define MESS_TIP "\n(i) : "
+#define COMPONENTS_COUNT	15
+#define MAX_COMMAND_WORDS	5
 
+#define APP_NAME			"simu-logic"
+#define APP_VERSION			"v0.11.3"
+#define APP_PROMPT			"\n" TERMINAL_CYAN "[" APP_NAME " " APP_VERSION "] > "TERMINAL_DEFAULT
 
+#define MESS_ERROR			"\n/!\\ ERROR : "
+#define MESS_SYNTAXE		"\n/!\\ WRONG SYNTAXE : "
+#define MESS_INFO			"\n(i) INFO : "
+#define MESS_TIP			"\n(⟐) TIP : "
 
-// LABEL_SIZE_NUM is a number coverted to a string, we can use it like it's "15" or add numbers to it (LABEL_SIZE_NUM + 1 = "16")
-#define LABEL_SIZE_NUM 15
-#define STRINGIFY(x) #x
-#define TOSTRING(x) STRINGIFY(x)
-#define LABEL_SIZE TOSTRING(LABEL_SIZE_NUM)
+// LABEL_SIZE_NUM is a number coverted to a string, we can use it as "15" or add numbers to it (LABEL_SIZE_NUM + 1 = "16")
+#define LABEL_SIZE_NUM		20
+#define STRINGIFY(x)		#x
+#define TOSTRING(x)			STRINGIFY(x)
+#define LABEL_SIZE			TOSTRING(LABEL_SIZE_NUM)
 
 typedef struct Coordinates Coordinates;
 typedef struct Component Component;

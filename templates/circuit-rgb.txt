@@ -2,7 +2,7 @@
 // Read README.md file to learn how to use it ! 
 
 
-$Circuit$ "circuit_rgb"
+$Circuit$ "circuit rgb"
 	$Components$ : 
 		//TypeComponent, "label", nb_in, x, y
 		SOURCE, "SOURCE_1", 0, 0, 0
@@ -18,8 +18,8 @@ $Circuit$ "circuit_rgb"
 		//"SOURCE_1"
 		"SOURCE_2"
 		"SOURCE_3"
-		//"SOURCE_4"
-		"SOURCE_5"
+		"SOURCE_4"
+		//"SOURCE_5"
 		"SOURCE_6"
 
 	$Links$

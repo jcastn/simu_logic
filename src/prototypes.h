@@ -47,6 +47,9 @@ void			file_process(char* file_path, FileMode file_mode, Model* model);
 // Run-loop
 void			run_loop(Model *model);
 
+// Commands
+void			exec_command(char* words[MAX_COMMAND_WORDS], Model *model);
+
 
 // Helper 
 void			shift_pointer_array(void** array, int start_index, int current_count);

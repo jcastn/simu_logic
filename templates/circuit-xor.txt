@@ -2,7 +2,7 @@
 // Read README.md file to learn how to use it ! 
 
 
-$Circuit$ "circuit_xor_gate"
+$Circuit$ "circuit xor gate"
 	$Components$ : 
 		//TypeComponent, "label", nb_in, x, y
 		SOURCE, "SOURCE_1", 0, 0, 0

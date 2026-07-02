@@ -8,16 +8,6 @@
 #include "prototypes.h"
 #include "structures.h"
 
-#define TERMINAL_BLACK		"\e[0;30m"
-#define TERMINAL_RED		"\e[0;31m"
-#define TERMINAL_GREEN		"\e[0;32m"
-#define TERMINAL_YELLOW		"\e[0;33m"
-#define	TERMINAL_BLUE		"\e[0;34m"
-#define TERMINAL_MAGENTA	"\e[0;35m"
-#define TERMINAL_CYAN		"\e[0;36m"
-#define TERMINAL_WHITE		"\e[0;37m"
-#define TERMINAL_DEFAULT	"\e[0;0m"
-
 void	print_circuit_diodes(Circuit* circ)
 {
 	if (!circ)
@@ -42,9 +32,9 @@ void	show_components_from_circuit(Circuit* circ)
 {
 	int i;
 	printf("\nCircuit %d (\"%s\"):\n%d Components and %d Links on %d Levels, \n", circ->id, circ->label, circ->component_count, circ->link_count, circ->max_level);
-	printf("•------------------•------------------•-------------•-----•-------•-------•--------•--------•------------------•\n");
-	printf("| Component Label  | Component Type   | State       | ID  | Level | Align | x      | y      | Links            |\n");
-	printf("•------------------•------------------•-------------•-----•-------•-------•--------•--------•------------------•\n");
+	printf("•----------------------•----------------------•-------------•-----•-------•-------•--------•--------•------------------•\n");
+	printf("| Component Label      | Component Type       | State       | ID  | Level | Align | x      | y      | Links            |\n");
+	printf("•----------------------•----------------------•-------------•-----•-------•-------•--------•--------•------------------•\n");
 
 
 	i = 0;
@@ -122,7 +112,7 @@ void	show_components_from_circuit(Circuit* circ)
 		
 		i++;
 	}
-	printf("•------------------•------------------•-------------•-----•-------•-------•--------•--------•------------------•\n");
+	printf("•----------------------•----------------------•-------------•-----•-------•-------•--------•--------•------------------•\n");
 }
 
 void	show_components_from_model(Model *model)
@@ -197,9 +187,9 @@ static void	read_file_content(char* file_path, Model* model)
 	}
 
 	char line[100];
-	char type_str[16];
-	char comp_label[16];
-	char comp_label2[16];
+	char type_str[LABEL_SIZE_NUM+1];
+	char comp_label[LABEL_SIZE_NUM+1];
+	char comp_label2[LABEL_SIZE_NUM+1];
 	int port = 0;
 
 	int nb_in = 0;
@@ -217,7 +207,7 @@ static void	read_file_content(char* file_path, Model* model)
 			continue;
 		}
 
-		char circ_name[16];
+		char circ_name[LABEL_SIZE_NUM+1];
 
 		// New circuit detection
 		if (sscanf(line, "$Circuit$ \"%"LABEL_SIZE"[^\"]\"", circ_name))
@@ -313,14 +303,9 @@ static void	read_file_content(char* file_path, Model* model)
 			{
 				break;
 			}
-		}
-
-
-		//printf("%s", file_content);
-		//create_circuit(word, model);
-		//rename_circuit(model->circuits[0], word);
-		
+		}		
 	}
+	printf(MESS_INFO"File '%s' fully imported !\n\n", file_path);
 	fclose(file);
 }
 
