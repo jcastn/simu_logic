@@ -129,23 +129,23 @@ void list_loaded_circuits(Model *model)
 	i = 0;
 	while (i < model->circuits_count){
 		printf("\nLoaded circuits :\n");
-		printf(	"•----------------•----------------------•----------•------------•------------•\n"
-				"| Circuit ID     | Circuit name         | Active ? | Components | Links      |\n"
-				"•----------------•----------------------•----------•------------•------------•\n");
+		printf(	"•----------------•----------------------•--------•------------•------------•\n"
+				"| Circuit ID     | Circuit Label        | Active | Components | Links      |\n"
+				"•----------------•----------------------•--------•------------•------------•\n");
 		while(i < model->circuits_count)
 		{
 			if (active_circuit_id == model->circuits[i]->id)
 			{
-				printf("| Circuit %-6d | %-"LABEL_SIZE"s | Yes      | %-10d | %-10d |\n", model->circuits[i]->id, model->circuits[i]->label, model->circuits[i]->component_count, model->circuits[i]->link_count);
+				printf("| "TERMINAL_GREEN"Circuit %-6d"TERMINAL_DEFAULT" | "TERMINAL_GREEN"%-"LABEL_SIZE"s"TERMINAL_DEFAULT" | "TERMINAL_GREEN"Yes"TERMINAL_DEFAULT"    | "TERMINAL_GREEN"%-10d"TERMINAL_DEFAULT" | "TERMINAL_GREEN"%-10d"TERMINAL_DEFAULT" |\n", model->circuits[i]->id, model->circuits[i]->label, model->circuits[i]->component_count, model->circuits[i]->link_count);
 			}
 			else
 			{
-				printf("| Circuit %-6d | %-"LABEL_SIZE"s | No       | %-10d | %-10d |\n", model->circuits[i]->id, model->circuits[i]->label, model->circuits[i]->component_count, model->circuits[i]->link_count);
+				printf("| Circuit %-6d | %-"LABEL_SIZE"s | No     | %-10d | %-10d |\n", model->circuits[i]->id, model->circuits[i]->label, model->circuits[i]->component_count, model->circuits[i]->link_count);
 			}
 			i++;
 		}
 	}
-	printf("•----------------•----------------------•----------•------------•------------•\n");
+	printf("•----------------•----------------------•--------•------------•------------•\n");
 
 }
 
@@ -286,13 +286,13 @@ static void	read_file_content(char* file_path, Model* model)
 			continue;
 		}
 
-		char circ_name[LABEL_SIZE_NUM+1];
+		char circ_label[LABEL_SIZE_NUM+1];
 
 		// New circuit detection
-		if (sscanf(line, "$Circuit$ \"%"LABEL_SIZE"[^\"]\"", circ_name))
+		if (sscanf(line, "$Circuit$ \"%"LABEL_SIZE"[^\"]\"", circ_label))
 		{
-			current_circ = create_circuit(model);
-			rename_circuit(current_circ, circ_name);
+			current_circ = create_circuit(model, circ_label);
+			//rename_circuit(model, current_circ, );
 
 			current_state = STATE_NONE;
 			continue;
@@ -335,7 +335,7 @@ static void	read_file_content(char* file_path, Model* model)
 					if (type_found)
 					{
 						Component* comp = create_component(comp_type, comp_label, nb_in, current_circ);
-						//rename_component(comp, comp_label);
+						//rename_component(current_circ, comp, comp_label);
 						update_coordinates(comp, x, y);
 					}
 					else

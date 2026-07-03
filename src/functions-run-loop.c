@@ -61,7 +61,7 @@ static void scan_user_entry(char* command_user, Model *model)
 		return;
 	}
 
-	
+	/*
 	int i = 0;
 	printf("Extracted words :\n");
 	while(i < word_count)
@@ -69,6 +69,7 @@ static void scan_user_entry(char* command_user, Model *model)
 		printf("> Word %d : '%s' \n", i+1, words[i]);
 		i++;
 	}
+	*/
 	
 
 	exec_command(words, model, word_count);

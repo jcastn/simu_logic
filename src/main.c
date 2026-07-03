@@ -20,12 +20,10 @@ int main(void)
 		i++;
 	}
 
-	simulate_model(my_model);
-	
-
 	//file_process(NULL, EXPORT, my_model);
 
 	//show_components_from_model(my_model);
+	
 	run_loop(my_model);
 	
 	//file_process(NULL, EXPORT, my_model);

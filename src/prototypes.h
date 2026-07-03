@@ -12,18 +12,20 @@ void			simulate_model(Model *model);
 
 
 //Functions-circuits
-Circuit*		create_circuit(Model* model);
-void			rename_circuit(Circuit* circuit, const char* new_name);
-Circuit*		get_circuit_by_label(const char* label, Model* model);
+Circuit*		create_circuit(Model* model, const char* circ_label);
 void			delete_circuit(Circuit *circ);
+void			rename_circuit(Model *model, Circuit* circuit, const char* new_label);
+Circuit*		get_circuit_by_label(const char* label, Model* model);
 void			simulate_circuit(Circuit* circ);
+bool			check_circuit_label(Model* model, Circuit* circ, const char* new_label);
 
 //Functions-components
 Component*		create_component(TypeComponent type, const char* label, int in_nbr, Circuit* circ);
 bool			delete_component(Circuit* circ, Component* comp);
-void			rename_component(Component* comp, const char* new_name);
+void			rename_component(Circuit* circ, Component* comp, const char* new_label);
 Component*		get_component_by_label(const char* label, Circuit* circ);
 Component*		invert_source_state(Component* comp);
+bool			check_component_label(Circuit* circ, Component* comp, const char* new_label);
 
 //Functions-links 
 Link*			create_link(Component* src, Component* dest, int port_number, Circuit* circ);

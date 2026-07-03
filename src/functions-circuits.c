@@ -7,7 +7,7 @@
 #include "prototypes.h"
 #include "structures.h"
 
-Circuit*	create_circuit(Model* model)
+Circuit*	create_circuit(Model* model, const char* circ_label)
 {
 	Circuit* circ = malloc(sizeof(Circuit));
 	if (circ == NULL)
@@ -24,6 +24,18 @@ Circuit*	create_circuit(Model* model)
 
 	snprintf(circ->label, sizeof(circ->label), "CIRCUIT_%d", circ->id);
 
+	// If the comp_label is not NULL or if the comp_label is aleready attribuate to another component, 
+
+	
+	if ((strcmp(circ_label, "NULL") == 0) || (check_circuit_label(model, circ, circ_label) == true))
+	{
+		snprintf(circ->label, sizeof(circ->label), "%s", circ_label);
+	}
+	else 
+	{
+		printf(MESS_ERROR"A circuit is already named '%s', the created circuit will keep its default label '%s'.\n", circ_label, circ->label);
+	}
+
 	Circuit** tmp = realloc(model->circuits, sizeof(Circuit*) * (model->circuits_count + 1));
 	if (tmp == NULL)
 	{
@@ -36,24 +48,62 @@ Circuit*	create_circuit(Model* model)
 	model->circuits[model->circuits_count] = circ;
 	model->circuits_count += 1; 
 
-	printf("(◌) Circuit created : %s\n", circ->label);
+	printf("(◌) Circuit created : '%s'\n", circ->label);
 	return circ;
 }
 
-void rename_circuit(Circuit* circuit, const char* new_name)
+void rename_circuit(Model *model, Circuit* circuit, const char* new_label)
 {
-	if (!circuit || !new_name)
+	if (!model || !circuit || !new_label)
 	{
-		printf(MESS_ERROR "No circuit or no new name find (Function rename_circuit)\n");
+		printf(MESS_ERROR "No model, no circuit or no new name find (Function rename_circuit)\n");
 		return;
 	}
 
-	strncpy(circuit->label, new_name, sizeof(circuit->label) - 1);
-	
-	circuit->label[sizeof(circuit->label) - 1] = '\0'; 
-	printf("(◌) Circuit renamed : %s\n", circuit->label);
+	if (check_circuit_label(model, circuit, new_label) == false)
+	{
+		printf(MESS_ERROR"A circuit is already named '%s'. Rename operation of circuit '%s' (id:%d) is aborted.\n", new_label, circuit->label, circuit->id);
+		return;
+	}
+
+	strncpy(circuit->label, new_label, sizeof(circuit->label) - 1);
+	circuit->label[sizeof(circuit->label) - 1] = '\0';
+
+	printf("(◌) Circuit renamed : '%s'\n", circuit->label);
 
 }
+
+
+// Function to check if a component label already exist in a circuit
+bool	check_circuit_label(Model* model, Circuit* circuit, const char* new_label)
+{
+	if (!model || !circuit || !new_label)
+	{
+		printf(MESS_ERROR"Problem with the model, the circuit or the new_label. (function check_circuit_label()).\n ");
+		return false;
+	}
+
+	int i;
+
+	i = 0;
+	while(i < model->circuits_count)
+	{
+		if (model->circuits[i] != circuit && strcmp(model->circuits[i]->label, new_label) == 0)
+		{
+			return false;
+		}
+		i++;
+	}
+	return true;
+}
+
+
+
+
+
+
+
+
 
 Circuit* get_circuit_by_label(const char* given_label, Model* model)
 {
@@ -100,6 +150,8 @@ void	delete_circuit(Circuit *circ)
 	}
 
 	free(circ);
+	printf(MESS_INFO"The circuit is deleted.\n");
+	return;
 }
 
 void	simulate_circuit(Circuit* circ)

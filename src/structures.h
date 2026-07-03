@@ -18,7 +18,7 @@
 #define MAX_COMMAND_WORDS	5
 
 #define APP_NAME			"simu-logic"
-#define APP_VERSION			"v0.11.4"
+#define APP_VERSION			"v0.11.5"
 #define APP_PROMPT			"\n" TERMINAL_CYAN "[" APP_NAME " " APP_VERSION "] > "TERMINAL_DEFAULT
 
 #define MESS_ERROR			"\n/!\\ ERROR : "

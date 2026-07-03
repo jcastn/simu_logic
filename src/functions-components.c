@@ -40,7 +40,7 @@ static int	auto_nb_in(TypeComponent type, int in_nbr)
 // • its Label (set it to "NULL" to auto-generate a new label with the circuit type_counter)
 // • its number of inbound links 
 // • the circuit where the component is included
-Component*	create_component(TypeComponent type, const char* label, int in_nbr, Circuit* circ)
+Component*	create_component(TypeComponent type, const char* comp_label, int in_nbr, Circuit* circ)
 {
 	int	i;
 	static int next_comp_id = 0;
@@ -103,15 +103,13 @@ Component*	create_component(TypeComponent type, const char* label, int in_nbr, C
 	circ->component_count += 1;
 	circ->type_counter[type].count += 1;
 	
-	// If the label value is empty, we generate a component label with the component id
-	if (strcmp(label, "NULL") == 0)
+	// By default, we generate a label for the component with the component id
+	snprintf(comp->label, sizeof(comp->label), "%s_%d", ComponentNames[type], circ->type_counter[type].count);
+
+	// If the comp_label is not NULL or if the comp_label is aleready attribuate to another component, 
+	if ((strcmp(comp_label, "NULL") != 0) || (check_component_label(circ, comp, comp_label) == true))
 	{
-		snprintf(comp->label, sizeof(comp->label), "%s_%d", ComponentNames[type], circ->type_counter[type].count);
-	}
-	// If the label value is not empty, we use the label value as a component label.
-	else
-	{
-		snprintf(comp->label, sizeof(comp->label), "%s", label);
+		snprintf(comp->label, sizeof(comp->label), "%s", comp_label);
 	}
 
 	printf("(▷) %s Component created : '%s'\n", ComponentNames[type], comp->label);
@@ -191,24 +189,54 @@ bool	delete_component(Circuit* circ, Component* comp)
 	return true;
 }
 
-void rename_component(Component* comp, const char* new_name)
+void rename_component(Circuit* circ, Component* comp, const char* new_label)
 {
-	if (!comp || !new_name)
+	if (!circ || !comp || !new_label)
 	{
 		return;
 	}
 
-	strncpy(comp->label, new_name, sizeof(comp->label) - 1);
+	if (check_component_label(circ, comp, new_label) == false)
+	{
+		printf(MESS_ERROR"In the circuit '%s' (id:%d), a component is already named '%s'.\nRename operation of '%s' aborted.\n", circ->label, circ->id, new_label, comp->label);
+		return;
+	}
 
+	strncpy(comp->label, new_label, sizeof(comp->label) - 1);
 	comp->label[sizeof(comp->label) - 1] = '\0'; 
+
 	printf("(▷) Component renamed : %s\n", comp->label);
 }
 
+// Function to check if a component label already exist in a circuit
+bool	check_component_label(Circuit* circ, Component* comp, const char* new_label)
+{
+	if (!circ || !comp || !new_label)
+	{
+		printf(MESS_ERROR"Problem with the circuit, the component or the new_label. (function check_component_label()).\n ");
+		return false;
+	}
+
+	int i;
+
+	i = 0;
+	while(i < circ->component_count)
+	{
+		if (circ->components[i] != comp && strcmp(circ->components[i]->label, new_label) == 0)
+		{
+			return false;
+		}
+		i++;
+	}
+	return true;
+}
+
+// Function to get a component from its label and its circuit
 Component* get_component_by_label(const char* given_label, Circuit* circ)
 {
-	if (!circ || !given_label || !circ->components)
+	if (!circ || !given_label)
 	{
-		printf(MESS_ERROR"Circuit, or component is not found in get_component_by_label() function.\n");
+		printf(MESS_ERROR"Circuit or label is not found in get_component_by_label() function.\n");
 		return NULL;
 	}
 

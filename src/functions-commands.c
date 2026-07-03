@@ -66,11 +66,14 @@ static void	command_circuit(char* words[MAX_COMMAND_WORDS], Model *model, int wo
 		printf(MESS_INFO"'circuit' command  : It allows to manage a circuit.\n"
 			"\nYou can type :"
 			"\n• 'import' / 'export' option :"
-			"\n  ▻ 'circuit import all \"path/from/simu_logic/folder\"'    : import all the circuits from a file."
+			"\n  ▻ 'circuit import all \"path/from/simu_logic/folder\"'     : import all the circuits from a file."
 			"\n  ▻ 'circuit export all \"path/from/simu_logic/folder\"'     : export all the loaded circuits to a file.\n"
 			"\n• 'select' / 'unselect' option :"
 			"\n  ▻ 'circuit select \"circuit_name\"'.                        : define the active circuit."
 			"\n  ▻ 'circuit unselect'                                      : unselect the active circuit.\n"
+			"\n• 'create' / 'delete' option :"
+			"\n  ▻ 'circuit create \"circuit name\"'                       : create an empty circuit.\n"
+			"\n  ▻ 'circuit delete \"circuit name\"'                       : delete a circuit.\n"
 			"\n• 'rename' option :"
 			"\n  ▻ 'circuit rename \"old_circuit_name\" \"new_circuit_name\"'  : rename a circuit."
 			"\n  ▻ 'circuit rename active \"new_circuit_name\"'              : rename the active circuit.\n"
@@ -79,7 +82,11 @@ static void	command_circuit(char* words[MAX_COMMAND_WORDS], Model *model, int wo
 			"\n• 'show' option :"
 			"\n  ▻ 'circuit show all'                                      : show all the components of all loaded circuits."
 			"\n  ▻ 'circuit show active'                                   : show all the components of the active circuit ('select' option)."
-			"\n  ▻ 'circuit show \"circuit name\"                            : show all the components of the given circuit.");
+			"\n  ▻ 'circuit show \"circuit name\"                            : show all the components of the given circuit.\n"
+			"\n• 'simulate' option :"
+			"\n  ▻ 'circuit simulate all'                                  : simulate all the components of all loaded circuits."
+			"\n  ▻ 'circuit simulate active'                               : simulate all the components of the active circuit ('select' option)."
+			"\n  ▻ 'circuit simulate \"circuit name\"                        : simulate all the components of the given circuit.");
 	
 		printf(MESS_TIP"About paths :\nYou can write file path from \"simu-logic\" folder by writing it between quotes or write \"IDK\" to open it with a popup from the File Explorer.\nDon't hesitate to use 'help path' to get more details about how to use file paths.\n");
 		return;
@@ -146,7 +153,7 @@ static void	command_circuit(char* words[MAX_COMMAND_WORDS], Model *model, int wo
 				printf(MESS_ERROR"There's no active circuit. Add one with 'circuit select \"circuit name\"'.\n");
 				return;
 			}
-			rename_circuit(model->active_circuit, words[3]);
+			rename_circuit(model, model->active_circuit, words[3]);
 		}
 		else 
 		{
@@ -156,7 +163,7 @@ static void	command_circuit(char* words[MAX_COMMAND_WORDS], Model *model, int wo
 				printf(MESS_ERROR"The circuit name '%s' doesn't exist. Check names with 'circuit list'.\n", words[2]);
 				return;
 			}
-			rename_circuit(circ, words[3]);
+			rename_circuit(model, circ, words[3]);
 		}
 		return;
 	}
@@ -242,8 +249,8 @@ static void	command_circuit(char* words[MAX_COMMAND_WORDS], Model *model, int wo
 		{
 			printf( MESS_INFO"'circuit show' command  : It allows to show the components of a circuit.\n"
 					"\nYou can type :"
-					"\n▻ 'circuit show all'    : show all the loaded circuits.\n"
-					"\n▻ 'circuit show active' : show the active circuit.\n"
+					"\n▻ 'circuit show all'           : show all the loaded circuits.\n"
+					"\n▻ 'circuit show active'        : show the active circuit.\n"
 					"\n▻ 'circuit show \"circuit name\" : show a given circuit.\n");
 			return;
 		}
@@ -258,6 +265,111 @@ static void	command_circuit(char* words[MAX_COMMAND_WORDS], Model *model, int wo
 		printf(MESS_SYNTAX"The circuit name doesn't exist. Please check the name with 'circuit list'.\n");
 		return;
 	}
+
+	// 1st option "simulate" or "simu"
+	if ((strcmp(words[1], "simulate") == 0) || (strcmp(words[1], "simu") == 0))
+	{
+		if (word_count < 3 )
+		{
+			printf(	MESS_SYNTAX"Please type a valid option after 'circuit simulate' : 'all', 'active' or '\"circuit name\"'.\n"
+					MESS_TIP "Refer to 'circuits simulate help' for more details."
+					MESS_TIP "If you don't know the name of a circuit, you can use 'circuits list' to list the loaded circuits.\n");
+			return;
+
+		}
+		// 'circuit simulate all'
+		if (strcmp(words[2], "all") == 0)
+		{
+			simulate_model(model);
+			return;
+		}
+
+		// 'circuit simulate active'
+		if (strcmp(words[2], "active") == 0)
+		{
+			if (model->active_circuit == NULL)
+			{
+				printf(MESS_INFO"There's no active circuits, please use 'select' command to set an active circuit.\n");
+				return;
+			}
+			simulate_circuit(model->active_circuit);
+			return;
+		}
+
+		// 'circuit simulate help'
+		if (strcmp(words[2], "help") == 0)
+		{
+			printf( MESS_INFO"'circuit show' command  : It allows to show the components of a circuit.\n"
+					"\nYou can type :"
+					"\n▻ 'circuit simulate all'           : simulate all the loaded circuits.\n"
+					"\n▻ 'circuit simulate active'        : simulate the active circuit.\n"
+					"\n▻ 'circuit simulate \"circuit name\" : simulate a given circuit.\n");
+			return;
+		}
+
+		// 'circuit simulate "circuit name"'
+		Circuit* circ = get_circuit_by_label(words[2], model);
+		if (circ != NULL)
+		{
+			simulate_circuit(circ);
+			return;
+		}
+		printf(MESS_SYNTAX"The circuit name doesn't exist. Please check the name with 'circuit list'.\n");
+		return;
+	}
+
+
+	
+	// 1st option "create"
+	if (strcmp(words[1], "create") == 0)
+	{
+		// check if 2nd option don't exist
+		if (word_count < 2)
+		{
+			printf(	MESS_SYNTAX"Please type a valid circuit name 'circuit create \"circuit_name\"' !\n");
+			return;
+		}
+	
+		// 2nd option "circuit create"
+		if ((words[2] == NULL) || (strcmp(words[2], "default") == 0))
+		{
+			create_circuit(model, "NULL");
+		}
+		else
+		{
+			create_circuit(model, words[2]);
+		}
+
+		if (model->active_circuit != NULL)
+		{
+			printf(MESS_INFO"The active circuit is now : '%s'\n", model->active_circuit->label);
+			return;
+		}
+		return;
+	}
+	
+	// 1st option "delete"
+	if (strcmp(words[1], "delete") == 0)
+	{
+		// check if 2nd option don't exist
+		if (word_count < 3)
+		{
+			printf(MESS_SYNTAX"Please type a valid circuit name 'circuit create \"circuit_name\"' !\n");
+			return;
+		}
+
+		if (strcmp(words[2], "active") == 0)
+		{
+			delete_circuit(model->active_circuit);
+			model->active_circuit = NULL;
+			return;
+		}
+	
+		delete_circuit(get_circuit_by_label(words[2], model));
+		return;
+	}
+
+
 
 
 	printf(MESS_ERROR"Unknown 'circuit' command option : '%s'. Type 'circuit help' to see available options with 'circuit'.\n", words[1]);
