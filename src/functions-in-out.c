@@ -8,33 +8,13 @@
 #include "prototypes.h"
 #include "structures.h"
 
-void	print_circuit_diodes(Circuit* circ)
-{
-	if (!circ)
-	{
-		return;
-	}
-
-	printf("Diodes status (Circuit ID:%d) :\n", circ->id);
-	int i = 0;
-	while (i < circ->component_count)
-	{
-		Component* comp = circ->components[i];
-		if (comp->type == DIODE)
-		{
-			printf("• Diode (ID: %d) at coordinates (%d, %d) is: %s\n", comp->id, comp->coordinates->x, comp->coordinates->y, comp->out_status ? "ON (true)" : "OFF (false)");
-		}
-		i++;
-	}
-}
-
 void	show_components_from_circuit(Circuit* circ)
 {
 	int i;
 	printf("\nCircuit %d (\"%s\"):\n%d Components and %d Links on %d Levels, \n", circ->id, circ->label, circ->component_count, circ->link_count, circ->max_level);
-	printf("•----------------------•----------------------•-------------•-----•-------•-------•--------•--------•------------------•\n");
-	printf("| Component Label      | Component Type       | State       | ID  | Level | Align | x      | y      | Links            |\n");
-	printf("•----------------------•----------------------•-------------•-----•-------•-------•--------•--------•------------------•\n");
+	printf("•----------------------•----------------------•-------------•--------•-------•-------•--------•--------•------------------•\n");
+	printf("| Component Label      | Component Type       | State       | ID     | Level | Align | x      | y      | Links            |\n");
+	printf("•----------------------•----------------------•-------------•--------•-------•-------•--------•--------•------------------•\n");
 
 
 	i = 0;
@@ -95,7 +75,7 @@ void	show_components_from_circuit(Circuit* circ)
 			}
 		}
 		
-		printf("| %s%-"LABEL_SIZE"s" TERMINAL_DEFAULT " | %s%-"LABEL_SIZE"s" TERMINAL_DEFAULT " | %s%-12s" TERMINAL_DEFAULT "| %-3d | %-5d | %-5d | %-6d | %-6d | In:%-4d Out:%-4d |\n", 
+		printf("| %s%-"LABEL_SIZE"s" TERMINAL_DEFAULT " | %s%-"LABEL_SIZE"s" TERMINAL_DEFAULT " | %s%-12s" TERMINAL_DEFAULT "| %-6d | %-5d | %-5d | %-6d | %-6d | In:%-4d Out:%-4d |\n", 
 			component_color,
 			comp->label,
 			component_color,
@@ -112,7 +92,7 @@ void	show_components_from_circuit(Circuit* circ)
 		
 		i++;
 	}
-	printf("•----------------------•----------------------•-------------•-----•-------•-------•--------•--------•------------------•\n");
+	printf("•----------------------•----------------------•-------------•--------•-------•-------•--------•--------•------------------•\n");
 }
 
 void	show_components_from_model(Model *model)
@@ -130,14 +110,109 @@ void	show_components_from_model(Model *model)
 	}
 }
 
+void list_loaded_circuits(Model *model)
+{
+	int i;
+	int active_circuit_id = -1 ;
+	
+	if (model->circuits_count == 0)
+	{
+		printf(MESS_INFO"No circuits are currently loaded\n");
+		return;
+	}
+
+	if (model->active_circuit != NULL)
+	{
+		active_circuit_id = model->active_circuit->id;
+	}
+
+	i = 0;
+	while (i < model->circuits_count){
+		printf("\nLoaded circuits :\n");
+		printf(	"•----------------•----------------------•----------•------------•------------•\n"
+				"| Circuit ID     | Circuit name         | Active ? | Components | Links      |\n"
+				"•----------------•----------------------•----------•------------•------------•\n");
+		while(i < model->circuits_count)
+		{
+			if (active_circuit_id == model->circuits[i]->id)
+			{
+				printf("| Circuit %-6d | %-"LABEL_SIZE"s | Yes      | %-10d | %-10d |\n", model->circuits[i]->id, model->circuits[i]->label, model->circuits[i]->component_count, model->circuits[i]->link_count);
+			}
+			else
+			{
+				printf("| Circuit %-6d | %-"LABEL_SIZE"s | No       | %-10d | %-10d |\n", model->circuits[i]->id, model->circuits[i]->label, model->circuits[i]->component_count, model->circuits[i]->link_count);
+			}
+			i++;
+		}
+	}
+	printf("•----------------•----------------------•----------•------------•------------•\n");
+
+}
+
+
+// Temporary fix for a known issue :
+// nfd_file() don't really work on MacOS devices if the application is a binary file in terminal.
+// To temporary fix that, we can use apple scripts to directly interact with the OS, without using an external module.  
+static char* macos_file(FileMode mode)
+{
+	char path[256] = {0};
+	char command[128];
+
+	// Apple scripts for IMPORT files and EXPORT files popups
+	if (mode == IMPORT)
+	{
+		strcpy(command, "osascript -e 'POSIX path of (choose file with prompt \"Select a circuit file:\" of type {\"txt\", \"json\"})'");
+	}
+	else
+	{
+		strcpy(command, "osascript -e 'POSIX path of (choose file name with prompt \"Export circuit as:\" default name \"modele_simu_logic.txt\")'");
+	}
+
+	// Exec apple script
+	FILE* fp = popen(command, "r");
+	if (fp == NULL) {
+		printf(MESS_ERROR"Failed to run apple script\n");
+		return NULL;
+	}
+
+	// Remove the end of the received path
+	if (fgets(path, sizeof(path), fp) != NULL) {
+		
+		path[strcspn(path, "\n")] = '\0';
+		path[strcspn(path, "\r")] = '\0';
+	}
+
+	int status = pclose(fp);
+
+	// If user pressed Cancel
+	if (status != 0 || strlen(path) == 0) {
+		printf(MESS_INFO"User pressed cancel\n");
+		return NULL;
+	}
+
+	printf(MESS_INFO"File found : %s\n", path);
+	return strdup(path);
+}
+
+
+
+
 static char* nfd_file(FileMode mode)
 {
+	char* path = NULL;
+
+	#ifdef __APPLE__
+	path = macos_file(mode);
+	return path;
+	#endif
+
+
 	if (NFD_Init() != NFD_OKAY) {
 		printf(MESS_ERROR"Error with nfd_file() : %s\n", NFD_GetError());
 		return NULL;
 	}
 
-	char* path = NULL;
+	
 	nfdu8char_t *outPath = NULL;
 	nfdu8filteritem_t filters[1] = { {"Text file", "txt,json"} };
 	nfdresult_t result;
@@ -174,8 +249,12 @@ static char* nfd_file(FileMode mode)
 	}
 
 	NFD_Quit();
+	fflush(stdout);
+	fflush(stdin);
+
 	return path;
 }
+
 
 static void	read_file_content(char* file_path, Model* model)
 {
@@ -365,6 +444,7 @@ static void	write_file_content(char* file_path, Model *model)
 				model->circuits[circ]->links[comp]->port_number);
 			comp++;
 		}
+		fprintf(file, "\n");
 		circ++;
 	}
 
@@ -407,12 +487,12 @@ void		file_process(char* file_path, FileMode file_mode, Model* model)
 			if (!check_path(file_path)){
 				return; 
 			}
-			printf("(⬇︎) File open : %s\n", file_path);
+			printf("\n(⬇︎) File open : %s\n", file_path);
 			read_file_content(file_path, model);
 		}
 		else	//file_mode == EXPORT
 		{
-			printf("(+) File created : %s\n", file_path);
+			printf("\n(+) File created : %s\n", file_path);
 			write_file_content(file_path, model);
 		}
 

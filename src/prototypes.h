@@ -30,8 +30,6 @@ Link*			create_link(Component* src, Component* dest, int port_number, Circuit* c
 void			delete_link(Circuit* circ, Link* link);
 
 
-
-
 // Eval
 bool			generic_eval(Component* comp);
 void			propagate_evaluation(Component* comp);
@@ -39,16 +37,16 @@ void			propagate_evaluation(Component* comp);
 
 
 // In/Out 
-void			print_circuit_diodes(Circuit* circ);
 void			show_components_from_circuit(Circuit* circ);
 void			show_components_from_model(Model *model);
+void			list_loaded_circuits(Model *model);
 void			file_process(char* file_path, FileMode file_mode, Model* model);
 
 // Run-loop
 void			run_loop(Model *model);
 
 // Commands
-void			exec_command(char* words[MAX_COMMAND_WORDS], Model *model);
+void			exec_command(char* words[MAX_COMMAND_WORDS], Model *model, int word_count);
 
 
 // Helper 

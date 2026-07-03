@@ -1,0 +1,75 @@
+$Circuit$ "circuit xor gate"
+	$Components$
+		SOURCE, "SOURCE_1", 0, 0, 0
+		SOURCE, "SOURCE_2", 0, 0, 0
+		GATE_NOT, "GATE_NOT_1", 1, 100, 0
+		GATE_NOT, "GATE_NOT_2", 1, 100, 0
+		GATE_AND, "GATE_AND_1", 2, 200, 0
+		GATE_AND, "GATE_AND_2", 2, 200, 0
+		GATE_OR, "GATE_OR_1", 2, 300, 0
+		DIODE, "DIODE_1", 1, 400, 0
+
+	$Inversions$
+		"SOURCE_1"
+
+	$Links$
+		"SOURCE_1", "GATE_NOT_1", 0
+		"SOURCE_2", "GATE_NOT_2", 0
+		"SOURCE_1", "GATE_AND_2", 0
+		"SOURCE_2", "GATE_AND_1", 0
+		"GATE_NOT_1", "GATE_AND_1", 1
+		"GATE_NOT_2", "GATE_AND_2", 1
+		"GATE_AND_1", "GATE_OR_1", 0
+		"GATE_AND_2", "GATE_OR_1", 1
+		"GATE_OR_1", "DIODE_1", 0
+
+$Circuit$ "circuit rgb"
+	$Components$
+		SOURCE, "SOURCE_1", 0, 0, 0
+		SOURCE, "SOURCE_2", 0, 0, 0
+		SOURCE, "SOURCE_3", 0, 0, 0
+		DIODE_RGB, "DIODE_RGB_1", 3, 0, 0
+		SOURCE, "SOURCE_4", 0, 0, 0
+		SOURCE, "SOURCE_5", 0, 0, 0
+		SOURCE, "SOURCE_6", 0, 0, 0
+		DIODE_RGB, "DIODE_RGB_2", 3, 0, 0
+
+	$Inversions$
+		"SOURCE_2"
+		"SOURCE_3"
+		"SOURCE_4"
+		"SOURCE_6"
+
+	$Links$
+		"SOURCE_1", "DIODE_RGB_1", 0
+		"SOURCE_2", "DIODE_RGB_1", 1
+		"SOURCE_3", "DIODE_RGB_1", 2
+		"SOURCE_4", "DIODE_RGB_2", 0
+		"SOURCE_5", "DIODE_RGB_2", 1
+		"SOURCE_6", "DIODE_RGB_2", 2
+
+$Circuit$ "circuit xor gate"
+	$Components$
+		SOURCE, "SOURCE_1", 0, 0, 0
+		SOURCE, "SOURCE_2", 0, 0, 0
+		GATE_NOT, "GATE_NOT_1", 1, 0, 0
+		GATE_NOT, "GATE_NOT_2", 1, 0, 0
+		GATE_AND, "GATE_AND_1", 2, 0, 0
+		GATE_AND, "GATE_AND_2", 2, 0, 0
+		GATE_OR, "GATE_OR_1", 2, 0, 0
+		DIODE, "DIODE_1", 1, 0, 0
+
+	$Inversions$
+		"SOURCE_1"
+
+	$Links$
+		"SOURCE_1", "GATE_NOT_1", 0
+		"SOURCE_2", "GATE_NOT_2", 0
+		"SOURCE_1", "GATE_AND_2", 0
+		"SOURCE_2", "GATE_AND_1", 0
+		"GATE_NOT_1", "GATE_AND_1", 1
+		"GATE_NOT_2", "GATE_AND_2", 1
+		"GATE_AND_1", "GATE_OR_1", 0
+		"GATE_AND_2", "GATE_OR_1", 1
+		"GATE_OR_1", "DIODE_1", 0
+

@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "structures.h"
 #include "prototypes.h"
@@ -44,7 +45,6 @@ static void scan_user_entry(char* command_user, Model *model)
 		{
 			words[word_count] = letter;
 
-			// On cherche le prochain espace ou fin de ligne
 			while (*letter != ' ' && *letter != '\t' && *letter != '\n' && *letter != '\r' && *letter != '\0') {
 				letter++;
 			}
@@ -61,16 +61,17 @@ static void scan_user_entry(char* command_user, Model *model)
 		return;
 	}
 
+	
 	int i = 0;
-
 	printf("Extracted words :\n");
 	while(i < word_count)
 	{
 		printf("> Word %d : '%s' \n", i+1, words[i]);
 		i++;
 	}
+	
 
-	exec_command(words, model);
+	exec_command(words, model, word_count);
 }
 
 void	run_loop(Model *model)
@@ -81,6 +82,7 @@ void	run_loop(Model *model)
 
 	while(model->run_loop)
 	{
+		usleep(10000);
 		printf(APP_PROMPT);
 
 		if (fgets(user_entry, sizeof(user_entry), stdin) != NULL) {

@@ -18,13 +18,13 @@
 #define MAX_COMMAND_WORDS	5
 
 #define APP_NAME			"simu-logic"
-#define APP_VERSION			"v0.11.3"
+#define APP_VERSION			"v0.11.4"
 #define APP_PROMPT			"\n" TERMINAL_CYAN "[" APP_NAME " " APP_VERSION "] > "TERMINAL_DEFAULT
 
 #define MESS_ERROR			"\n/!\\ ERROR : "
-#define MESS_SYNTAXE		"\n/!\\ WRONG SYNTAXE : "
+#define MESS_SYNTAX			"\n/!\\ WRONG SYNTAX : "
 #define MESS_INFO			"\n(i) INFO : "
-#define MESS_TIP			"\n(⟐) TIP : "
+#define MESS_TIP			"\n(⟐) "
 
 // LABEL_SIZE_NUM is a number coverted to a string, we can use it as "15" or add numbers to it (LABEL_SIZE_NUM + 1 = "16")
 #define LABEL_SIZE_NUM		20
@@ -99,7 +99,7 @@ typedef enum {
 	EXPORT
 } FileMode;
 
-typedef void (*Command)(char* words[MAX_COMMAND_WORDS], Model* model);
+typedef void (*Command)(char* words[MAX_COMMAND_WORDS], Model* model, int word_coun);
 
 
 // Structures 
