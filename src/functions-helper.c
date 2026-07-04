@@ -40,7 +40,7 @@ bool		read_parent_status(Component* comp, int port_number)
 {
 	if (comp->in_links[port_number] != NULL)
 	{
-		return comp->in_links[port_number]->src->out_status;
+		return comp->in_links[port_number]->src->out_status.out;
 	}
 	return false;
 }

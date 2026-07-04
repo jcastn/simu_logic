@@ -64,7 +64,7 @@ Component*	create_component(TypeComponent type, const char* comp_label, int in_n
 	//Init of the component values
 	comp->id = next_comp_id += 1;
 	comp->type = type;
-	comp->out_status = false;
+	comp->out_status.out = false;
 	comp->nb_out = 0;
 	comp->out_links = NULL;
 	comp->nb_in = auto_nb_in(type, in_nbr);
@@ -124,9 +124,11 @@ bool	delete_component(Circuit* circ, Component* comp)
 
 	if (!circ || !comp)
 	{
+		printf(MESS_ERROR"Circuit or component not find (Function delete_component)\n");
 		return false;
 	}
 
+	// Get the index of the component in the circuit
 	index = -1;
 	i = 0;
 	while(i < circ->component_count) 
@@ -136,10 +138,11 @@ bool	delete_component(Circuit* circ, Component* comp)
 			index = i;
 			break;
 		}
-		i+=1;
+		i++;
 	}
 	if (index == -1)
 	{
+		printf(MESS_ERROR"Component not find in the Circuit (Function delete_component)\n");
 		return false;
 	}	
 
@@ -158,6 +161,7 @@ bool	delete_component(Circuit* circ, Component* comp)
 		}
 		free(comp->in_links);
 	}
+
 	if (comp->out_links) 
 	{
 		i = comp->nb_out - 1;
@@ -185,7 +189,6 @@ bool	delete_component(Circuit* circ, Component* comp)
 		free(circ->components);
 		circ->components = NULL;			
 	}
-
 	return true;
 }
 
@@ -260,7 +263,7 @@ Component*	invert_source_state(Component* comp)
 {
 	if (comp->type == SOURCE)
 	{
-		comp->out_status = !comp->out_status;
+		comp->out_status.out = !comp->out_status.out;
 		printf("(▷) Component status inverted  : %s\n", comp->label);
 	}
 	return comp;

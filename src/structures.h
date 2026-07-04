@@ -18,7 +18,7 @@
 #define MAX_COMMAND_WORDS	5
 
 #define APP_NAME			"simu-logic"
-#define APP_VERSION			"v0.11.5"
+#define APP_VERSION			"v0.11.6"
 #define APP_PROMPT			"\n" TERMINAL_CYAN "[" APP_NAME " " APP_VERSION "] > "TERMINAL_DEFAULT
 
 #define MESS_ERROR			"\n/!\\ ERROR : "
@@ -32,13 +32,15 @@
 #define TOSTRING(x)			STRINGIFY(x)
 #define LABEL_SIZE			TOSTRING(LABEL_SIZE_NUM)
 
-typedef struct Coordinates Coordinates;
-typedef struct Component Component;
-typedef struct Link Link;
-typedef struct TypeCounter TypeCounter;
-typedef struct Circuit Circuit;
-typedef struct Model Model;
-typedef struct CommandMap CommandMap;
+typedef struct	Coordinates Coordinates;
+typedef struct	Component Component;
+typedef struct	Link Link;
+typedef struct	TypeCounter TypeCounter;
+typedef struct	Circuit Circuit;
+typedef struct	Model Model;
+typedef struct	CommandMap CommandMap;
+typedef struct	ColorStatus ColorStatus;
+typedef union	CompStatus CompStatus;
 
 
 
@@ -87,25 +89,28 @@ static char* ComponentNames[] = {
 	"OUTPUT",
 };
 
-typedef enum {
+typedef enum
+{
 	STATE_NONE,
 	STATE_COMPONENTS,
 	STATE_INVERSIONS,
 	STATE_LINKS
 } ParseState;
 
-typedef enum {
+typedef enum
+{
 	IMPORT,
 	EXPORT
 } FileMode;
 
-typedef void (*Command)(char* words[MAX_COMMAND_WORDS], Model* model, int word_coun);
+typedef void (*Command)(char* words[MAX_COMMAND_WORDS], Model* model, int word_count);
+
+
 
 
 // Structures 
-
-
-struct	Coordinates {
+struct	Coordinates 
+{
 	int				x;
 	int				y;
 	int				level;
@@ -113,29 +118,48 @@ struct	Coordinates {
 };
 
 
-struct Link {
+struct	Link 
+{
 	Component*		src;	
 	Component*		dest;
 	int				port_number;
 };
 
-struct Component {
+struct	ColorStatus
+{
+	unsigned char	r : 1;
+	unsigned char	g : 1;
+	unsigned char	b : 1;
+};
+
+union CompStatus
+{
+    bool 		out;
+	ColorStatus	rgb;
+};
+
+
+struct	Component
+{
 	TypeComponent	type;
 	int				id;
 	Coordinates*	coordinates;
 	int				nb_in;
 	int				nb_out;
-	bool			out_status;
 	Link**			out_links;
 	Link**			in_links;
 	char			label[LABEL_SIZE_NUM+1];
+	CompStatus		out_status;	
+	//bool			out_status;
 };
 
-struct TypeCounter{
+struct	TypeCounter
+{
 	int				count;
 };
 
-struct Circuit {
+struct	Circuit
+{
 	int 			id;
 	Component**		components;
 	int				component_count;
@@ -143,18 +167,20 @@ struct Circuit {
 	int				link_count;
 	int				max_level;
 	TypeCounter		type_counter[COMPONENTS_COUNT];
-	char			label[32];
+	char			label[LABEL_SIZE_NUM+1];
 };
 
-struct Model {
+struct	Model
+{
 	int				circuits_count;
 	Circuit**		circuits;
-	char			label[32];
+	char			label[LABEL_SIZE_NUM+1];
 	bool			run_loop;
 	Circuit*		active_circuit;
 };
 
-struct CommandMap {
+struct 	CommandMap
+{
 	const char*		name;
 	Command 		function;
 };

@@ -13,7 +13,7 @@ void			simulate_model(Model *model);
 
 //Functions-circuits
 Circuit*		create_circuit(Model* model, const char* circ_label);
-void			delete_circuit(Circuit *circ);
+bool			delete_circuit(Model *model, Circuit *circ);
 void			rename_circuit(Model *model, Circuit* circuit, const char* new_label);
 Circuit*		get_circuit_by_label(const char* label, Model* model);
 void			simulate_circuit(Circuit* circ);
@@ -33,7 +33,7 @@ void			delete_link(Circuit* circ, Link* link);
 
 
 // Eval
-bool			generic_eval(Component* comp);
+CompStatus		generic_eval(Component* comp);
 void			propagate_evaluation(Component* comp);
 
 

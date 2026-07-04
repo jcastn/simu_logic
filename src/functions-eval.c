@@ -22,39 +22,27 @@ static bool	op_imply(bool a, bool b)
 	return !a || b;
 }
 
-bool		generic_eval(Component* comp)
+CompStatus	generic_eval(Component* comp)
 {
 	int		i;
-	bool	val;
 	bool	result;
-	bool	final_not;
+	bool	not_flag;
 	bool	(*operation)(bool, bool) = NULL;
 
-	if (!comp || comp->type == SOURCE)
+	if (!comp )
 	{
-		return false;
+		CompStatus	empty = {0};
+		return empty;
 	}
 
-	final_not = false;
+	not_flag = false;
 	switch (comp->type)
 	{
-		case DIODE :
-			comp->out_status = read_parent_status(comp, 0);
-			return comp->out_status;
-		case DIODE_RGB :
-			comp->out_status = read_parent_status(comp, 0) || read_parent_status(comp, 1) || read_parent_status(comp, 2);
-			return comp->out_status;
-		case OUTPUT :
-			comp->out_status = read_parent_status(comp, 0);
-			return comp->out_status;
-		case INPUT :
-			comp->out_status = read_parent_status(comp, 0);
-			return comp->out_status;
-		case BUFFER :
-			comp->out_status = read_parent_status(comp, 0);
+		case DIODE : case BUFFER : case INPUT : case OUTPUT :
+			comp->out_status.out = read_parent_status(comp, 0);
 			return comp->out_status;
 		case GATE_NOT :
-			comp->out_status = !read_parent_status(comp, 0);
+			comp->out_status.out = !read_parent_status(comp, 0);
 			return comp->out_status;
 		case GATE_AND :
 			result = true;
@@ -67,12 +55,12 @@ bool		generic_eval(Component* comp)
 		case GATE_NAND :
 			result = true;
 			operation = op_and;
-			final_not = true;
+			not_flag = true;
 			break;
 		case GATE_NOR :
 			result = false;
 			operation = op_or;
-			final_not = true;
+			not_flag = true;
 			break;
 		case GATE_XOR :
 			result = false;
@@ -81,16 +69,24 @@ bool		generic_eval(Component* comp)
 		case GATE_NXOR :
 			result = false;
 			operation = op_xor;
-			final_not = true;
+			not_flag = true;
 			break;
 		case GATE_IMPLY :
-			comp->out_status = op_imply(read_parent_status(comp, 0), read_parent_status(comp, 1));
+			comp->out_status.out = op_imply(read_parent_status(comp, 0), read_parent_status(comp, 1));
 			return comp->out_status;
 		case GATE_NIMPLY :
-			comp->out_status = !op_imply(read_parent_status(comp, 0), read_parent_status(comp, 1));
+			comp->out_status.out = !op_imply(read_parent_status(comp, 0), read_parent_status(comp, 1));
+			return comp->out_status;
+		case DIODE_RGB :
+			comp->out_status.rgb.r = read_parent_status(comp, 0);
+			comp->out_status.rgb.g = read_parent_status(comp, 1);
+			comp->out_status.rgb.b = read_parent_status(comp, 2);
+			return comp->out_status;
+		case SOURCE : 
 			return comp->out_status;
 		default:
-			return false;
+			comp->out_status.out = false;
+			return comp->out_status;
 	}
 
 	i = 0;
@@ -99,16 +95,16 @@ bool		generic_eval(Component* comp)
 		// The logic evaluation only happen if the port is linked to a component (the status can be true or false, but not NULL)
 		if (comp->in_links[i] != NULL)
 		{
-			val = read_parent_status(comp, i);
-			result = operation(result, val);
+			result = operation(result, read_parent_status(comp, i));
 		}
 		i++;
 	}
-	// final_not is a flag used by the gates needing a final inversion with the NOT GATE (NAND, NOR, NXOR, NIMPLY operations)
-	if (final_not)
+
+	// not_flag is a flag used by the gates who needs a final inversion with the NOT GATE (NAND, NOR and NXOR operations)
+	if (not_flag)
 	{
 		result = !result;
 	}
-	comp->out_status = result;
+	comp->out_status.out = result;
 	return comp->out_status;
 }

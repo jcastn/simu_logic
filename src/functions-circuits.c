@@ -97,14 +97,6 @@ bool	check_circuit_label(Model* model, Circuit* circuit, const char* new_label)
 	return true;
 }
 
-
-
-
-
-
-
-
-
 Circuit* get_circuit_by_label(const char* given_label, Model* model)
 {
 	if (!given_label || !model->circuits)
@@ -129,29 +121,54 @@ Circuit* get_circuit_by_label(const char* given_label, Model* model)
 	return NULL;
 }
 
-
-void	delete_circuit(Circuit *circ)
+bool	delete_circuit(Model *model, Circuit *circ)
 {
-	if (!circ)
+	int i;
+	int index; 
+
+	if (!model || !circ)
 	{
-		return;
+		printf(MESS_ERROR"Model or circuit not find (Function delete_circuit)\n");
+		return false;
 	}
 
-	// Delete all the circuit links 
-	while (circ->link_count > 0)
+	// Get the index of the circuit in the model
+	index = -1;
+	i = 0;
+	while(i < model->circuits_count) 
 	{
-		delete_link(circ, circ->links[0]);
+		if (model->circuits[i] == circ)
+		{
+			index = i;
+			break;
+		}
+		i++;
+	}
+	if (index == -1)
+	{
+		printf(MESS_ERROR"Circuit not find in the Model (Function delete_circuit)\n");
+		return false;
 	}
 
-	// Delete all the circuit components 
+	// Delete all the circuit components (and the circuit links)
 	while (circ->component_count > 0)
 	{
 		delete_component(circ, circ->components[0]);
 	}
 
 	free(circ);
-	printf(MESS_INFO"The circuit is deleted.\n");
-	return;
+
+	shift_pointer_array((void**)model->circuits, index, model->circuits_count);
+	model->circuits_count -= 1;
+
+	if (model->circuits_count == 0)
+	{
+		free(model->circuits);
+		model->circuits = NULL;
+	}
+
+	printf("\n(◌) The circuit is deleted.\n");
+	return true;
 }
 
 void	simulate_circuit(Circuit* circ)
@@ -161,6 +178,6 @@ void	simulate_circuit(Circuit* circ)
 
 	for (int i = 0; i < circ->component_count; i++)
 	{
-		generic_eval(circ->components[i]);
+		circ->components[i]->out_status = generic_eval(circ->components[i]);
 	}
 }

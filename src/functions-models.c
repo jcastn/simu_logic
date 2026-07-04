@@ -33,7 +33,7 @@ void		delete_model(Model* model)
 		{
 			if (model->circuits[i])
 			{
-				delete_circuit(model->circuits[i]);
+				delete_circuit(model, model->circuits[i]);
 			}
 		}
 		free(model->circuits);

@@ -360,12 +360,12 @@ static void	command_circuit(char* words[MAX_COMMAND_WORDS], Model *model, int wo
 
 		if (strcmp(words[2], "active") == 0)
 		{
-			delete_circuit(model->active_circuit);
+			delete_circuit(model, model->active_circuit);
 			model->active_circuit = NULL;
 			return;
 		}
 	
-		delete_circuit(get_circuit_by_label(words[2], model));
+		delete_circuit(model, get_circuit_by_label(words[2], model));
 		return;
 	}
 

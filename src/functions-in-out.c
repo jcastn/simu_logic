@@ -33,46 +33,60 @@ void	show_components_from_circuit(Circuit* circ)
 		}
 
 		// Out-Status State
-		const char* state_color = comp->out_status ? TERMINAL_GREEN : TERMINAL_RED;
-		const char* state_text = comp->out_status ? "ON" : "OFF";
+		const char* state_color;
+		const char* state_text;
 
+
+		
 		if (comp->type == DIODE_RGB)
 		{
-			if (read_parent_status(comp, 0) && read_parent_status(comp, 1) && read_parent_status(comp, 2))
+			if (comp->out_status.rgb.r && comp->out_status.rgb.g && comp->out_status.rgb.b)
 			{
 				state_color = TERMINAL_WHITE;
 				state_text = "ON (white)"; 
 			}
-			else if (read_parent_status(comp, 0) && read_parent_status(comp, 1))
+			else if (comp->out_status.rgb.r && comp->out_status.rgb.g)
 			{
 				state_color = TERMINAL_YELLOW;
 				state_text = "ON (yellow)";
 			}
-			else if (read_parent_status(comp, 0) && read_parent_status(comp, 2))
+			else if (comp->out_status.rgb.r && comp->out_status.rgb.b)
 			{
 				state_color = TERMINAL_MAGENTA;
 				state_text = "ON (magenta)";
 			}
-			else if (read_parent_status(comp, 1) && read_parent_status(comp, 2))
+			else if (comp->out_status.rgb.g && comp->out_status.rgb.b)
 			{
 				state_color = TERMINAL_CYAN;
 				state_text = "ON (cyan)";
 			}
-			else if (read_parent_status(comp, 0))     
+			else if (comp->out_status.rgb.r)     
 			{
 				state_color = TERMINAL_RED;
 				state_text = "ON (red)";
 			}
-			else if (read_parent_status(comp, 1))     
+			else if (comp->out_status.rgb.g)     
 			{
 				state_color = TERMINAL_GREEN;
 				state_text = "ON (green)";
 			}
-			else if (read_parent_status(comp, 2))     
+			else if (comp->out_status.rgb.b)     
 			{
 				state_color = TERMINAL_BLUE;
 				state_text = "ON (blue)";
 			}
+			else
+			{
+				state_color = TERMINAL_RED;
+				state_text = "OFF";
+			}
+		}
+		else 
+		{
+			// Out-Status State
+			state_color = comp->out_status.out ? TERMINAL_GREEN : TERMINAL_RED;
+			state_text = comp->out_status.out ? "ON" : "OFF";
+
 		}
 		
 		printf("| %s%-"LABEL_SIZE"s" TERMINAL_DEFAULT " | %s%-"LABEL_SIZE"s" TERMINAL_DEFAULT " | %s%-12s" TERMINAL_DEFAULT "| %-6d | %-5d | %-5d | %-6d | %-6d | In:%-4d Out:%-4d |\n", 
@@ -426,7 +440,7 @@ static void	write_file_content(char* file_path, Model *model)
 		fprintf(file, "\n\t$Inversions$\n");
 		while(comp < model->circuits[circ]->component_count)
 		{
-			if((model->circuits[circ]->components[comp]->type == SOURCE) && (model->circuits[circ]->components[comp]->out_status == 1))
+			if((model->circuits[circ]->components[comp]->type == SOURCE) && (model->circuits[circ]->components[comp]->out_status.out == 1))
 			{
 				fprintf(file, "\t\t\"%s\"\n",model->circuits[circ]->components[comp]->label);
 			}
