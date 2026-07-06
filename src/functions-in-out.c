@@ -81,12 +81,11 @@ void	show_components_from_circuit(Circuit* circ)
 				state_text = "OFF";
 			}
 		}
-		else 
+		else
 		{
 			// Out-Status State
 			state_color = comp->out_status.out ? TERMINAL_GREEN : TERMINAL_RED;
 			state_text = comp->out_status.out ? "ON" : "OFF";
-
 		}
 		
 		printf("| %s%-"LABEL_SIZE"s" TERMINAL_DEFAULT " | %s%-"LABEL_SIZE"s" TERMINAL_DEFAULT " | %s%-12s" TERMINAL_DEFAULT "| %-6d | %-5d | %-5d | %-6d | %-6d | In:%-4d Out:%-4d |\n", 
@@ -113,7 +112,7 @@ void	show_components_from_model(Model *model)
 {
 	if (model->circuits_count == 0)
 	{
-		printf("(i) INFO : There's no circuit in this model !");
+		printf(MESS_ERROR"There's no circuit in this model !\n");
 	}
 	int i = 0;
 

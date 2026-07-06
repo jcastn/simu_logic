@@ -12,19 +12,20 @@
 #define TERMINAL_MAGENTA	"\e[0;35m"
 #define TERMINAL_CYAN		"\e[0;36m"
 #define TERMINAL_WHITE		"\e[0;37m"
+#define	TERMINAL_ORANGE		"\e[38;5;173m"
 #define TERMINAL_DEFAULT	"\e[0;0m"
 
 #define COMPONENTS_COUNT	15
 #define MAX_COMMAND_WORDS	5
 
 #define APP_NAME			"simu-logic"
-#define APP_VERSION			"v0.11.6"
+#define APP_VERSION			"v0.11.7"
 #define APP_PROMPT			"\n" TERMINAL_CYAN "[" APP_NAME " " APP_VERSION "] > "TERMINAL_DEFAULT
 
-#define MESS_ERROR			"\n/!\\ ERROR : "
-#define MESS_SYNTAX			"\n/!\\ WRONG SYNTAX : "
-#define MESS_INFO			"\n(i) INFO : "
-#define MESS_TIP			"\n(⟐) "
+#define MESS_ERROR			TERMINAL_RED"\n/!\\ ERROR : "TERMINAL_DEFAULT
+#define MESS_SYNTAX			TERMINAL_RED"\n/!\\ WRONG SYNTAX : "TERMINAL_DEFAULT
+#define MESS_INFO			TERMINAL_BLUE"\n(i) INFO : "TERMINAL_DEFAULT
+#define MESS_TIP			TERMINAL_MAGENTA"\n(⟐) "TERMINAL_DEFAULT
 
 // LABEL_SIZE_NUM is a number coverted to a string, we can use it as "15" or add numbers to it (LABEL_SIZE_NUM + 1 = "16")
 #define LABEL_SIZE_NUM		20
@@ -181,6 +182,7 @@ struct	Model
 
 struct 	CommandMap
 {
-	const char*		name;
-	Command 		function;
+	char*			command;
+	Command			function;
+	int				needed_words;
 };

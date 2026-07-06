@@ -48,7 +48,33 @@ void			file_process(char* file_path, FileMode file_mode, Model* model);
 void			run_loop(Model *model);
 
 // Commands
+// Mapping of the commands with the functions
+
+void			command_circuit(char* words[MAX_COMMAND_WORDS], Model *model, int word_count);
+void			command_help(char* words[MAX_COMMAND_WORDS], Model *model, int word_count);
+void			command_hello(char* words[MAX_COMMAND_WORDS], Model *model, int word_count);
+void			command_quit(char* words[MAX_COMMAND_WORDS], Model *model, int word_count);
+void			command_circuit_create(char* words[MAX_COMMAND_WORDS], Model *model, int word_count);
+void			command_circuit_delete(char* words[MAX_COMMAND_WORDS], Model *model, int word_count);
+void			command_circuit_rename(char* words[MAX_COMMAND_WORDS], Model *model, int word_count);
+void			command_circuit_import(char* words[MAX_COMMAND_WORDS], Model *model, int word_count);
+void			command_circuit_export(char* words[MAX_COMMAND_WORDS], Model *model, int word_count);
+void			command_circuit_simulate(char* words[MAX_COMMAND_WORDS], Model *model, int word_count);
+void			command_circuit_show(char* words[MAX_COMMAND_WORDS], Model *model, int word_count);
+void			command_circuit_select(char* words[MAX_COMMAND_WORDS], Model *model, int word_count);
+void			command_circuit_unselect(char* words[MAX_COMMAND_WORDS], Model *model, int word_count);
+void			command_circuit_list(char* words[MAX_COMMAND_WORDS], Model *model, int word_count);
+void			command_circuit_help(char* words[MAX_COMMAND_WORDS], Model *model, int word_count);
+
+
+
+
 void			exec_command(char* words[MAX_COMMAND_WORDS], Model *model, int word_count);
+
+
+
+
+
 
 
 // Helper 
