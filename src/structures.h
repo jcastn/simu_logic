@@ -16,10 +16,10 @@
 #define TERMINAL_DEFAULT	"\e[0;0m"
 
 #define COMPONENTS_COUNT	15
-#define MAX_COMMAND_WORDS	5
+#define MAX_COMMAND_ARGS	5
 
 #define APP_NAME			"simu-logic"
-#define APP_VERSION			"v0.11.7"
+#define APP_VERSION			"v0.11.8"
 #define APP_PROMPT			"\n" TERMINAL_CYAN "[" APP_NAME " " APP_VERSION "] > "TERMINAL_DEFAULT
 
 #define MESS_ERROR			TERMINAL_RED"\n/!\\ ERROR : "TERMINAL_DEFAULT
@@ -104,7 +104,7 @@ typedef enum
 	EXPORT
 } FileMode;
 
-typedef void (*Command)(char* words[MAX_COMMAND_WORDS], Model* model, int word_count);
+typedef void (*Command)(char* args[MAX_COMMAND_ARGS], Model* model, int word_count);
 
 
 
@@ -184,5 +184,6 @@ struct 	CommandMap
 {
 	char*			command;
 	Command			function;
-	int				needed_words;
+	int				needed_args;
+	bool			is_alias;
 };

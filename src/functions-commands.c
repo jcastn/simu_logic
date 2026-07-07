@@ -16,39 +16,62 @@
 #define OPTION(option)			TERMINAL_YELLOW		#option 			TERMINAL_DEFAULT
 #define OPTION_COM(option)		TERMINAL_YELLOW		"'"					#option 			"'"		TERMINAL_DEFAULT
 
-// Mapping of the commands names with the linked functions and the required number of words needed when running a command.
-CommandMap commands[] = {
-	{"circ",		command_circuit,	2},
-	{"circuit",		command_circuit,	2},
-	{"circuits",	command_circuit,	2},
-	{"help",		command_help,		2},
-	{"hello",		command_hello,		1},
-	{"quit",		command_quit,		1},
-	{"exit",		command_quit,		1},
-	{"close",		command_quit,		1},
-	{"leave",		command_quit,		1},
+#define CIRCUIT_OPTIONS_COUNT ((int)(sizeof(circuit_options) / sizeof(circuit_options[0])))
+
+// Mapping of the commands with the functions
+
+static void			command_circuit(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+static void			command_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+static void			command_hello(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+static void			command_quit(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+
+// Mapping of the commands names with the linked functions and the required number of args needed when running a command.
+//     commnand name,   command function, needed args,  is_alias
+static const CommandMap commands[] = {
+	{"circ",		command_circuit,			2,	true},
+	{"circuit",		command_circuit,			2,	false},
+	{"circuits",	command_circuit,			2,	true},
+	{"help",		command_help,				2,	false},
+	{"hello",		command_hello,				1,	false},
+	{"quit",		command_quit,				1,	false},
+	{"exit",		command_quit,				1,	true},
+	{"close",		command_quit,				1,	true},
+	{"leave",		command_quit,				1,	true},
 };
 
-CommandMap circuit_options[] = {
-	{"create",		command_circuit_create,		3},
-	{"delete",		command_circuit_delete,		3},
-	{"rename",		command_circuit_rename,		4},
-	{"import",		command_circuit_import,		4},
-	{"export",		command_circuit_export,		4},
-	{"simulate",	command_circuit_simulate,	3},
-	{"show",		command_circuit_show,		3},
-	{"select",		command_circuit_select,		3},
-	{"unselect",	command_circuit_unselect,	2},
-	{"list",		command_circuit_list,		2},
-	{"help",		command_circuit_help,		2}
+static void			command_circuit_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+static void			command_circuit_delete(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+static void			command_circuit_rename(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+static void			command_circuit_import(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+static void			command_circuit_export(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+static void			command_circuit_simulate(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+static void			command_circuit_show(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+static void			command_circuit_select(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+static void			command_circuit_unselect(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+static void			command_circuit_list(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+static void			command_circuit_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+
+static const CommandMap circuit_options[] = {
+	{"create",		command_circuit_create,		3,	false},
+	{"delete",		command_circuit_delete,		3,	false},
+	{"rename",		command_circuit_rename,		4,	false},
+	{"import",		command_circuit_import,		4,	false},
+	{"export",		command_circuit_export,		4,	false},
+	{"simulate",	command_circuit_simulate,	3,	false},
+	{"simu",		command_circuit_simulate,	3,	true},
+	{"show",		command_circuit_show,		3,	false},
+	{"select",		command_circuit_select,		3,	false},
+	{"unselect",	command_circuit_unselect,	2,	false},
+	{"list",		command_circuit_list,		2,	false},
+	{"help",		command_circuit_help,		2,	true}
 };
 
 // Command help
-void command_help(char* words[MAX_COMMAND_WORDS], Model *model, int word_count)
+static void command_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	(void)model;
 
-	if (word_count == 1)
+	if (arg_count == 1)
 	{
 		printf(	MESS_TIP"You can type "OPTION_COM(help)" after the name of a command to learn how to use it !\n"
 				"\nYou can use :"
@@ -57,7 +80,7 @@ void command_help(char* words[MAX_COMMAND_WORDS], Model *model, int word_count)
 				"\n• "OPTION_COM(help links)" to see how the links work (not yet implemented).\n");
 		return;
 	}
-	if (strcmp(words[1], "commands") == 0)
+	if (strcmp(args[1], "commands") == 0)
 	{
 		printf(	MESS_TIP"List of commands :"
 				"\n• "OPTION_COM(circuit)"   : Interact with a circuit."
@@ -70,14 +93,14 @@ void command_help(char* words[MAX_COMMAND_WORDS], Model *model, int word_count)
 		return;
 	}
 
-	printf(MESS_ERROR"Unknown help topic '%s'. Type "OPTION_COM(help)" to see all available topics.\n", words[1]);
+	printf(MESS_ERROR"Unknown help topic '%s'. Type "OPTION_COM(help)" to see all available topics.\n", args[1]);
 }
 
 // Command hello 
-void	command_hello(char* words[MAX_COMMAND_WORDS], Model *model, int word_count)
+static void	command_hello(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	(void)words;
-	(void)word_count;
+	(void)args;
+	(void)arg_count;
 	(void)model;
 
 	printf(TERMINAL_MAGENTA"\nHello world !\n\n♪(๑ᴖ◡ᴖ๑)♪\n");
@@ -86,10 +109,10 @@ void	command_hello(char* words[MAX_COMMAND_WORDS], Model *model, int word_count)
 
 
 // Command quit 
-void	command_quit(char* words[MAX_COMMAND_WORDS], Model *model, int word_count)
+static void	command_quit(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	(void)words;
-	(void)word_count;
+	(void)args;
+	(void)arg_count;
 
 	printf("\nBye !\n");
 	printf(MESS_INFO"The run_loop has been stopped by the user.\n");
@@ -99,12 +122,12 @@ void	command_quit(char* words[MAX_COMMAND_WORDS], Model *model, int word_count)
 }
 
 // "circuit create"
-void	command_circuit_create(char* words[MAX_COMMAND_WORDS], Model *model, int word_count)
+static void	command_circuit_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	(void)word_count;
+	(void)arg_count;
 
 	// 'circuit create help'
-	if (strcmp(words[2], "help") == 0)
+	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(create)" :"
 				"\n  ▻ "COM_OPEN"circuit "OPTION(create) STR_OPEN"circuit name"STR_CLOSE COM_CLOSE"                         : create an empty circuit.\n");
@@ -112,13 +135,13 @@ void	command_circuit_create(char* words[MAX_COMMAND_WORDS], Model *model, int wo
 	}
 
 	// 2nd option "circuit create"
-	if ((words[2] == NULL) || (strcmp(words[2], "default") == 0))
+	if (strcmp(args[2], "default") == 0)
 	{
 		create_circuit(model, "NULL");
 	}
 	else
 	{
-		create_circuit(model, words[2]);
+		create_circuit(model, args[2]);
 	}
 
 	if (model->active_circuit != NULL)
@@ -130,11 +153,11 @@ void	command_circuit_create(char* words[MAX_COMMAND_WORDS], Model *model, int wo
 }
 
 // "circuit delete"
-void	command_circuit_delete(char* words[MAX_COMMAND_WORDS], Model *model, int word_count)
+static void	command_circuit_delete(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	(void)word_count;
+	(void)arg_count;
 
-	if (strcmp(words[2], "all") == 0)
+	if (strcmp(args[2], "all") == 0)
 	{
 		while (model->circuits_count > 0)
 		{
@@ -148,7 +171,7 @@ void	command_circuit_delete(char* words[MAX_COMMAND_WORDS], Model *model, int wo
 	}
 
 	// 'circuit delete help'
-	if (strcmp(words[2], "help") == 0)
+	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(delete)" :"
 				"\n  ▻ "COM_OPEN"circuit "OPTION(delete) STR_OPEN"circuit name"STR_CLOSE COM_CLOSE"                         : delete a circuit."
@@ -156,16 +179,21 @@ void	command_circuit_delete(char* words[MAX_COMMAND_WORDS], Model *model, int wo
 				"\n  ▻ "COM_OPEN"circuit "OPTION(delete) KEYWORD_ALL COM_CLOSE"                                    : delete all the circuits of the model.\n");
 		return;
 	}
-
-	delete_circuit(model, get_circuit_by_label(words[2], model));
+	// 'circuit delete "circuit name"' 
+	Circuit* circ = get_circuit_by_label(args[2], model);
+	if (circ == NULL)
+	{
+		return;
+	}
+	delete_circuit(model, circ);
 	return;
 }
 
 // or 'circuit rename "old_circuit_name" "new_circuit_name"
-void	command_circuit_rename(char* words[MAX_COMMAND_WORDS], Model *model, int word_count)
+static void	command_circuit_rename(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	// 'circuit rename help'
-	if ((word_count <= 3) && (strcmp(words[2], "help") == 0))
+	if ((arg_count <= 3) && (strcmp(args[2], "help") == 0))
 	{
 		printf( "\n• "OPTION(rename)" :"
 		"\n  ▻ "COM_OPEN"circuit "OPTION(rename) STR_OPEN"old_circuit_name"STR_CLOSE STR_OPEN"new_circuit_name"STR_CLOSE COM_CLOSE"  : rename a circuit."
@@ -173,90 +201,112 @@ void	command_circuit_rename(char* words[MAX_COMMAND_WORDS], Model *model, int wo
 		return;
 	}
 
-	Circuit* circ = get_circuit_by_label(words[2], model);
+	Circuit* circ = get_circuit_by_label(args[2], model);
 	if (circ == NULL)
 	{
-		printf(MESS_ERROR"The circuit name '%s' doesn't exist. Check names with 'circuit list'.\n", words[2]);
 		return;
 	}
-	rename_circuit(model, circ, words[3]);
+	rename_circuit(model, circ, args[3]);
 	return;
 }
 
 // 'circuit import all "file/path"'
-void	command_circuit_import(char* words[MAX_COMMAND_WORDS], Model *model, int word_count)
+static void	command_circuit_import(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	// 'circuit rename help'
-	if (strcmp(words[2], "help") == 0)
+	// 'circuit import help'
+	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(import)" :"
 				"\n  ▻ "COM_OPEN"circuit "OPTION(import) KEYWORD_ALL" "STR_PATH COM_CLOSE"                     : import all the circuits from a file.\n");
 		return;
 	}
 
-	if (word_count < 4 || strcmp(words[2], "all") != 0)
+	if (arg_count < 4 || strcmp(args[2], "all") != 0)
 	{
 		printf(	MESS_SYNTAX"Expected: 'circuit import all \"path\"' or 'circuit import all IDK'\n"
 				MESS_TIP"Don't hesitate to refer to 'circuit help' command !");
 		return;
 	}
 
-	if (strcmp(words[3], "IDK") == 0)
+	if (strcmp(args[3], "IDK") == 0)
 	{
-		file_process(NULL, IMPORT, model);
+		file_process(NULL, IMPORT, model, -1);
 	}
 	else 
 	{
-		file_process(words[3], IMPORT, model);
+		file_process(args[3], IMPORT, model, -1);
 	}
 
 	return;
 }
 
 // 'circuit export all "file/path'
-void	command_circuit_export(char* words[MAX_COMMAND_WORDS], Model *model, int word_count)
+static void	command_circuit_export(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
+	int circ_number;
 	// 'circuit export help'
-	if (strcmp(words[2], "help") == 0)
+	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(export)" :"
-				"\n  ▻ "COM_OPEN"circuit "OPTION(export) KEYWORD_ALL" "STR_PATH COM_CLOSE"                     : export all the loaded circuits to a file.\n");
+				"\n  ▻ "COM_OPEN"circuit "OPTION(export) KEYWORD_ALL" "STR_PATH COM_CLOSE"                     : export all the loaded circuits to a file."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(export) KEYWORD_ACTIVE" "STR_PATH COM_CLOSE"                  : export the active circuit to a file."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(export) STR_OPEN"circuit name"STR_CLOSE" "STR_PATH COM_CLOSE"          : export a circuit to a file.\n");
+
 		return;
 	}
 
-	if ((word_count < 4) && (strcmp(words[2], "all") != 0))
+	// Bad options 
+	if ((strcmp(args[2], "all") != 0))
 	{
-		printf(	MESS_SYNTAX"Expected: 'circuit export all \"path\"' or 'circuit export all IDK'\n"
-				MESS_TIP"Don't hesitate to refer to 'circuit help' !");
-		return;
+		if (arg_count < 4)
+		{
+			printf(	MESS_SYNTAX"Expected: 'circuit export all \"path\"' or 'circuit export all IDK'\n"
+					MESS_TIP"Don't hesitate to refer to 'circuit help' !");
+			return;
+		}
+		else
+		{
+			Circuit *circ = get_circuit_by_label(args[2], model);
+			if (circ == NULL)
+			{
+				return;
+			}
+			circ_number = get_circuit_number_in_model(circ, model);
+		}
+
+	}
+	else {
+		circ_number = -1;
 	}
 
-	if (strcmp(words[3], "IDK") == 0)
+	// if filepath is IDK 
+	if (strcmp(args[3], "IDK") == 0)
 	{
-		file_process(NULL, EXPORT, model);
+		file_process(NULL, EXPORT, model, circ_number);
 	}
 	else 
 	{
-		file_process(words[3], EXPORT, model);
+		file_process(args[3], EXPORT, model, circ_number);
 	}
 	
 	return;
 }
 
-// "circuit simulate" or "simu"
-void	command_circuit_simulate(char* words[MAX_COMMAND_WORDS], Model *model, int word_count)
+// "circuit simulate"
+static void	command_circuit_simulate(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	(void)word_count;
+	(void)arg_count;
 
 	// 'circuit simulate all'
-	if (strcmp(words[2], "all") == 0)
+	if (strcmp(args[2], "all") == 0)
 	{
 		simulate_model(model);
+		printf(MESS_INFO"All circuits simulated !\n");
 		return;
 	}
 
 	// 'circuit simulate help'
-	if (strcmp(words[2], "help") == 0)
+	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(simulate)" :"
 				"\n  ▻ "COM_OPEN"circuit "OPTION(simulate) KEYWORD_ALL COM_CLOSE"                                  : simulate all the components of all loaded circuits."
@@ -266,30 +316,29 @@ void	command_circuit_simulate(char* words[MAX_COMMAND_WORDS], Model *model, int 
 	}
 
 	// 'circuit simulate "circuit name"'
-	Circuit* circ = get_circuit_by_label(words[2], model);
+	Circuit* circ = get_circuit_by_label(args[2], model);
 	if (circ != NULL)
 	{
 		simulate_circuit(circ);
-		return;
+		printf(MESS_INFO"Circuit \"%s\" simulated !\n", args[2]);
 	}
-	printf(MESS_SYNTAX"The circuit name doesn't exist. Please check the name with "OPTION_COM(circuit list)".\n");
 	return;
 }
 
 // "circuit show"
-void	command_circuit_show(char* words[MAX_COMMAND_WORDS], Model *model, int word_count)
+static void	command_circuit_show(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	(void)word_count;
+	(void)arg_count;
 
 	// 'circuit show all'
-	if (strcmp(words[2], "all") == 0)
+	if (strcmp(args[2], "all") == 0)
 	{
 		show_components_from_model(model);
 		return;
 	}
 
 	// 'circuit show help'
-	if (strcmp(words[2], "help") == 0)
+	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(show)" :"
 				"\n  ▻ "COM_OPEN"circuit "OPTION(show) KEYWORD_ALL COM_CLOSE"                                      : show all the components of all loaded circuits."
@@ -299,23 +348,21 @@ void	command_circuit_show(char* words[MAX_COMMAND_WORDS], Model *model, int word
 	}
 
 	// 'circuit show "circuit name"'
-	Circuit* circ = get_circuit_by_label(words[2], model);
+	Circuit* circ = get_circuit_by_label(args[2], model);
 	if (circ != NULL)
 	{
 		show_components_from_circuit(circ);
-		return;
 	}
-	printf(MESS_SYNTAX"The circuit name doesn't exist. Please check the name with "OPTION_COM(circuit list)".\n");
 	return;
 }
 
 // "circuit select"
-void	command_circuit_select(char* words[MAX_COMMAND_WORDS], Model *model, int word_count)
+static void	command_circuit_select(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	(void)word_count;
+	(void)arg_count;
 
 	// 'circuit select help'
-	if (strcmp(words[2], "help") == 0)
+	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(select)" :"
 				"\n  ▻ "COM_OPEN"circuit "OPTION(select) STR_OPEN"circuit_name"STR_CLOSE COM_CLOSE"                         : define the active circuit.\n");
@@ -323,7 +370,7 @@ void	command_circuit_select(char* words[MAX_COMMAND_WORDS], Model *model, int wo
 	}
 
 	// 2nd option "circuit name" Searching the circuit corresponding to the circuit label
-	model->active_circuit = get_circuit_by_label(words[2], model);
+	model->active_circuit = get_circuit_by_label(args[2], model);
 
 	if (model->active_circuit != NULL)
 	{
@@ -334,11 +381,11 @@ void	command_circuit_select(char* words[MAX_COMMAND_WORDS], Model *model, int wo
 }
 
 // "circuit unselect"
-void	command_circuit_unselect(char* words[MAX_COMMAND_WORDS], Model *model, int word_count)
+static void	command_circuit_unselect(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	(void)word_count;
+	(void)arg_count;
 	// 'circuit unselect help'
-	if ((word_count == 3) && (strcmp(words[2], "help") == 0))
+	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
 		printf(	"\n• "OPTION(unselect)" :"
 				"\n  ▻ "COM_OPEN"circuit "OPTION(unselect) COM_CLOSE"                                      : unselect the active circuit.\n");
@@ -357,9 +404,9 @@ void	command_circuit_unselect(char* words[MAX_COMMAND_WORDS], Model *model, int 
 }
 
 // "circuit list"
-void	command_circuit_list(char* words[MAX_COMMAND_WORDS], Model *model, int word_count)
+static void	command_circuit_list(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	if ((word_count == 3) && (strcmp(words[2], "help") == 0))
+	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
 		printf( "\n• "OPTION(list)" :"
 				"\n  ▻ "COM_OPEN"circuit "OPTION(list) COM_CLOSE"                                          : display a list of all the loaded circuits.\n");
@@ -371,19 +418,22 @@ void	command_circuit_list(char* words[MAX_COMMAND_WORDS], Model *model, int word
 }
 
 // 'circuit help'
-void	command_circuit_help(char* words[MAX_COMMAND_WORDS], Model *model, int word_count)
+static void	command_circuit_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	(void)words;
-	(void)word_count;
+	(void)args;
+	(void)arg_count;
 
 	printf(MESS_INFO""OPTION_COM(circuit)" command : Use it to manage loaded circuits.\n\nYou have plenty of options :\n");
 	
 	int i;
 	
 	i = 0;
-	while (i < 11-1)
+	while (i < CIRCUIT_OPTIONS_COUNT)
 	{
-		exec_command((char*[]){"circuit", circuit_options[i].command, "help"}, model, 3);
+		if (circuit_options[i].is_alias == false)
+		{
+			exec_command((char*[]){"circuit", circuit_options[i].command, "help"}, model, 3);
+		}
 		i++;
 	}
 	
@@ -392,25 +442,25 @@ void	command_circuit_help(char* words[MAX_COMMAND_WORDS], Model *model, int word
 }
 
 // Command circuit 
-void	command_circuit(char* words[MAX_COMMAND_WORDS], Model *model, int word_count)
+static void	command_circuit(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	(void)word_count;
+	(void)arg_count;
 	int i;
 	
 	// If there's no options after circuit 
-	if (word_count < 2)
+	if (arg_count < 2)
 	{
 		printf(MESS_SYNTAX"Please type "OPTION_COM(circuit help)" to learn how to use this command.\n");
 		return;
 	}
 	
-	if (word_count >= 3)
+	if (arg_count >= 3)
 	{
-		if(strcmp(words[2], "active") == 0)
+		if(strcmp(args[2], "active") == 0)
 		{
 			if (model->active_circuit != NULL)
 			{
-				strcpy(words[2], model->active_circuit->label);
+				strcpy(args[2], model->active_circuit->label);
 			}
 			else
 			{
@@ -421,42 +471,42 @@ void	command_circuit(char* words[MAX_COMMAND_WORDS], Model *model, int word_coun
 	}
 
 	i = 0;
-	while (i < 11)
+	while (i < CIRCUIT_OPTIONS_COUNT)
 	{
-		if (strcmp(words[1], circuit_options[i].command) == 0)
+		if (strcmp(args[1], circuit_options[i].command) == 0)
 		{
-			//If there is not enough word and it's not an help command : we display an error
-			if ((word_count < circuit_options[i].needed_words) && !((word_count >= 3) && (strcmp("help", words[2]) == 0)))
+			//If there is not enough args and it's not an help command : we display an error
+			if ((arg_count < circuit_options[i].needed_args) && !((arg_count >= 3) && (strcmp("help", args[2]) == 0)))
 			{
-				printf(MESS_SYNTAX"The command you wrote is invalid, please check the available formats for this command with : "COM_OPEN "circuit %s" COM_CLOSE "\n", circuit_options[i].command);
+				printf(MESS_SYNTAX"The command you wrote is invalid, please check the available formats for this command with : "COM_OPEN "circuit %s help" COM_CLOSE "\n", circuit_options[i].command);
 				return;
 			}
-			circuit_options[i].function(words, model, word_count);
+			circuit_options[i].function(args, model, arg_count);
 			return;
 		}
 		i++;
 	}
 
-	printf(MESS_ERROR"Unknown "OPTION_COM(help)" command option : '%s'. Type "OPTION_COM(circuit help)" to see available options with "OPTION_COM(circuit)" command.\n", words[1]);
+	printf(MESS_ERROR"Unknown "OPTION_COM(help)" command option : '%s'. Type "OPTION_COM(circuit help)" to see available options with "OPTION_COM(circuit)" command.\n", args[1]);
 	return;
 }
 
 
-void exec_command(char* words[MAX_COMMAND_WORDS], Model *model, int word_count)
+void exec_command(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	int commands_count = sizeof(commands) / sizeof(commands[0]);
 
-	// Search between user inputs (words) and registered commands
+	// Search between user inputs (args) and registered commands
 	for (int i = 0; i < commands_count; i++)
 	{
-		if (strcmp(words[0], commands[i].command) == 0)
+		if (strcmp(args[0], commands[i].command) == 0)
 		{
-			commands[i].function(words, model, word_count);
+			commands[i].function(args, model, arg_count);
 			return; 
 		}
 	}
 
 	// If the command don't exit
-	printf(MESS_INFO"The command you wrote doesn't exit. Please use 'help' command to know the available commands.\n");
+	printf(MESS_SYNTAX"The command you wrote dosen't exit. Please use 'help' command to know the available commands.\n");
 	return;
 }

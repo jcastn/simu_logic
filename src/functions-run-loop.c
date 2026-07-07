@@ -10,13 +10,13 @@
 
 static void scan_user_entry(char* command_user, Model *model)
 {
-	char* words[MAX_COMMAND_WORDS] = {NULL};
-	int word_count = 0;
+	char* args[MAX_COMMAND_ARGS] = {NULL};
+	int arg_count = 0;
 	char* letter = command_user;
 
-	while (*letter != '\0' && word_count < MAX_COMMAND_WORDS)
+	while (*letter != '\0' && arg_count < MAX_COMMAND_ARGS)
 	{
-		// Skip spaces between words
+		// Skip spaces between args
 		while (*letter == ' ' || *letter == '\t' || *letter == '\n' || *letter == '\r') {
 			letter++;
 		}
@@ -25,11 +25,11 @@ static void scan_user_entry(char* command_user, Model *model)
 			break;
 		}
 
-		// Words in quotes (Strings)
+		// args in quotes (Strings)
 		if (*letter == '"') 
 		{
 			letter++;
-			words[word_count] = letter;
+			args[arg_count] = letter;
 
 			while (*letter != '"' && *letter != '\0') {
 				letter++;
@@ -40,10 +40,10 @@ static void scan_user_entry(char* command_user, Model *model)
 				letter++;
 			}
 		}
-		// Words not in quotes
+		// args not in quotes
 		else 
 		{
-			words[word_count] = letter;
+			args[arg_count] = letter;
 
 			while (*letter != ' ' && *letter != '\t' && *letter != '\n' && *letter != '\r' && *letter != '\0') {
 				letter++;
@@ -54,25 +54,25 @@ static void scan_user_entry(char* command_user, Model *model)
 				letter++;
 			}
 		}
-		word_count++;
+		arg_count++;
 	}
 
-	if (words[0] == NULL) {
+	if (args[0] == NULL) {
 		return;
 	}
 
 	/*
 	int i = 0;
-	printf("Extracted words :\n");
-	while(i < word_count)
+	printf("Extracted args :\n");
+	while(i < arg_count)
 	{
-		printf("> Word %d : '%s' \n", i+1, words[i]);
+		printf("> arg %d : '%s' \n", i+1, args[i]);
 		i++;
 	}
 	*/
 	
 
-	exec_command(words, model, word_count);
+	exec_command(args, model, arg_count);
 }
 
 void	run_loop(Model *model)

@@ -101,9 +101,10 @@ Circuit* get_circuit_by_label(const char* given_label, Model* model)
 {
 	if (!given_label || !model->circuits)
 	{
-		printf(MESS_ERROR"Circuit with label '%s' not found.\n", given_label);
+		printf(MESS_ERROR"Circuit with label '%s' not found\n", given_label);
 		return NULL;
 	}
+
 
 	for (int i = 0; i < model->circuits_count; i++)
 	{
@@ -117,7 +118,7 @@ Circuit* get_circuit_by_label(const char* given_label, Model* model)
 		}
 	}
 
-	printf(MESS_ERROR"Circuit with label '%s' not found.\n", given_label);
+	printf(MESS_ERROR"Circuit with label '%s' not found, check circuit names with 'circuit list'.\n", given_label);
 	return NULL;
 }
 
@@ -128,7 +129,7 @@ bool	delete_circuit(Model *model, Circuit *circ)
 
 	if (!model || !circ)
 	{
-		printf(MESS_ERROR"Model or circuit not find (Function delete_circuit)\n");
+		printf(MESS_ERROR"Model or circuit not found (Function delete_circuit)\n");
 		return false;
 	}
 
@@ -146,7 +147,7 @@ bool	delete_circuit(Model *model, Circuit *circ)
 	}
 	if (index == -1)
 	{
-		printf(MESS_ERROR"Circuit not find in the Model (Function delete_circuit)\n");
+		printf(MESS_ERROR"Circuit not found in the Model (Function delete_circuit)\n");
 		return false;
 	}
 
@@ -180,4 +181,19 @@ void	simulate_circuit(Circuit* circ)
 	{
 		circ->components[i]->out_status = generic_eval(circ->components[i]);
 	}
+}
+
+int		get_circuit_number_in_model(Circuit* circ, Model* model)
+{
+	int i;
+
+	i = 0;
+	while (i < model->circuits_count)
+	{
+		if (circ == model->circuits[i])
+		{
+			return i;
+		}
+	}
+	return -1;
 }

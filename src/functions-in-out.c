@@ -401,7 +401,7 @@ static void	read_file_content(char* file_path, Model* model)
 	fclose(file);
 }
 
-static void	write_file_content(char* file_path, Model *model)
+static void	write_file_content(char* file_path, Model *model, int circuit_index)
 {
 	if(model->circuits_count == 0){
 		printf(MESS_ERROR"Error ! The selected model contains no circuits, so there's nothing to export.");
@@ -418,6 +418,12 @@ static void	write_file_content(char* file_path, Model *model)
 		printf(MESS_ERROR"Error ! File is NULL (function write_file_content()) ! \n");
 		return;
 	}
+
+	if (circuit_index != -1)
+	{
+		circ = circuit_index;
+	}
+
 	while(circ < model->circuits_count)
 	{
 		fprintf(file, "$Circuit$ \"%s\"\n", model->circuits[circ]->label);
@@ -458,7 +464,12 @@ static void	write_file_content(char* file_path, Model *model)
 			comp++;
 		}
 		fprintf(file, "\n");
+
+		if (circuit_index != -1){
+			break;
+		}
 		circ++;
+
 	}
 
 
@@ -476,7 +487,8 @@ static void	write_file_content(char* file_path, Model *model)
 // -> If it's NULL, the user will select the file from a NFD Popup. 
 // - Argument 2 : FileMode (IMPORT or EXPORT)
 // - Argument 3 : Model
-void		file_process(char* file_path, FileMode file_mode, Model* model)
+// - Argument 4 : Number of the circuit to process (only works with EXPORT), use -1 to select all circuits
+void		file_process(char* file_path, FileMode file_mode, Model* model, int circuit_index)
 {
 	bool needs_free = false;
 	// If the function file_process is called with a NULL value, the nfd_file_process() function is used to allow the user to choose a file from the File Explorer
@@ -494,7 +506,6 @@ void		file_process(char* file_path, FileMode file_mode, Model* model)
 
 
 	if (file_path != NULL) {
-		
 		if (file_mode == IMPORT)
 		{
 			if (!check_path(file_path)){
@@ -506,7 +517,7 @@ void		file_process(char* file_path, FileMode file_mode, Model* model)
 		else	//file_mode == EXPORT
 		{
 			printf("\n(+) File created : %s\n", file_path);
-			write_file_content(file_path, model);
+			write_file_content(file_path, model, circuit_index);
 		}
 
 		if (needs_free)
