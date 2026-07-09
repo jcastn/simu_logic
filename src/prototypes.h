@@ -32,6 +32,8 @@ bool			check_component_label(Circuit* circ, Component* comp, const char* new_lab
 //Functions-links 
 Link*			create_link(Component* src, Component* dest, int port_number, Circuit* circ);
 void			delete_link(Circuit* circ, Link* link);
+Link*			get_link(Circuit* circ, Component* src, Component* dest, int port_number);
+
 
 
 // Eval
@@ -43,6 +45,7 @@ void			propagate_evaluation(Component* comp);
 // In/Out 
 void			show_components_from_circuit(Circuit* circ);
 void			show_components_from_model(Model *model);
+void			show_component_links(Component* comp);
 void			list_loaded_circuits(Model *model);
 void			file_process(char* file_path, FileMode file_mode, Model* model, int circuit_index);
 
@@ -63,6 +66,7 @@ void			shift_pointer_array(void** array, int start_index, int current_count);
 TypeComponent	string_to_typecomponent(const char* type_str, bool* found);
 bool			read_parent_status(Component* comp, int port_number);
 bool			check_path(const char* path);
+int				string_to_int(const char* string);
 
 
 // Rearrange circuit

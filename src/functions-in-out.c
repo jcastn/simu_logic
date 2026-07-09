@@ -123,6 +123,83 @@ void	show_components_from_model(Model *model)
 	}
 }
 
+void	show_component_links(Component* comp)
+{
+	int count;
+	printf("\nComponent '%s' - (type : '%s' - id : %d)\n", comp->label, ComponentNames[comp->type], comp->id);
+	printf("•-------------------------------•--------------------------•\n");
+	printf("| Inbound links                 | Outbound links           |\n");
+	printf("•-------------------------------•--------------------------•\n");
+
+	char inbound[64];
+	char outbound[64];
+
+	count = 0;
+	while ((count < comp->nb_in) || (count < comp->nb_out))
+	{
+		if ((count < comp->nb_in) && (comp->in_links != NULL))
+		{
+			if (comp->in_links[count] != NULL)
+			{
+				snprintf(inbound, sizeof(inbound), "Port %d : %-"LABEL_SIZE"s", count, comp->in_links[count]->src->label);
+			}
+			else
+			{
+				snprintf(inbound, sizeof(inbound), "Port %d : "TERMINAL_GRAY"(empty)"TERMINAL_DEFAULT"             ", count);
+			}
+		}
+		else
+		{
+			snprintf(inbound, sizeof(inbound), "                             ");
+		}
+
+		if ((count < comp->nb_out) && (comp->out_links != NULL))
+		{
+			if ((comp->out_links[count]) != NULL && (comp->out_links[count]->dest != NULL))
+			{
+				snprintf(outbound, sizeof(outbound), "%-"LABEL_SIZE"s", comp->out_links[count]->dest->label);
+			}
+			else
+			{
+				snprintf(outbound, sizeof(outbound), "                    ");
+			}
+		}
+		else
+		{
+			snprintf(outbound, sizeof(outbound), "                    ");
+		}
+
+		printf("| %s | %s     |\n", inbound, outbound);
+		count++;
+
+	}
+	printf("•-------------------------------•--------------------------•\n");
+	return;
+
+/*
+
+	while ((count < comp->nb_in) || (count < comp->nb_out))
+	{
+		if ((count < comp->nb_in) && ((count < comp->nb_out)))
+		{
+			printf("| Port %d : %-"LABEL_SIZE"s | %-"LABEL_SIZE"s     |\n", count, comp->in_links[count]->src->label, comp->out_links[count]->dest->label);
+		}
+		else if ((count > comp->nb_in) && ((count < comp->nb_out)))
+		{
+			printf("|                               | %-"LABEL_SIZE"s     |\n", comp->out_links[count]->dest->label);
+		}
+		else
+		{
+			printf("| Port %d : %-"LABEL_SIZE"s |                          |\n", count, comp->in_links[count]->src->label);
+		}
+		count++;
+	}
+	printf("•-------------------------------•--------------------------•\n");
+	return;
+*/
+}
+
+
 void list_loaded_circuits(Model *model)
 {
 	int i;

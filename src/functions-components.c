@@ -239,7 +239,7 @@ Component* get_component_by_label(const char* given_label, Circuit* circ)
 {
 	if (!circ || !given_label)
 	{
-		printf(MESS_ERROR"Circuit or label is not found in get_component_by_label() function.\n");
+		printf(MESS_ERROR"Circuit or label is missing.\n");
 		return NULL;
 	}
 
@@ -255,7 +255,7 @@ Component* get_component_by_label(const char* given_label, Circuit* circ)
 		}
 	}
 
-	printf(MESS_ERROR"Component with label '%s' not found in get_component_by_label() function.\n", given_label);
+	printf(MESS_ERROR"Component with label '%s' not found.\n", given_label);
 	return NULL;
 }
 

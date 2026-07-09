@@ -5,22 +5,26 @@
 #include <stdlib.h>
 
 #define TERMINAL_BLACK		"\e[0;30m"
-#define TERMINAL_RED		"\e[0;31m"
-#define TERMINAL_GREEN		"\e[0;32m"
-#define TERMINAL_YELLOW		"\e[0;33m"
-#define	TERMINAL_BLUE		"\e[0;34m"
-#define TERMINAL_MAGENTA	"\e[0;35m"
-#define TERMINAL_CYAN		"\e[0;36m"
+#define TERMINAL_GRAY		"\e[38;5;243m"
 #define TERMINAL_WHITE		"\e[0;37m"
+
+#define TERMINAL_RED		"\e[0;31m"
 #define	TERMINAL_ORANGE		"\e[38;5;173m"
+#define TERMINAL_YELLOW		"\e[0;33m"
+
+#define TERMINAL_GREEN		"\e[0;32m"
+#define TERMINAL_CYAN		"\e[0;36m"
+#define	TERMINAL_BLUE		"\e[0;34m"
+
+#define TERMINAL_MAGENTA	"\e[0;35m"
+
 #define TERMINAL_DEFAULT	"\e[0;0m"
 
 #define COMPONENTS_COUNT	15
 #define MAX_COMMAND_ARGS	5
 
 #define APP_NAME			"simu-logic"
-#define APP_VERSION			"v0.11.8"
-#define APP_PROMPT			"\n" TERMINAL_CYAN "[" APP_NAME " " APP_VERSION "] > "TERMINAL_DEFAULT
+#define APP_VERSION			"v0.12"
 
 #define MESS_ERROR			TERMINAL_RED"\n/!\\ ERROR : "TERMINAL_DEFAULT
 #define MESS_SYNTAX			TERMINAL_RED"\n/!\\ WRONG SYNTAX : "TERMINAL_DEFAULT

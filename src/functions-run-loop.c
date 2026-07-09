@@ -84,7 +84,13 @@ void	run_loop(Model *model)
 	while(model->run_loop)
 	{
 		usleep(10000);
-		printf(APP_PROMPT);
+		if (model->active_circuit != NULL)
+		{
+			printf("\n" TERMINAL_CYAN "[" APP_NAME " " APP_VERSION "] "TERMINAL_GREEN "\"%s\"" TERMINAL_CYAN" > "TERMINAL_DEFAULT, model->active_circuit->label);
+		}
+		else {
+			printf("\n" TERMINAL_CYAN "[" APP_NAME " " APP_VERSION "] > "TERMINAL_DEFAULT);
+		}
 
 		if (fgets(user_entry, sizeof(user_entry), stdin) != NULL) {
 			scan_user_entry(user_entry, model);

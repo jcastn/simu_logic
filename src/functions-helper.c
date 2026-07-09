@@ -6,7 +6,7 @@
 #include "structures.h"
 
 // Function used to shift the right part content of a pointer array to the left because a pointer was removed from the array (very specific)
-void	shift_pointer_array(void** array, int start_index, int current_count)
+void			shift_pointer_array(void** array, int start_index, int current_count)
 {
 	int i = start_index;
 	while (i < current_count - 1)
@@ -16,7 +16,7 @@ void	shift_pointer_array(void** array, int start_index, int current_count)
 	}
 }
 
-TypeComponent string_to_typecomponent(const char* type_str, bool* found)
+TypeComponent	string_to_typecomponent(const char* type_str, bool* found)
 {
 	*found = false;
 	int i;
@@ -36,7 +36,7 @@ TypeComponent string_to_typecomponent(const char* type_str, bool* found)
 }
 
 
-bool		read_parent_status(Component* comp, int port_number)
+bool			read_parent_status(Component* comp, int port_number)
 {
 	if (comp->in_links[port_number] != NULL)
 	{
@@ -45,7 +45,7 @@ bool		read_parent_status(Component* comp, int port_number)
 	return false;
 }
 
-bool		check_path(const char* path){
+bool			check_path(const char* path){
 	if (path == NULL || path[0] == '\0')
 	{
 		printf(MESS_ERROR"The file path is NULL !");
@@ -61,4 +61,19 @@ bool		check_path(const char* path){
 
 	printf(MESS_ERROR"The file path '%s' is invalid !", path);
 	return false;
+}
+
+
+int				string_to_int(const char* string)
+{
+	char *endptr;
+	int number;
+
+	number = strtol(string, &endptr, 10);
+
+	if (endptr == string || *endptr != '\0') {
+        number =  -1; 
+    }
+	
+	return number;
 }

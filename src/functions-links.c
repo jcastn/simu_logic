@@ -12,8 +12,20 @@
 // Parameters : source component, destination component, port number of the destination
 Link*	create_link(Component* src, Component* dest, int port_number, Circuit* circ)
 {
+	if (!circ || !src || !dest || port_number < 0 || port_number >= dest->nb_in)
+	{
+		return NULL;
+	}
+
+	// If the user try to connect a link to a port where one already exist, an error is generated 
+	if (dest->in_links[port_number] != NULL)
+	{
+		printf(MESS_ERROR"A link is already connected on the port '%d' of the component '%s'. Link not created !\n", port_number, dest->label);
+		return NULL;
+	}
+
 	Link* link = malloc(sizeof(Link));
-	if (!link || !circ || !dest || port_number < 0 || port_number >= dest->nb_in)
+	if (!link)
 	{
 		free(link);
 		return NULL;
@@ -45,8 +57,6 @@ Link*	create_link(Component* src, Component* dest, int port_number, Circuit* cir
 }
 
 
-
-
 void	delete_link(Circuit* circ, Link* link)
 {
 	int	i;
@@ -54,10 +64,11 @@ void	delete_link(Circuit* circ, Link* link)
 
 	if (!circ || !link)
 	{
-		printf(MESS_ERROR"No circuit or link find when trying to delete a link.");
+		printf(MESS_ERROR"No circuit or link found when trying to delete a link.");
 		return;
 	}
-	// 1. Trouver l'index du lien
+
+	// Find link index
 	index = -1;
 	i = 0;
 	while (i < circ->link_count) 
@@ -73,6 +84,9 @@ void	delete_link(Circuit* circ, Link* link)
 	{
 		return;
 	}
+
+	printf("(▷) Link deleted : '%s' -> '%s' (port %d)\n", link->src->label, link->dest->label, link->port_number);
+
 
 	// Loop to remove inbound links 
 	i = 0;
@@ -108,4 +122,34 @@ void	delete_link(Circuit* circ, Link* link)
 		circ->links = NULL;
 	}
 	return;
+}
+
+Link*	get_link(Circuit* circ, Component* src, Component* dest, int port_number)
+{
+	int i;
+	if (!circ || !src || !dest || port_number < 0 || port_number >= dest->nb_in)
+	{
+		printf(MESS_ERROR"No link found using get_link() function\n");
+		return NULL;
+	}
+
+	i = 0;
+	while(i < src->nb_out)
+	{
+		if (src->out_links[i]->dest == dest)
+		{
+			if (src->out_links[i]->port_number == port_number)
+			{
+				return src->out_links[i];
+			}
+			else 
+			{
+				printf(MESS_ERROR"Invalid port number !\n");
+				return NULL;
+			}
+		}
+		i++;
+	}
+	printf(MESS_ERROR"No link found using get_link()\n");
+	return NULL;
 }
