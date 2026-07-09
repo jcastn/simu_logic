@@ -9,6 +9,7 @@ add_executable(simu-logic-app
 	src/functions-models.c
 	src/functions-circuits.c 
 	src/functions-components.c 
+	src/functions-console-output.c 
 	src/functions-links.c 
 	src/functions-eval.c 
 	src/functions-helper.c 

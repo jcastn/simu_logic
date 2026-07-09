@@ -8,28 +8,28 @@
 // Function used to shift the right part content of a pointer array to the left because a pointer was removed from the array (very specific)
 void			shift_pointer_array(void** array, int start_index, int current_count)
 {
-	int i = start_index;
-	while (i < current_count - 1)
+	int counter = start_index;
+	while (counter < current_count - 1)
 	{
-		array[i] = array[i + 1];
-		i++;
+		array[counter] = array[counter + 1];
+		counter++;
 	}
 }
 
 TypeComponent	string_to_typecomponent(const char* type_str, bool* found)
 {
 	*found = false;
-	int i;
+	int counter;
 
-	i = 0;
-	while (i < COMPONENTS_COUNT)
+	counter = 0;
+	while (counter < COMPONENTS_COUNT)
 	{
-		if (strcmp(type_str, ComponentNames[i])== 0)
+		if (strcmp(type_str, ComponentNames[counter])== 0)
 		{
 			*found = true;
-			return (TypeComponent)i;
+			return (TypeComponent)counter;
 		}
-		i++;
+		counter++;
 	}
 	printf(MESS_ERROR"TypeComponent not found (string_to_typecomponent() function)");
 	return SOURCE;
@@ -72,8 +72,8 @@ int				string_to_int(const char* string)
 	number = strtol(string, &endptr, 10);
 
 	if (endptr == string || *endptr != '\0') {
-        number =  -1; 
-    }
+		number =  -1; 
+	}
 	
 	return number;
 }

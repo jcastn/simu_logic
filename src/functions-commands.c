@@ -157,8 +157,7 @@ static void	command_quit(char* args[MAX_COMMAND_ARGS], Model *model, int arg_cou
 	(void)args;
 	(void)arg_count;
 
-	printf("\nBye !\n");
-	printf(MESS_INFO"The run_loop has been stopped by the user.\n");
+	printf(MESS_INFO"The run_loop was stopped by the user.\n");
 
 	model->run_loop = false;
 	return;
@@ -467,16 +466,16 @@ static void	command_circuit_help(char* args[MAX_COMMAND_ARGS], Model *model, int
 
 	printf(MESS_INFO""OPTION_COM(circuit)" command : Use it to manage loaded circuits.\n\nYou have plenty of options :\n");
 	
-	int i;
+	int counter;
 	
-	i = 0;
-	while (i < CIRCUIT_OPTIONS_COUNT)
+	counter = 0;
+	while (counter < CIRCUIT_OPTIONS_COUNT)
 	{
-		if (circuit_options[i].is_alias == false)
+		if (circuit_options[counter].is_alias == false)
 		{
-			exec_command((char*[]){"circuit", circuit_options[i].command, "help"}, model, 3);
+			exec_command((char*[]){"circuit", circuit_options[counter].command, "help"}, model, 3);
 		}
-		i++;
+		counter++;
 	}
 	
 	printf(MESS_TIP"After you've set up an active circuit (with "COM_OPEN"circuit select"COM_CLOSE" command), you can modify the content of it with "COM_OPEN"component"COM_CLOSE" and "COM_OPEN"link"COM_CLOSE" commands.\n");
@@ -486,7 +485,7 @@ static void	command_circuit_help(char* args[MAX_COMMAND_ARGS], Model *model, int
 // Command circuit 
 static void	command_circuit(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	int i;
+	int counter;
 	
 	// If there's no options after circuit 
 	//if (arg_count < 2)
@@ -513,21 +512,21 @@ static void	command_circuit(char* args[MAX_COMMAND_ARGS], Model *model, int arg_
 		}
 	}
 
-	i = 0;
-	while (i < CIRCUIT_OPTIONS_COUNT)
+	counter = 0;
+	while (counter < CIRCUIT_OPTIONS_COUNT)
 	{
-		if (strcmp(args[1], circuit_options[i].command) == 0)
+		if (strcmp(args[1], circuit_options[counter].command) == 0)
 		{
 			//If there is not enough args and it's not an help command : we display an error
-			if ((arg_count < circuit_options[i].needed_args) && !((arg_count >= 3) && (strcmp("help", args[2]) == 0)))
+			if ((arg_count < circuit_options[counter].needed_args) && !((arg_count >= 3) && (strcmp("help", args[2]) == 0)))
 			{
-				printf(MESS_SYNTAX"The command you wrote is invalid, please check the available formats for this command with : "COM_OPEN "circuit %s help" COM_CLOSE "\n", circuit_options[i].command);
+				printf(MESS_SYNTAX"The command you wrote is invalid, please check the available formats for this command with : "COM_OPEN "circuit %s help" COM_CLOSE "\n", circuit_options[counter].command);
 				return;
 			}
-			circuit_options[i].function(args, model, arg_count);
+			circuit_options[counter].function(args, model, arg_count);
 			return;
 		}
-		i++;
+		counter++;
 	}
 
 	printf(MESS_ERROR"Unknown "OPTION_COM(help)" command option : '%s'. Type "OPTION_COM(circuit help)" to see available options with "OPTION_COM(circuit)" command.\n", args[1]);
@@ -632,18 +631,18 @@ static void			command_link_help(char* args[MAX_COMMAND_ARGS], Model *model, int 
 {
 	(void)args;
 	(void)arg_count;
-	int i;
+	int counter;
 
-	printf(MESS_INFO""OPTION_COM(link)" command : Use it to manage the links of a circuit.\n\nYou have plenty of options :\n");
+	printf(MESS_INFO OPTION_COM(link)" command : Use it to manage the links of a circuit.\n\nYou have plenty of options :\n");
 	
-	i = 0;
-	while (i < LINK_OPTIONS_COUNT)
+	counter = 0;
+	while (counter < LINK_OPTIONS_COUNT)
 	{
-		if (link_options[i].is_alias == false)
+		if (link_options[counter].is_alias == false)
 		{
-			exec_command((char*[]){"link", link_options[i].command, "help"}, model, 3);
+			exec_command((char*[]){"link", link_options[counter].command, "help"}, model, 3);
 		}
-		i++;
+		counter++;
 	}
 	
 	printf(MESS_TIP"After you've set up an active circuit (with "COM_OPEN"circuit select"COM_CLOSE" command), you can modify the content of it with "COM_OPEN"component"COM_CLOSE" and "COM_OPEN"link"COM_CLOSE" commands.\n");
@@ -653,7 +652,7 @@ static void			command_link_help(char* args[MAX_COMMAND_ARGS], Model *model, int 
 // 'link' 
 static void			command_link(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	int i;
+	int counter;
 	bool is_not_help;
 	
 	// If there's no options after link 
@@ -672,22 +671,22 @@ static void			command_link(char* args[MAX_COMMAND_ARGS], Model *model, int arg_c
 		return;
 	}
 
-	i = 0;
-	while (i < LINK_OPTIONS_COUNT)
+	counter = 0;
+	while (counter < LINK_OPTIONS_COUNT)
 	{
-		if (strcmp(args[1], link_options[i].command) == 0)
+		if (strcmp(args[1], link_options[counter].command) == 0)
 		{
 
 			//If it's not an help command and there is not enough args : display an error
-			if ((is_not_help) && (arg_count < link_options[i].needed_args))
+			if ((is_not_help) && (arg_count < link_options[counter].needed_args))
 			{
-				printf(MESS_SYNTAX"The command you wrote is invalid, please check the available formats for this command with : "COM_OPEN "link %s help" COM_CLOSE "\n", link_options[i].command);
+				printf(MESS_SYNTAX"The command you wrote is invalid, please check the available formats for this command with : "COM_OPEN "link %s help" COM_CLOSE "\n", link_options[counter].command);
 				return;
 			}
-			link_options[i].function(args, model, arg_count);
+			link_options[counter].function(args, model, arg_count);
 			return;
 		}
-		i++;
+		counter++;
 	}
 
 	printf(MESS_ERROR"Unknown "OPTION_COM(help)" command option : '%s'. Type "OPTION_COM(link help)" to see available options with "OPTION_COM(link)" command.\n", args[1]);
@@ -764,16 +763,19 @@ static void			command_component(char* args[MAX_COMMAND_ARGS], Model *model, int 
 
 void exec_command(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
+	int counter;
 	int commands_count = sizeof(commands) / sizeof(commands[0]);
 
 	// Search between user inputs (args) and registered commands
-	for (int i = 0; i < commands_count; i++)
+	counter = 0;
+	while(counter < commands_count)
 	{
-		if (strcmp(args[0], commands[i].command) == 0)
+		if (strcmp(args[0], commands[counter].command) == 0)
 		{
-			commands[i].function(args, model, arg_count);
+			commands[counter].function(args, model, arg_count);
 			return; 
 		}
+		counter++;
 	}
 
 	// If the command don't exit

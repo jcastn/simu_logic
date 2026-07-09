@@ -42,7 +42,7 @@ static int	auto_nb_in(TypeComponent type, int in_nbr)
 // • the circuit where the component is included
 Component*	create_component(TypeComponent type, const char* comp_label, int in_nbr, Circuit* circ)
 {
-	int	i;
+	int	counter;
 	static int next_comp_id = 0;
 
 	Component* comp = malloc(sizeof(Component));
@@ -50,7 +50,7 @@ Component*	create_component(TypeComponent type, const char* comp_label, int in_n
 	if (!circ || !comp)
 	{
 		free(comp);
-		printf(MESS_ERROR"Circuit or component not find (Function create_component)\n");
+		printf(MESS_ERROR"Circuit or component are missing (Function create_component)\n");
 		return NULL;
 	}
 
@@ -78,11 +78,11 @@ Component*	create_component(TypeComponent type, const char* comp_label, int in_n
 			free(comp);
 			return NULL;
 		}
-		i = 0;
-		while (i < comp->nb_in)
+		counter = 0;
+		while (counter < comp->nb_in)
 		{
-			comp->in_links[i] = NULL;
-			i++;
+			comp->in_links[counter] = NULL;
+			counter++;
 		}
 	}
 	else 
@@ -94,7 +94,7 @@ Component*	create_component(TypeComponent type, const char* comp_label, int in_n
 	Component** tmp = realloc(circ->components, sizeof(Component*) * (circ->component_count + 1));
 	if (tmp == NULL)
 	{
-		printf(MESS_ERROR"Realloc of the array of link pointers failed (function create_component)\n");
+		printf(MESS_ERROR"Realloc of link pointers array failed (function create_component)\n");
 		return NULL;
 	}
 	circ->components = tmp;
@@ -112,14 +112,14 @@ Component*	create_component(TypeComponent type, const char* comp_label, int in_n
 		snprintf(comp->label, sizeof(comp->label), "%s", comp_label);
 	}
 
-	printf("(▷) %s Component created : '%s'\n", ComponentNames[type], comp->label);
+	printf(MESS_COMP"%s Component created : '%s'\n", ComponentNames[type], comp->label);
 
 	return comp;
 }
 
 bool	delete_component(Circuit* circ, Component* comp)
 {
-	int i;
+	int counter;
 	int	index;
 
 	if (!circ || !comp)
@@ -130,15 +130,15 @@ bool	delete_component(Circuit* circ, Component* comp)
 
 	// Get the index of the component in the circuit
 	index = -1;
-	i = 0;
-	while(i < circ->component_count) 
+	counter = 0;
+	while(counter < circ->component_count) 
 	{
-		if (circ->components[i] == comp)
+		if (circ->components[counter] == comp)
 		{
-			index = i;
+			index = counter;
 			break;
 		}
-		i++;
+		counter++;
 	}
 	if (index == -1)
 	{
@@ -150,28 +150,28 @@ bool	delete_component(Circuit* circ, Component* comp)
 	// Loops to delete inbound and outbound links with delete_link()
 	if (comp->in_links) 
 	{
-		i = 0;
-		while(i < comp->nb_in) 
+		counter = 0;
+		while(counter < comp->nb_in) 
 		{
-			if (comp->in_links[i]) 
+			if (comp->in_links[counter]) 
 			{
-				delete_link(circ, comp->in_links[i]);
+				delete_link(circ, comp->in_links[counter]);
 			}
-			i+=1;
+			counter+=1;
 		}
 		free(comp->in_links);
 	}
 
 	if (comp->out_links) 
 	{
-		i = comp->nb_out - 1;
-		while(i >= 0) 
+		counter = comp->nb_out - 1;
+		while(counter >= 0) 
 		{
-			if (comp->out_links[i])
+			if (comp->out_links[counter])
 			{
-				delete_link(circ, comp->out_links[i]);
+				delete_link(circ, comp->out_links[counter]);
 			}
-			i-=1;
+			counter-=1;
 		}
 		free(comp->out_links);
 	}
@@ -208,7 +208,7 @@ void rename_component(Circuit* circ, Component* comp, const char* new_label)
 	strncpy(comp->label, new_label, sizeof(comp->label) - 1);
 	comp->label[sizeof(comp->label) - 1] = '\0'; 
 
-	printf("(▷) Component renamed : %s\n", comp->label);
+	printf(MESS_COMP"Component renamed : %s\n", comp->label);
 }
 
 // Function to check if a component label already exist in a circuit
@@ -220,16 +220,16 @@ bool	check_component_label(Circuit* circ, Component* comp, const char* new_label
 		return false;
 	}
 
-	int i;
+	int counter;
 
-	i = 0;
-	while(i < circ->component_count)
+	counter = 0;
+	while(counter < circ->component_count)
 	{
-		if (circ->components[i] != comp && strcmp(circ->components[i]->label, new_label) == 0)
+		if (circ->components[counter] != comp && strcmp(circ->components[counter]->label, new_label) == 0)
 		{
 			return false;
 		}
-		i++;
+		counter++;
 	}
 	return true;
 }
@@ -237,22 +237,25 @@ bool	check_component_label(Circuit* circ, Component* comp, const char* new_label
 // Function to get a component from its label and its circuit
 Component* get_component_by_label(const char* given_label, Circuit* circ)
 {
+	int counter;
 	if (!circ || !given_label)
 	{
 		printf(MESS_ERROR"Circuit or label is missing.\n");
 		return NULL;
 	}
 
-	for (int i = 0; i < circ->component_count; i++)
+	counter = 0;
+	while(counter < circ->component_count)
 	{
 		// We check if the component and the label exist
-		if (circ->components[i])
+		if (circ->components[counter])
 		{
-			if (strcmp(circ->components[i]->label, given_label) == 0)
+			if (strcmp(circ->components[counter]->label, given_label) == 0)
 			{
-				return circ->components[i];
+				return circ->components[counter];
 			}
 		}
+		counter++;
 	}
 
 	printf(MESS_ERROR"Component with label '%s' not found.\n", given_label);
@@ -264,7 +267,7 @@ Component*	invert_source_state(Component* comp)
 	if (comp->type == SOURCE)
 	{
 		comp->out_status.out = !comp->out_status.out;
-		printf("(▷) Component status inverted  : %s\n", comp->label);
+		printf(MESS_COMP"Component status inverted : %s\n", comp->label);
 	}
 	return comp;
 }

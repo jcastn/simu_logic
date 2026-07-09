@@ -41,13 +41,15 @@ CompStatus		generic_eval(Component* comp);
 void			propagate_evaluation(Component* comp);
 
 
+// In / Out 
+void			file_process(char* file_path, FileMode file_mode, Model* model, int circuit_index);
 
-// In/Out 
+
+// Console-output
 void			show_components_from_circuit(Circuit* circ);
 void			show_components_from_model(Model *model);
 void			show_component_links(Component* comp);
 void			list_loaded_circuits(Model *model);
-void			file_process(char* file_path, FileMode file_mode, Model* model, int circuit_index);
 
 // Run-loop
 void			run_loop(Model *model);

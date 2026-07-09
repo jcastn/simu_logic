@@ -13,11 +13,11 @@ int main(void)
 	file_process("templates/circuit-xor.txt", IMPORT, my_model, -1);
 	file_process("templates/circuit-rgb.txt", IMPORT, my_model, -1);
 
-	int i = 0;
-	while(i < my_model->circuits_count)
+	int counter = 0;
+	while(counter < my_model->circuits_count)
 	{
 		rearange_circuit(my_model->circuits[0]);
-		i++;
+		counter++;
 	}
 
 	//file_process(NULL, EXPORT, my_model, -1);

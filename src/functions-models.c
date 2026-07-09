@@ -22,6 +22,7 @@ Model*		create_model()
 
 void		delete_model(Model* model)
 {
+	int counter;
 	if (!model)
 	{
 		return;
@@ -29,12 +30,14 @@ void		delete_model(Model* model)
 
 	if (model->circuits)
 	{
-		for (int i = 0; i < model->circuits_count; i++)
+		counter = 0;
+		while(counter < model->circuits_count)
 		{
-			if (model->circuits[i])
+			if (model->circuits[counter])
 			{
-				delete_circuit(model, model->circuits[i]);
+				delete_circuit(model, model->circuits[counter]);
 			}
+			counter++;
 		}
 		free(model->circuits);
 	}
@@ -44,12 +47,12 @@ void		delete_model(Model* model)
 
 void	simulate_model(Model *model)
 {
-	int i;
+	int counter;
 	
-	i = 0;
-	while(i < model->circuits_count)
+	counter = 0;
+	while(counter < model->circuits_count)
 	{
-		simulate_circuit(model->circuits[i]);
-		i++;
+		simulate_circuit(model->circuits[counter]);
+		counter++;
 	}
 }

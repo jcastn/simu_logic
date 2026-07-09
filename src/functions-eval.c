@@ -24,7 +24,7 @@ static bool	op_imply(bool a, bool b)
 
 CompStatus	generic_eval(Component* comp)
 {
-	int		i;
+	int		counter;
 	bool	result;
 	bool	not_flag;
 	bool	(*operation)(bool, bool) = NULL;
@@ -89,15 +89,15 @@ CompStatus	generic_eval(Component* comp)
 			return comp->out_status;
 	}
 
-	i = 0;
-	while (i < comp->nb_in)
+	counter = 0;
+	while (counter < comp->nb_in)
 	{
 		// The logic evaluation only happen if the port is linked to a component (the status can be true or false, but not NULL)
-		if (comp->in_links[i] != NULL)
+		if (comp->in_links[counter] != NULL)
 		{
-			result = operation(result, read_parent_status(comp, i));
+			result = operation(result, read_parent_status(comp, counter));
 		}
-		i++;
+		counter++;
 	}
 
 	// not_flag is a flag used by the gates who needs a final inversion with the NOT GATE (NAND, NOR and NXOR operations)

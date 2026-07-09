@@ -48,7 +48,7 @@ Circuit*	create_circuit(Model* model, const char* circ_label)
 	model->circuits[model->circuits_count] = circ;
 	model->circuits_count += 1; 
 
-	printf("(◌) Circuit created : '%s'\n", circ->label);
+	printf(MESS_CIRC"Circuit created : '%s'\n", circ->label);
 	return circ;
 }
 
@@ -69,7 +69,7 @@ void rename_circuit(Model *model, Circuit* circuit, const char* new_label)
 	strncpy(circuit->label, new_label, sizeof(circuit->label) - 1);
 	circuit->label[sizeof(circuit->label) - 1] = '\0';
 
-	printf("(◌) Circuit renamed : '%s'\n", circuit->label);
+	printf(MESS_CIRC"Circuit renamed : '%s'\n", circuit->label);
 
 }
 
@@ -83,39 +83,41 @@ bool	check_circuit_label(Model* model, Circuit* circuit, const char* new_label)
 		return false;
 	}
 
-	int i;
+	int counter;
 
-	i = 0;
-	while(i < model->circuits_count)
+	counter = 0;
+	while(counter < model->circuits_count)
 	{
-		if (model->circuits[i] != circuit && strcmp(model->circuits[i]->label, new_label) == 0)
+		if (model->circuits[counter] != circuit && strcmp(model->circuits[counter]->label, new_label) == 0)
 		{
 			return false;
 		}
-		i++;
+		counter++;
 	}
 	return true;
 }
 
 Circuit* get_circuit_by_label(const char* given_label, Model* model)
 {
+	int counter;
 	if (!given_label || !model->circuits)
 	{
 		printf(MESS_ERROR"Circuit with label '%s' not found\n", given_label);
 		return NULL;
 	}
 
-
-	for (int i = 0; i < model->circuits_count; i++)
+	counter = 0;
+	while(counter < model->circuits_count)
 	{
 		// Check if the component and the label exist
-		if (model->circuits[i])
+		if (model->circuits[counter])
 		{
-			if (strcmp(model->circuits[i]->label, given_label) == 0)
+			if (strcmp(model->circuits[counter]->label, given_label) == 0)
 			{
-				return model->circuits[i];
+				return model->circuits[counter];
 			}
 		}
+		counter++;
 	}
 
 	printf(MESS_ERROR"Circuit with label '%s' not found, check circuit names with 'circuit list'.\n", given_label);
@@ -124,7 +126,7 @@ Circuit* get_circuit_by_label(const char* given_label, Model* model)
 
 bool	delete_circuit(Model *model, Circuit *circ)
 {
-	int i;
+	int counter;
 	int index; 
 
 	if (!model || !circ)
@@ -135,15 +137,15 @@ bool	delete_circuit(Model *model, Circuit *circ)
 
 	// Get the index of the circuit in the model
 	index = -1;
-	i = 0;
-	while(i < model->circuits_count) 
+	counter = 0;
+	while(counter < model->circuits_count) 
 	{
-		if (model->circuits[i] == circ)
+		if (model->circuits[counter] == circ)
 		{
-			index = i;
+			index = counter;
 			break;
 		}
-		i++;
+		counter++;
 	}
 	if (index == -1)
 	{
@@ -168,31 +170,36 @@ bool	delete_circuit(Model *model, Circuit *circ)
 		model->circuits = NULL;
 	}
 
-	printf("\n(◌) The circuit is deleted.\n");
+	printf(MESS_CIRC"The circuit is deleted.\n");
 	return true;
 }
 
 void	simulate_circuit(Circuit* circ)
 {
+	int counter;
 	if (!circ)
-		return;
-
-	for (int i = 0; i < circ->component_count; i++)
 	{
-		circ->components[i]->out_status = generic_eval(circ->components[i]);
+		return;
+	}
+
+	counter = 0;
+	while (counter < circ->component_count)
+	{
+		circ->components[counter]->out_status = generic_eval(circ->components[counter]);
+		counter++;
 	}
 }
 
 int		get_circuit_number_in_model(Circuit* circ, Model* model)
 {
-	int i;
+	int counter;
 
-	i = 0;
-	while (i < model->circuits_count)
+	counter = 0;
+	while (counter < model->circuits_count)
 	{
-		if (circ == model->circuits[i])
+		if (circ == model->circuits[counter])
 		{
-			return i;
+			return counter;
 		}
 	}
 	return -1;

@@ -61,17 +61,6 @@ static void scan_user_entry(char* command_user, Model *model)
 		return;
 	}
 
-	/*
-	int i = 0;
-	printf("Extracted args :\n");
-	while(i < arg_count)
-	{
-		printf("> arg %d : '%s' \n", i+1, args[i]);
-		i++;
-	}
-	*/
-	
-
 	exec_command(args, model, arg_count);
 }
 
@@ -92,7 +81,8 @@ void	run_loop(Model *model)
 			printf("\n" TERMINAL_CYAN "[" APP_NAME " " APP_VERSION "] > "TERMINAL_DEFAULT);
 		}
 
-		if (fgets(user_entry, sizeof(user_entry), stdin) != NULL) {
+		if (fgets(user_entry, sizeof(user_entry), stdin) != NULL)
+		{
 			scan_user_entry(user_entry, model);
 		}
 	}

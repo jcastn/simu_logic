@@ -51,7 +51,7 @@ Link*	create_link(Component* src, Component* dest, int port_number, Circuit* cir
 	circ->links[circ->link_count] = link;
 	circ->link_count++;
 
-	printf("(▷) Link created : '%s' -> '%s' (port %d)\n", src->label, dest->label, port_number);
+	printf(MESS_LINK"Link created : '%s' -> '%s' (port %d)\n", src->label, dest->label, port_number);
 
 	return	link;
 }
@@ -59,7 +59,7 @@ Link*	create_link(Component* src, Component* dest, int port_number, Circuit* cir
 
 void	delete_link(Circuit* circ, Link* link)
 {
-	int	i;
+	int	counter;
 	int	index;
 
 	if (!circ || !link)
@@ -70,46 +70,46 @@ void	delete_link(Circuit* circ, Link* link)
 
 	// Find link index
 	index = -1;
-	i = 0;
-	while (i < circ->link_count) 
+	counter = 0;
+	while (counter < circ->link_count) 
 	{
-		if (circ->links[i] == link)
+		if (circ->links[counter] == link)
 		{
-			index = i; 
+			index = counter; 
 			break;
 		}
-		i+=1;
+		counter+=1;
 	}
 	if (index == -1)
 	{
 		return;
 	}
 
-	printf("(▷) Link deleted : '%s' -> '%s' (port %d)\n", link->src->label, link->dest->label, link->port_number);
+	printf(MESS_LINK"Link deleted : '%s' -> '%s' (port %d)\n", link->src->label, link->dest->label, link->port_number);
 
 
 	// Loop to remove inbound links 
-	i = 0;
-	while (i < link->dest->nb_in) 
+	counter = 0;
+	while (counter < link->dest->nb_in) 
 	{
-		if (link->dest->in_links[i] == link) 
+		if (link->dest->in_links[counter] == link) 
 		{
-			link->dest->in_links[i] = NULL;
+			link->dest->in_links[counter] = NULL;
 		}
-		i+=1;
+		counter+=1;
 	}
 
 	// Loop to remove outbound links 
-	i = 0;
-	while (i < link->src->nb_out) 
+	counter = 0;
+	while (counter < link->src->nb_out) 
 	{
-		if (link->src->out_links[i] == link)
+		if (link->src->out_links[counter] == link)
 		{
-			shift_pointer_array((void**)link->src->out_links, i, link->src->nb_out);
+			shift_pointer_array((void**)link->src->out_links, counter, link->src->nb_out);
 			link->src->nb_out--;
 			break;
 		}
-		i+=1;
+		counter+=1;
 	}
 
 	free(link);
@@ -126,21 +126,21 @@ void	delete_link(Circuit* circ, Link* link)
 
 Link*	get_link(Circuit* circ, Component* src, Component* dest, int port_number)
 {
-	int i;
+	int counter;
 	if (!circ || !src || !dest || port_number < 0 || port_number >= dest->nb_in)
 	{
 		printf(MESS_ERROR"No link found using get_link() function\n");
 		return NULL;
 	}
 
-	i = 0;
-	while(i < src->nb_out)
+	counter = 0;
+	while(counter < src->nb_out)
 	{
-		if (src->out_links[i]->dest == dest)
+		if (src->out_links[counter]->dest == dest)
 		{
-			if (src->out_links[i]->port_number == port_number)
+			if (src->out_links[counter]->port_number == port_number)
 			{
-				return src->out_links[i];
+				return src->out_links[counter];
 			}
 			else 
 			{
@@ -148,7 +148,7 @@ Link*	get_link(Circuit* circ, Component* src, Component* dest, int port_number)
 				return NULL;
 			}
 		}
-		i++;
+		counter++;
 	}
 	printf(MESS_ERROR"No link found using get_link()\n");
 	return NULL;
