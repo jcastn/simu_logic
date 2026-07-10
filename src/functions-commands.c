@@ -19,11 +19,12 @@
 
 #define CIRCUIT_OPTIONS_COUNT ((int)(sizeof(circuit_options) / sizeof(circuit_options[0])))
 #define LINK_OPTIONS_COUNT ((int)(sizeof(link_options) / sizeof(link_options[0])))
+//#define	COMPONENT_OPTIONS_COUNT ((int)(sizeof(component_options) / sizeof(component_options[0])))
 
 // Mapping of the commands with the functions
 
 static void			command_circuit(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-//static void			command_component(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+static void			command_component(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_hello(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_link(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
@@ -35,7 +36,8 @@ static const CommandMap commands[] = {
 	{"circ",		command_circuit,			2,	true},
 	{"circuit",		command_circuit,			2,	false},
 	{"circuits",	command_circuit,			2,	true},
-	//{"component",		command_component,			2, 	false},
+	{"component",	command_component,			2, 	false},
+	{"comp",		command_component,			2, 	true},
 	{"help",		command_help,				2,	false},
 	{"hello",		command_hello,				1,	false},
 	{"link",		command_link,				2, 	false},
@@ -88,7 +90,7 @@ static const CommandMap link_options[] = {
 	{"help",		command_link_help,			2,	true}
 };
 
-/*
+
 static void			command_component_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_component_delete(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_component_rename(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
@@ -104,8 +106,24 @@ static const CommandMap component_options[] = {
 	{"unlink",		command_component_unlink,		3,	false},
 	{"help",		command_component_help,			3,	true}
 };
-*/
 
+
+
+static void		exec_full_help(char* command_name, const CommandMap command_map[], int command_count, Model* model)
+{
+	int counter;
+	
+	counter = 0;
+	while (counter < command_count)
+	{
+		if (command_map[counter].is_alias == false)
+		{
+			exec_command((char*[]){command_name, command_map[counter].command, "help"}, model, 3);
+		}
+		counter++;
+	}
+	return;
+}
 
 
 
@@ -463,21 +481,13 @@ static void	command_circuit_help(char* args[MAX_COMMAND_ARGS], Model *model, int
 {
 	(void)args;
 	(void)arg_count;
+	int circuit_options_count = sizeof(circuit_options) / sizeof(circuit_options[0]);
+
 
 	printf(MESS_INFO""OPTION_COM(circuit)" command : Use it to manage loaded circuits.\n\nYou have plenty of options :\n");
 	
-	int counter;
-	
-	counter = 0;
-	while (counter < CIRCUIT_OPTIONS_COUNT)
-	{
-		if (circuit_options[counter].is_alias == false)
-		{
-			exec_command((char*[]){"circuit", circuit_options[counter].command, "help"}, model, 3);
-		}
-		counter++;
-	}
-	
+	exec_full_help("circuit", circuit_options, circuit_options_count, model);
+
 	printf(MESS_TIP"After you've set up an active circuit (with "COM_OPEN"circuit select"COM_CLOSE" command), you can modify the content of it with "COM_OPEN"component"COM_CLOSE" and "COM_OPEN"link"COM_CLOSE" commands.\n");
 	return;
 }
@@ -594,7 +604,7 @@ static void			command_link_delete(char* args[MAX_COMMAND_ARGS], Model *model, in
 	int port_number = string_to_int(args[4]);
 
 	if ((port_number < 0) || (port_number >= dest->nb_in)){
-		printf(MESS_ERROR"Link not created because the port number '%d' is invalid !\n", port_number);
+		printf(MESS_ERROR"Link not deleted because the port number '%d' is invalid !\n", port_number);
 		return;
 	}
 
@@ -631,21 +641,12 @@ static void			command_link_help(char* args[MAX_COMMAND_ARGS], Model *model, int 
 {
 	(void)args;
 	(void)arg_count;
-	int counter;
+	int link_options_count = sizeof(link_options) / sizeof(link_options[0]);
 
 	printf(MESS_INFO OPTION_COM(link)" command : Use it to manage the links of a circuit.\n\nYou have plenty of options :\n");
 	
-	counter = 0;
-	while (counter < LINK_OPTIONS_COUNT)
-	{
-		if (link_options[counter].is_alias == false)
-		{
-			exec_command((char*[]){"link", link_options[counter].command, "help"}, model, 3);
-		}
-		counter++;
-	}
-	
-	printf(MESS_TIP"After you've set up an active circuit (with "COM_OPEN"circuit select"COM_CLOSE" command), you can modify the content of it with "COM_OPEN"component"COM_CLOSE" and "COM_OPEN"link"COM_CLOSE" commands.\n");
+	exec_full_help("link", link_options, link_options_count, model);
+
 	return;
 }
 
@@ -694,7 +695,6 @@ static void			command_link(char* args[MAX_COMMAND_ARGS], Model *model, int arg_c
 }
 
 
-/*
 
 // 'component create' 
 static void			command_component_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
@@ -745,9 +745,13 @@ static void			command_component_unlink(char* args[MAX_COMMAND_ARGS], Model *mode
 static void			command_component_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	(void)args;
-	(void)model;
 	(void)arg_count;
-	return;
+	int component_commands_count = sizeof(component_options) / sizeof(component_options[0]);
+
+	printf(MESS_INFO OPTION_COM(component)" command : Use it to manage the components of a circuit.\n\nYou have plenty of options :\n");
+	
+	exec_full_help("component", component_options, component_commands_count, model);
+
 }
 
 // 'component'
@@ -759,7 +763,6 @@ static void			command_component(char* args[MAX_COMMAND_ARGS], Model *model, int 
 	return;
 }
 
-*/
 
 void exec_command(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
