@@ -27,7 +27,6 @@ Link*	create_link(Component* src, Component* dest, int port_number, Circuit* cir
 	Link* link = malloc(sizeof(Link));
 	if (!link)
 	{
-		free(link);
 		return NULL;
 	}
 
@@ -35,23 +34,33 @@ Link*	create_link(Component* src, Component* dest, int port_number, Circuit* cir
 	link->dest = dest;
 	link->port_number = port_number;
 
-	dest->in_links[port_number] = link;
-
-	src->out_links = realloc(src->out_links, sizeof(Link*) * (src->nb_out + 1));
-	src->out_links[src->nb_out] = link;
-	src->nb_out++;
-
-	// Dynamic enlargement of the array of link pointers
-	Link** tmp = realloc(circ->links, sizeof(Link*) * (circ->link_count + 1));
-	if (tmp == NULL)
+	// Enlargement of the link pointers array
+	Link** tmp_out = realloc(src->out_links, sizeof(Link*) * (src->nb_out + 1));
+	if (tmp_out == NULL)
 	{
+		printf(MESS_ERROR"Realloc of out_links failed (function create_link)");
+		free(link);
 		return NULL;
 	}
-	circ->links = tmp;
+	src->out_links = tmp_out;
+	src->out_links[src->nb_out] = link;
+	src->nb_out++;
+	
+	dest->in_links[port_number] = link;
+
+	Link** tmp_circ = realloc(circ->links, sizeof(Link*) * (circ->link_count + 1));
+	if (tmp_circ == NULL)
+	{
+		dest->in_links[port_number] = NULL;
+		src->nb_out--;
+		free(link);
+		return NULL;
+	}
+	circ->links = tmp_circ;
 	circ->links[circ->link_count] = link;
 	circ->link_count++;
 
-	printf(MESS_LINK"Link created : '%s' -> '%s' (port %d)\n", src->label, dest->label, port_number);
+	printf(MESS_LINK"Link created : '%s' → '%s' (port %d)\n", src->label, dest->label, port_number);
 
 	return	link;
 }

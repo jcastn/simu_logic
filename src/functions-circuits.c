@@ -10,7 +10,7 @@
 Circuit*	create_circuit(Model* model, const char* circ_label)
 {
 	Circuit* circ = malloc(sizeof(Circuit));
-	if (circ == NULL)
+	if (!model || !circ_label || circ == NULL)
 	{
 		return NULL;
 	}
@@ -100,6 +100,7 @@ bool	check_circuit_label(Model* model, Circuit* circuit, const char* new_label)
 Circuit* get_circuit_by_label(const char* given_label, Model* model)
 {
 	int counter;
+
 	if (!given_label || !model->circuits)
 	{
 		printf(MESS_ERROR"Circuit with label '%s' not found\n", given_label);
@@ -176,6 +177,7 @@ bool	delete_circuit(Model *model, Circuit *circ)
 void	simulate_circuit(Circuit* circ)
 {
 	int counter;
+
 	if (!circ)
 	{
 		return;
@@ -193,6 +195,11 @@ int		get_circuit_number_in_model(Circuit* circ, Model* model)
 {
 	int counter;
 
+	if (!circ || !model)
+	{
+		return -1;
+	}
+
 	counter = 0;
 	while (counter < model->circuits_count)
 	{
@@ -200,6 +207,7 @@ int		get_circuit_number_in_model(Circuit* circ, Model* model)
 		{
 			return counter;
 		}
+		counter++;
 	}
 	return -1;
 }
