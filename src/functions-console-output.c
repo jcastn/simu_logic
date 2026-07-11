@@ -110,7 +110,7 @@ void	show_components_from_model(Model *model)
 {
 	if (model->circuits_count == 0)
 	{
-		printf(MESS_ERROR"There's no circuit in this model !\n");
+		printf(MESS_INFO"There's no circuit in this model !\n");
 	}
 	int counter = 0;
 
@@ -125,15 +125,15 @@ void	show_component_links(Component* comp)
 {
 	int count;
 	printf("\nComponent '%s' - (type : '%s' - id : %d)\n", comp->label, ComponentNames[comp->type], comp->id);
-	printf("•-------------------------------•--------------------------•\n");
-	printf("| Inbound links                 | Outbound links           |\n");
-	printf("•-------------------------------•--------------------------•\n");
+	printf("•-------------------------------•-------------------------------•\n");
+	printf("| Inbound links                 | Outbound links                |\n");
+	printf("•-------------------------------•-------------------------------•\n");
 
 	char inbound[64];
 	char outbound[64];
 
 	count = 0;
-	while ((count < comp->nb_in) || (count < comp->nb_out))
+	while ((count == 0) || (count < comp->nb_in) || (count < comp->nb_out))
 	{
 		if ((count < comp->nb_in) && (comp->in_links != NULL))
 		{
@@ -148,30 +148,44 @@ void	show_component_links(Component* comp)
 		}
 		else
 		{
-			snprintf(inbound, sizeof(inbound), "                             ");
+			if ((count == 0) && (comp->nb_in == 0))
+			{
+				snprintf(inbound, sizeof(inbound), "(empty - no inbound ports)  ");
+			}
+			else 
+			{
+				snprintf(inbound, sizeof(inbound), "                             ");
+			}
 		}
 
 		if ((count < comp->nb_out) && (comp->out_links != NULL))
 		{
-			if ((comp->out_links[count]) != NULL && (comp->out_links[count]->dest != NULL))
+			if ((comp->out_links[count] != NULL) && (comp->out_links[count]->dest != NULL))
 			{
 				snprintf(outbound, sizeof(outbound), "%-"LABEL_SIZE"s", comp->out_links[count]->dest->label);
 			}
 			else
 			{
-				snprintf(outbound, sizeof(outbound), "                    ");
+				snprintf(outbound, sizeof(outbound), " "TERMINAL_RED"(unknown)"TERMINAL_DEFAULT"                   ");
 			}
 		}
-		else
+		else 
 		{
-			snprintf(outbound, sizeof(outbound), "                    ");
+			if (count == 0 && comp->nb_out == 0)
+			{
+				snprintf(outbound, sizeof(outbound), TERMINAL_GRAY"(empty - no outbound ports) "TERMINAL_DEFAULT);
+			}
+			else
+			{
+				snprintf(outbound, sizeof(outbound), "                             ");
+			}
 		}
 
-		printf("| %s | %s     |\n", inbound, outbound);
+		printf("| %-29s | %-29s |\n", inbound, outbound);
 		count++;
 
 	}
-	printf("•-------------------------------•--------------------------•\n");
+	printf("•-------------------------------•-------------------------------•\n");
 	return;
 }
 

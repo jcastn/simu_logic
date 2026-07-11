@@ -22,7 +22,6 @@ Model*		create_model()
 
 void		delete_model(Model* model)
 {
-	int counter;
 	if (!model)
 	{
 		return;
@@ -30,18 +29,17 @@ void		delete_model(Model* model)
 
 	if (model->circuits)
 	{
-		counter = 0;
-		while(counter < model->circuits_count)
+		while(model->circuits_count > 0)
 		{
-			if (model->circuits[counter])
+			if (model->circuits[0])
 			{
-				delete_circuit(model, model->circuits[counter]);
+				printf("\n"MESS_CIRC"Circuit deleted : \"%s\"\n", model->circuits[0]->label);
+				delete_circuit(model, model->circuits[0]);
 			}
-			counter++;
 		}
 		free(model->circuits);
 	}
-
+	printf("\n"MESS_CIRC"All loaded circuits are deleted.\n\n");
 	free(model);
 }
 

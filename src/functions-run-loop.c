@@ -31,11 +31,11 @@ static void scan_user_entry(char* command_user, Model *model)
 			letter++;
 			args[arg_count] = letter;
 
-			while (*letter != '"' && *letter != '\0') {
+			while (*letter != '"' && *letter != '\0' && *letter != '\n') {
 				letter++;
 			}
 
-			if (*letter == '"') {
+			if (*letter == '"' || *letter == '\n') {
 				*letter = '\0';
 				letter++;
 			}
@@ -73,7 +73,7 @@ void	run_loop(Model *model)
 	while(model->run_loop)
 	{
 		usleep(10000);
-		if (model->active_circuit != NULL)
+		if ((model->active_circuit != NULL) && (strlen(model->active_circuit->label) > 0))		
 		{
 			printf("\n" TERMINAL_CYAN "[" APP_NAME " " APP_VERSION "] "TERMINAL_GREEN "\"%s\"" TERMINAL_CYAN" > "TERMINAL_DEFAULT, model->active_circuit->label);
 		}

@@ -31,7 +31,7 @@ TypeComponent	string_to_typecomponent(const char* type_str, bool* found)
 		}
 		counter++;
 	}
-	printf(MESS_ERROR"TypeComponent not found (string_to_typecomponent() function)");
+	printf(MESS_SYNTAX"The value entered for TypeComponent is invalid !\n");
 	return SOURCE;
 }
 

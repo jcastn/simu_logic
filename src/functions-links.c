@@ -85,9 +85,6 @@ void	delete_link(Circuit* circ, Link* link)
 		return;
 	}
 
-	printf(MESS_LINK"Link deleted : '%s' -> '%s' (port %d)\n", link->src->label, link->dest->label, link->port_number);
-
-
 	// Loop to remove inbound links 
 	counter = 0;
 	while (counter < link->dest->nb_in) 

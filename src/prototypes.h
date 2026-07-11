@@ -28,6 +28,8 @@ void			rename_component(Circuit* circ, Component* comp, const char* new_label);
 Component*		get_component_by_label(const char* label, Circuit* circ);
 Component*		invert_source_state(Component* comp);
 bool			check_component_label(Circuit* circ, Component* comp, const char* new_label);
+void			delete_all_component_links(Circuit* circ, Component* comp, bool free_all);
+
 
 //Functions-links 
 Link*			create_link(Component* src, Component* dest, int port_number, Circuit* circ);

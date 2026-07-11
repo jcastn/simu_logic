@@ -37,7 +37,7 @@ static int	auto_nb_in(TypeComponent type, int in_nbr)
 
 // Function to create a component with : 
 // • its Type (SOURCE, DIODE, NOT / AND / OR / NAND / NOR / XOR / NXOR gates),
-// • its Label (set it to "NULL" to auto-generate a new label with the circuit type_counter)
+// • its Label (set it to "default" to auto-generate a new label with the circuit type_counter)
 // • its number of inbound links 
 // • the circuit where the component is included
 Component*	create_component(TypeComponent type, const char* comp_label, int in_nbr, Circuit* circ)
@@ -60,6 +60,8 @@ Component*	create_component(TypeComponent type, const char* comp_label, int in_n
 		free(comp);
 		return NULL;
 	}
+
+	
 
 	//Init of the component values
 	comp->id = next_comp_id += 1;
@@ -106,13 +108,24 @@ Component*	create_component(TypeComponent type, const char* comp_label, int in_n
 	// By default, we generate a label for the component with the component id
 	snprintf(comp->label, sizeof(comp->label), "%s_%d", ComponentNames[type], circ->type_counter[type].count);
 
-	// If the comp_label is not NULL or if the comp_label is aleready attribuate to another component, 
-	if ((strcmp(comp_label, "NULL") != 0) || (check_component_label(circ, comp, comp_label) == true))
+	if ((comp_label == NULL) || (strlen(comp_label) == 0))
+	{
+		printf(MESS_ERROR"There's no value for the component label, so we'll keep the auto-generated label : '%s'\n", comp->label);
+	}
+	else if (strcmp(comp_label, "default") == 0)
+	{
+		printf(MESS_INFO"The component will use the auto-generated label : '%s'\n", comp->label);
+	}
+	else if (check_component_label(circ, comp, comp_label) == false)
+	{
+		printf(MESS_ERROR"The label '%s' is already used in this circuit. We'll keep the auto-generated label : '%s'\n", comp_label, comp->label);
+	}
+	else
 	{
 		snprintf(comp->label, sizeof(comp->label), "%s", comp_label);
 	}
 
-	printf(MESS_COMP"%s Component created : '%s'\n", ComponentNames[type], comp->label);
+	printf(MESS_COMP"%s component created with label '%s', it contains %d inbound ports. \n", ComponentNames[type], comp->label, comp->nb_in);
 
 	return comp;
 }
@@ -146,37 +159,9 @@ bool	delete_component(Circuit* circ, Component* comp)
 		return false;
 	}	
 
+	// Delete all inbound and outbound links of the component
+	delete_all_component_links(circ, comp, true);
 
-	// Loops to delete inbound and outbound links with delete_link()
-	if (comp->in_links) 
-	{
-		counter = 0;
-		while(counter < comp->nb_in) 
-		{
-			if (comp->in_links[counter]) 
-			{
-				delete_link(circ, comp->in_links[counter]);
-			}
-			counter+=1;
-		}
-		free(comp->in_links);
-	}
-
-	if (comp->out_links) 
-	{
-		counter = comp->nb_out - 1;
-		while(counter >= 0) 
-		{
-			if (comp->out_links[counter])
-			{
-				delete_link(circ, comp->out_links[counter]);
-			}
-			counter-=1;
-		}
-		free(comp->out_links);
-	}
-
-	// Deletion of the component et retrait du circuit
 	free(comp->coordinates);
 	free(comp);
 
@@ -225,7 +210,7 @@ bool	check_component_label(Circuit* circ, Component* comp, const char* new_label
 	counter = 0;
 	while(counter < circ->component_count)
 	{
-		if (circ->components[counter] != comp && strcmp(circ->components[counter]->label, new_label) == 0)
+		if ((circ->components[counter] != comp) && (strcmp(circ->components[counter]->label, new_label) == 0))
 		{
 			return false;
 		}
@@ -270,4 +255,45 @@ Component*	invert_source_state(Component* comp)
 		printf(MESS_COMP"Component status inverted : %s\n", comp->label);
 	}
 	return comp;
+}
+
+// Function to delete all inbound and outbound links with delete_link()
+void		delete_all_component_links(Circuit* circ, Component* comp, bool free_all)
+{
+	int counter; 
+
+	if (comp->in_links) 
+	{
+		counter = 0;
+		while(counter < comp->nb_in) 
+		{
+			if (comp->in_links[counter]) 
+			{
+				delete_link(circ, comp->in_links[counter]);
+			}
+			counter+=1;
+		}
+		if (free_all)
+		{
+			free(comp->in_links);
+		}
+	}
+
+	if (comp->out_links) 
+	{
+		counter = comp->nb_out - 1;
+		while(counter >= 0) 
+		{
+			if (comp->out_links[counter])
+			{
+				delete_link(circ, comp->out_links[counter]);
+			}
+			counter-=1;
+		}
+		if (free_all)
+		{
+			free(comp->out_links);
+		}
+	}
+
 }

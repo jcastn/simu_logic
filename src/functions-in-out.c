@@ -161,16 +161,19 @@ static void	read_file_content(char* file_path, Model* model)
 		if (strstr(line, "$Components$"))
 		{
 			current_state = STATE_COMPONENTS;
+			printf("\nSTEP 1 : STATE_COMPONENTS\n");
 			continue;
 		}
 		else if (strstr(line, "$Inversions$"))
 		{
 			current_state = STATE_INVERSIONS;
+			printf("\nSTEP 2 : STATE_INVERSIONS\n");
 			continue;
 		}
 		else if (strstr(line, "$Links$"))
 		{
 			current_state = STATE_LINKS;
+			printf("\nSTEP 3 : STATE_LINKS\n");
 			continue;
 		}
 

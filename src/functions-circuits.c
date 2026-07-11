@@ -24,10 +24,10 @@ Circuit*	create_circuit(Model* model, const char* circ_label)
 
 	snprintf(circ->label, sizeof(circ->label), "CIRCUIT_%d", circ->id);
 
-	// If the comp_label is not NULL or if the comp_label is aleready attribuate to another component, 
+	// If the comp_label is not default or if the comp_label is aleready attribuate to another component, 
 
 	
-	if ((strcmp(circ_label, "NULL") == 0) || (check_circuit_label(model, circ, circ_label) == true))
+	if ((strcmp(circ_label, "default") == 0) || (check_circuit_label(model, circ, circ_label) == true))
 	{
 		snprintf(circ->label, sizeof(circ->label), "%s", circ_label);
 	}
@@ -170,7 +170,6 @@ bool	delete_circuit(Model *model, Circuit *circ)
 		model->circuits = NULL;
 	}
 
-	printf(MESS_CIRC"The circuit is deleted.\n");
 	return true;
 }
 
