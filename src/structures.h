@@ -4,6 +4,9 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#define STRINGIFY(x)		#x
+#define TOSTRING(x)			STRINGIFY(x)
+
 #define TERMINAL_BLACK		"\e[0;30m"
 #define TERMINAL_GRAY		"\e[38;5;243m"
 #define TERMINAL_WHITE		"\e[0;37m"
@@ -16,15 +19,23 @@
 #define TERMINAL_CYAN		"\e[0;36m"
 #define	TERMINAL_BLUE		"\e[0;34m"
 
-#define TERMINAL_MAGENTA	"\e[0;35m"
+#define TERMINAL_PINK		"\e[38;5;218m"
+#define TERMINAL_MAGENTA	"\e[38;5;219m"
+#define TERMINAL_PURPLE		"\e[0;35m"
+#define TERMINAL_VIOLET		"\e[38;5;141m"
 
 #define TERMINAL_DEFAULT	"\e[0;0m"
 
 #define COMPONENTS_COUNT	15
 #define MAX_COMMAND_ARGS	5
+#define COMPONENTS_IN_PORTS	10
+#define LABEL_SIZE_NUM		20
+
+#define LABEL_SIZE					TOSTRING(LABEL_SIZE_NUM)
+#define COMPONENTS_IN_PORTS_STR		TOSTRING(COMPONENTS_IN_PORTS)
 
 #define APP_NAME			"simu-logic"
-#define APP_VERSION			"v0.13"
+#define APP_VERSION			"v0.13.1"
 
 #define MESS_ERROR			TERMINAL_RED		"\n/!\\ ERROR : "			TERMINAL_DEFAULT
 #define MESS_SYNTAX			TERMINAL_RED		"\n/!\\ WRONG SYNTAX : "	TERMINAL_DEFAULT
@@ -35,11 +46,6 @@
 #define	MESS_CIRC			TERMINAL_ORANGE		"(◌) "						TERMINAL_DEFAULT
 
 
-// LABEL_SIZE_NUM is a number coverted to a string, we can use it as "15" or add numbers to it (LABEL_SIZE_NUM + 1 = "16")
-#define LABEL_SIZE_NUM		20
-#define STRINGIFY(x)		#x
-#define TOSTRING(x)			STRINGIFY(x)
-#define LABEL_SIZE			TOSTRING(LABEL_SIZE_NUM)
 
 typedef struct	Coordinates Coordinates;
 typedef struct	Component Component;
@@ -58,7 +64,7 @@ typedef union	CompStatus CompStatus;
 
 // Types of components 
 // accepted values : (SOURCE, DIODE, DIODE_RGB, BUFFER, GATE_NOT, GATE_AND, GATE_OR, GATE_NAND, GATE_NOR, GATE_XOR, GATE_NXOR, GATE_IMPLY, GATE_NIMPLY)
-// Please edit COMPONENTS_COUNT and ComponentsNames[] when adding, removing or editing a component ! 
+// Please edit COMPONENTS_COUNT and ComponentsNames[] when adding or removing a component ! 
 typedef enum {
 	SOURCE,
 	DIODE,
@@ -66,10 +72,10 @@ typedef enum {
 	BUFFER,
 	GATE_NOT,
 	GATE_AND,
+	GATE_XOR,
 	GATE_OR,
 	GATE_NAND,
 	GATE_NOR,
-	GATE_XOR,
 	GATE_NXOR,
 	GATE_IMPLY,
 	GATE_NIMPLY,
@@ -88,9 +94,9 @@ static char* ComponentNames[] = {
 	"GATE_NOT",
 	"GATE_AND",
 	"GATE_OR",
+	"GATE_XOR",
 	"GATE_NAND",
 	"GATE_NOR",
-	"GATE_XOR",
 	"GATE_NXOR",
 	"GATE_IMPLY",
 	"GATE_NIMPLY",

@@ -37,6 +37,8 @@ static const CommandMap commands[] = {
 	{"comp",		command_component,			2, 	true},
 	{"help",		command_help,				2,	false},
 	{"hello",		command_hello,				1,	false},
+	{"wesh",		command_hello,				1,	true},
+	{"yo",			command_hello,				1,	true},
 	{"link",		command_link,				2, 	false},
 	{"quit",		command_quit,				1,	false},
 	{"exit",		command_quit,				1,	true},
@@ -58,6 +60,7 @@ static void			command_circuit_help(char* args[MAX_COMMAND_ARGS], Model *model, i
 
 static const CommandMap circuit_options[] = {
 	{"create",		command_circuit_create,		3,	false},
+	{"cre",			command_circuit_create,		3,	true},
 	{"delete",		command_circuit_delete,		3,	false},
 	{"del",			command_circuit_delete,		3,	true},
 	{"rename",		command_circuit_rename,		4,	false},
@@ -85,9 +88,11 @@ static void			command_link_help(char* args[MAX_COMMAND_ARGS], Model *model, int 
 
 static const CommandMap link_options[] = {
 	{"create",		command_link_create,		4,	false},
+	{"cre",			command_link_create,		4,	true},
 	{"delete",		command_link_delete,		3,	false},
 	{"del",			command_link_delete,		3,	true},
 	{"show",		command_link_show,			3,	false},
+	{"sh",			command_link_show,			3,	true},
 	{"help",		command_link_help,			2,	true}
 };
 
@@ -100,6 +105,7 @@ static void			command_component_help(char* args[MAX_COMMAND_ARGS], Model *model,
 
 static const CommandMap component_options[] = {
 	{"create",		command_component_create,		5,	false},
+	{"cre",			command_component_create,		5,	true},
 	{"delete",		command_component_delete,		3,	false},
 	{"del",			command_component_delete,		3,	true},
 	{"rename",		command_component_rename,		4,	false},
@@ -138,24 +144,80 @@ static void command_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_cou
 	{
 		printf(	MESS_TIP"You can type "OPTION_COM(help)" after the name of a command to learn how to use it !\n"
 				"\nYou can use :"
+				"\n• "OPTION_COM(help aliases)" to the list of commands and options aliases\n"
 				"\n• "OPTION_COM(help commands)" to see the list of commands."
-				"\n• "OPTION_COM(help components)" to see the list of available components and how they work (not yet implemented)."
+				"\n• "OPTION_COM(help components)" to see the list of available components and how they work."
 				"\n• "OPTION_COM(help links)" to see how the links work (not yet implemented).\n");
 		return;
 	}
-	if (strcmp(args[1], "commands") == 0)
-	{
-		printf(	MESS_TIP"List of commands :"
-				"\n• "OPTION_COM(circuit)"   : Interact with a circuit."
-				"\n• "OPTION_COM(component)" : Interact with a component of a circuit. (not yet implemeted)"
-				"\n• "OPTION_COM(hello)"     : Displays an \"Hello World !\" message."
-				"\n• "OPTION_COM(help)"      : User guide of the app."
-				"\n• "OPTION_COM(link)"      : Interact with a link of a circuit."
-				"\n• "OPTION_COM(quit)"      : Close the application properly.\n"
-				MESS_TIP"You can write "OPTION_COM(help)" after the name of a command to know how to use it !\n");
-		return;
-	}
 
+	if (arg_count == 2)
+	{
+		if (strcmp(args[1], "aliases") == 0)
+		{
+			printf( MESS_TIP"The aliases allows you to write commands with shorter arguments ! Once you know them, you will be able write commands at the speed of light !\n"
+					"\nList of commands aliases :"
+					"\n• "OPTION_COM(circuit)"   : "OPTION_COM(circ)
+					"\n• "OPTION_COM(component)" : "OPTION_COM(comp)
+					"\n• "OPTION_COM(hello)"     : "OPTION_COM(wesh) "," OPTION_COM(yo)
+					"\n• "OPTION_COM(quit)"      : "OPTION_COM(exit) "," OPTION_COM(close) "," OPTION_COM(leave)"\n"
+					"\nList of options aliases :"
+					"\n• "OPTION_COM(create)"    : "OPTION_COM(cre)
+					"\n• "OPTION_COM(delete)"    : "OPTION_COM(del)
+					"\n• "OPTION_COM(rename)"    : "OPTION_COM(ren)
+					"\n• "OPTION_COM(import)"    : "OPTION_COM(im)
+					"\n• "OPTION_COM(export)"    : "OPTION_COM(ex)
+					"\n• "OPTION_COM(select)"    : "OPTION_COM(sel)
+					"\n• "OPTION_COM(unselect)"  : "OPTION_COM(unsel)
+					"\n• "OPTION_COM(show)"      : "OPTION_COM(sh)
+					"\n• "OPTION_COM(simulate)"  : "OPTION_COM(simu)
+					"\n• "OPTION_COM(move)"      : "OPTION_COM(mv)"\n");
+			return;
+		}
+
+		if (strcmp(args[1], "commands") == 0)
+		{
+			printf(	"\nList of commands :"
+					"\n• "OPTION_COM(circuit)"   : Interact with a circuit."
+					"\n• "OPTION_COM(component)" : Interact with the components of a circuit."
+					"\n• "OPTION_COM(hello)"     : Displays an"OPTION_STR(Hello World !)" message."
+					"\n• "OPTION_COM(help)"      : User guide of the app."
+					"\n• "OPTION_COM(link)"      : Interact with the links of a circuit."
+					"\n• "OPTION_COM(quit)"      : Close the application properly.\n"
+					MESS_TIP"You can write"OPTION_COM(help)" after the name of a command to know how to use it !\n");
+			return;
+		}
+
+		if ((strcmp(args[1], "components") == 0) || (strcmp(args[1], "comp") == 0))
+		{
+			printf(	"\nList of available components :\n"
+					"\n" TERMINAL_WHITE "Sources & Diodes:" TERMINAL_DEFAULT "\n"
+					"  ▻ "TERMINAL_CYAN"SOURCE"TERMINAL_DEFAULT"      : Outputs a binary signal ("TERMINAL_GRAY"TRUE"TERMINAL_DEFAULT" or "TERMINAL_GRAY"FALSE"TERMINAL_DEFAULT").\n"
+					"  ▻ "TERMINAL_BLUE"DIODE"TERMINAL_DEFAULT"       : Single-input indicator that shows the received binary state ("TERMINAL_GRAY"ON = TRUE"TERMINAL_DEFAULT" / "TERMINAL_GRAY"OFF = FALSE"TERMINAL_DEFAULT").\n"
+					"  ▻ "TERMINAL_BLUE"DIODE_RGB"TERMINAL_DEFAULT"   : Three-input indicator that shows a color based on the binary combination.\n"
+					
+					"\n" TERMINAL_WHITE "Single-Input Gates: (1 input)" TERMINAL_DEFAULT "\n"
+					"  ▻ "TERMINAL_PINK"GATE_NOT"TERMINAL_DEFAULT"    : Inverts the input binary signal ("TERMINAL_GRAY"TRUE → FALSE"TERMINAL_DEFAULT" / "TERMINAL_GRAY"FALSE → TRUE"TERMINAL_DEFAULT").\n"
+					"  ▻ "TERMINAL_PINK"BUFFER"TERMINAL_DEFAULT"      : Replicates the input binary signal ("TERMINAL_GRAY"TRUE → TRUE"TERMINAL_DEFAULT" / "TERMINAL_GRAY"FALSE → FALSE"TERMINAL_DEFAULT").\n"
+					
+					"\n" TERMINAL_WHITE "Multi-Input Gates: (2 to "COMPONENTS_IN_PORTS_STR" inputs)" TERMINAL_DEFAULT "\n"
+					"  ▻ "TERMINAL_MAGENTA"GATE_AND"TERMINAL_DEFAULT"    : Outputs "TERMINAL_GRAY"TRUE"TERMINAL_DEFAULT" only if ALL inputs are "TERMINAL_GRAY"TRUE"TERMINAL_DEFAULT".\n"
+					"  ▻ "TERMINAL_MAGENTA"GATE_OR"TERMINAL_DEFAULT"     : Outputs "TERMINAL_GRAY"TRUE"TERMINAL_DEFAULT" if AT LEAST ONE input is "TERMINAL_GRAY"TRUE"TERMINAL_DEFAULT".\n"
+					"  ▻ "TERMINAL_MAGENTA"GATE_XOR"TERMINAL_DEFAULT"    : Outputs "TERMINAL_GRAY"TRUE"TERMINAL_DEFAULT" if the number of "TERMINAL_GRAY"TRUE"TERMINAL_DEFAULT" inputs is "TERMINAL_GRAY"ODD"TERMINAL_DEFAULT".\n"
+					
+					"\n" TERMINAL_WHITE "Inverted Multi-Input Gates: (2 to "COMPONENTS_IN_PORTS_STR" inputs)" TERMINAL_DEFAULT "\n"
+					"  ▻ "TERMINAL_PURPLE"GATE_NAND"TERMINAL_DEFAULT"   : Inverted GATE_AND. Outputs "TERMINAL_GRAY"TRUE"TERMINAL_DEFAULT" if AT LEAST ONE input is "TERMINAL_GRAY"FALSE"TERMINAL_DEFAULT".\n"
+					"  ▻ "TERMINAL_PURPLE"GATE_NOR"TERMINAL_DEFAULT"    : Inverted GATE_OR. Outputs "TERMINAL_GRAY"TRUE"TERMINAL_DEFAULT" only if ALL inputs are "TERMINAL_GRAY"FALSE"TERMINAL_DEFAULT".\n"
+					"  ▻ "TERMINAL_PURPLE"GATE_NXOR"TERMINAL_DEFAULT"   : Inverted GATE_XOR. Outputs "TERMINAL_GRAY"TRUE"TERMINAL_DEFAULT" if the number of "TERMINAL_GRAY"TRUE"TERMINAL_DEFAULT" inputs is "TERMINAL_GRAY"EVEN"TERMINAL_DEFAULT".\n"
+					
+					"\n" TERMINAL_WHITE "Implication Gates (2 inputs):" TERMINAL_DEFAULT "\n"
+					"  ▻ "TERMINAL_VIOLET"GATE_IMPLY"TERMINAL_DEFAULT"  : Logical Implication gate.\n"
+					"  ▻ "TERMINAL_VIOLET"GATE_NIMPLY"TERMINAL_DEFAULT" : Logical Non-Implication gate.\n"
+					
+					MESS_TIP"To connect these components together in a circuit, use the"OPTION_COM(link)" command. Learn how they work with"OPTION_COM(help link)" command.\n" TERMINAL_DEFAULT);
+			return;
+		}
+	}
 	printf(MESS_ERROR"Unknown help topic '%s'. Type "OPTION_COM(help)" to see all available topics.\n", args[1]);
 }
 
@@ -493,7 +555,7 @@ static void	command_circuit_help(char* args[MAX_COMMAND_ARGS], Model *model, int
 	
 	exec_full_help("circuit", circuit_options, circuit_options_count, model);
 
-	printf(MESS_TIP"After you've set up an " KEYWORD_ACTIVE " circuit (with "COM_OPEN"circuit select"COM_CLOSE" command), you can modify the content of it with "COM_OPEN"component"COM_CLOSE" and "COM_OPEN"link"COM_CLOSE" commands.\n");
+	printf(MESS_TIP"After you've set an "TERMINAL_GREEN"active"TERMINAL_DEFAULT" circuit (with "COM_OPEN"circuit select"COM_CLOSE" command), you will be able to edit the content of it with "COM_OPEN"component"COM_CLOSE" and "COM_OPEN"link"COM_CLOSE" commands.\n");
 	return;
 }
 
@@ -552,8 +614,8 @@ static void			command_link_create(char* args[MAX_COMMAND_ARGS], Model *model, in
 	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
 		printf( "\n• "OPTION(create)" :"
-				"\n  ▻ "COM_OPEN"link "OPTION(create) OPTION_STR(component source) OPTION_STR(component dest) OPTION_INT(port_number) COM_CLOSE" : create a link from a source component to a destination component and specify\n"
-				"                                                          the port number of the destination (from 0 to 10).\n");
+				"\n  ▻ "COM_OPEN"link "OPTION(create) OPTION_STR(comp src) OPTION_STR(comp dest) OPTION_INT(port number) COM_CLOSE"        : create a link from a source component to a destination component and specify\n"
+				"                                                              the port number of the destination (from 0 to 10).\n");
 		return;
 	}
 
@@ -586,8 +648,8 @@ static void			command_link_delete(char* args[MAX_COMMAND_ARGS], Model *model, in
 	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
 		printf( "\n• "OPTION(delete)" :"
-				"\n  ▻ "COM_OPEN"link "OPTION(delete) OPTION_STR(component source) OPTION_STR(component dest) COM_CLOSE"   : delete a link between two components."
-				"\n  ▻ "COM_OPEN"link "OPTION(delete) KEYWORD_ALL OPTION_STR(component name) COM_CLOSE"              : delete all the links of a component. (NOT YET IMPLEMENTED)\n");
+				"\n  ▻ "COM_OPEN"link "OPTION(delete) OPTION_STR(comp src) OPTION_STR(comp dest) COM_CLOSE"                    : delete a link between two components."
+				"\n  ▻ "COM_OPEN"link "OPTION(delete) KEYWORD_ALL OPTION_STR(comp name) COM_CLOSE"                           : delete all the links of a component. (NOT YET IMPLEMENTED)\n");
 		return;
 	}
 	
@@ -645,7 +707,7 @@ static void			command_link_show(char* args[MAX_COMMAND_ARGS], Model *model, int 
 	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
 		printf( "\n• "OPTION(show)" :"
-				"\n  ▻ "COM_OPEN"link "OPTION(show) OPTION_STR(component name) COM_CLOSE"                        : show all the inbound and outbound links of a component.\n");
+				"\n  ▻ "COM_OPEN"link "OPTION(show) OPTION_STR(comp name) COM_CLOSE"                                 : show all the inbound and outbound links of a component.\n");
 		return;
 	}
 
@@ -731,7 +793,7 @@ static void			command_component_create(char* args[MAX_COMMAND_ARGS], Model *mode
 	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
 		printf( "\n• "OPTION(create)" :"
-				"\n  ▻ "COM_OPEN"component "OPTION(create) OPTION_STR(Component_Type) OPTION_STR(component name) OPTION_INT(InboundPorts) COM_CLOSE"                        : Create a component (need to specify the type, the name and the number of inbound ports).\n");
+				"\n  ▻ "COM_OPEN"component "OPTION(create) OPTION_STR(COMP_TYPE) OPTION_STR(comp name) OPTION_INT(InboundPorts) COM_CLOSE" : Create a component (need to specify the type, the name and the number of inbound ports).\n");
 		return;
 	}
 
@@ -756,7 +818,7 @@ static void			command_component_delete(char* args[MAX_COMMAND_ARGS], Model *mode
 	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
 		printf( "\n• "OPTION(delete)" :"
-				"\n  ▻ "COM_OPEN"component "OPTION(delete) OPTION_STR(component name) COM_CLOSE"                        : Delete a component (need to specify the name of the component).\n");
+				"\n  ▻ "COM_OPEN"component "OPTION(delete) OPTION_STR(comp name) COM_CLOSE"                          : Delete a component (need to specify the name of the component).\n");
 		return;
 	}
 
@@ -781,7 +843,7 @@ static void			command_component_rename(char* args[MAX_COMMAND_ARGS], Model *mode
 	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
 		printf( "\n• "OPTION(rename)" :"
-				"\n  ▻ "COM_OPEN"component "OPTION(rename) OPTION_STR(old component name) OPTION_STR(new component name) COM_CLOSE"                        : Rename a component (need to specify the old name and the new name).\n");
+				"\n  ▻ "COM_OPEN"component "OPTION(rename) OPTION_STR(old comp name) OPTION_STR(new comp name) COM_CLOSE"      : Rename a component (need to specify the old name and the new name).\n");
 		return;
 	}
 
@@ -802,7 +864,7 @@ static void			command_component_move(char* args[MAX_COMMAND_ARGS], Model *model,
 	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
 		printf( "\n• "OPTION(move)" :"
-				"\n  ▻ "COM_OPEN"component "OPTION(move) OPTION_STR(component name) OPTION_INT(x) OPTION_INT(y) COM_CLOSE"                        : Move a component (need to specify the name of the component and the new " OPTION_INT(x) " and "OPTION_INT(y) " coordinates\n");
+				"\n  ▻ "COM_OPEN"component "OPTION(move) OPTION_STR(comp name) OPTION_INT(x) OPTION_INT(y) COM_CLOSE"                        : Move a component (need to specify the name of the component and the new " OPTION_INT(x) " and "OPTION_INT(y) " coordinates\n");
 		return;
 	}
 

@@ -25,9 +25,9 @@ static int	auto_nb_in(TypeComponent type, int in_nbr)
 	{
 		return 2;
 	}
-	else if (in_nbr >= 10)
+	else if (in_nbr >= COMPONENTS_IN_PORTS)
 	{
-		return 10;
+		return COMPONENTS_IN_PORTS;
 	}
 	else
 	{

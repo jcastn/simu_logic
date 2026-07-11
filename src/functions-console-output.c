@@ -6,13 +6,97 @@
 #include "prototypes.h"
 #include "structures.h"
 
+static char*	get_component_color(TypeComponent comptype)
+{
+	if (comptype == SOURCE)
+	{
+		return TERMINAL_CYAN;
+	}
+	else if (comptype <= DIODE_RGB)
+	{
+		return TERMINAL_BLUE;
+	}
+	else if (comptype <= GATE_NOT)
+	{
+		return TERMINAL_PINK;
+	}
+	else if (comptype <= GATE_XOR)
+	{
+		return TERMINAL_MAGENTA;
+	}
+	else if (comptype <= GATE_NXOR)
+	{
+		return TERMINAL_PURPLE;
+	}
+	else if (comptype <= GATE_NIMPLY)
+	{
+		return TERMINAL_VIOLET;
+	}
+	return TERMINAL_DEFAULT;
+}
+
+static void		get_component_out_status(Component* comp, const char** state_color, const char** state_text)
+{
+	if (comp->type == DIODE_RGB)
+	{
+		if (comp->out_status.rgb.r && comp->out_status.rgb.g && comp->out_status.rgb.b)
+		{
+			*state_color = TERMINAL_WHITE;
+			*state_text = "ON (white)"; 
+		}
+		else if (comp->out_status.rgb.r && comp->out_status.rgb.g)
+		{
+			*state_color = TERMINAL_YELLOW;
+			*state_text = "ON (yellow)";
+		}
+		else if (comp->out_status.rgb.r && comp->out_status.rgb.b)
+		{
+			*state_color = TERMINAL_MAGENTA;
+			*state_text = "ON (magenta)";
+		}
+		else if (comp->out_status.rgb.g && comp->out_status.rgb.b)
+		{
+			*state_color = TERMINAL_CYAN;
+			*state_text = "ON (cyan)";
+		}
+		else if (comp->out_status.rgb.r)     
+		{
+			*state_color = TERMINAL_RED;
+			*state_text = "ON (red)";
+		}
+		else if (comp->out_status.rgb.g)     
+		{
+			*state_color = TERMINAL_GREEN;
+			*state_text = "ON (green)";
+		}
+		else if (comp->out_status.rgb.b)     
+		{
+			*state_color = TERMINAL_BLUE;
+			*state_text = "ON (blue)";
+		}
+		else
+		{
+			*state_color = TERMINAL_RED;
+			*state_text = "OFF";
+		}
+	}
+	else
+	{
+		// Out-Status State
+		*state_color = comp->out_status.out ? TERMINAL_GREEN : TERMINAL_RED;
+		*state_text = comp->out_status.out ? "ON" : "OFF";
+	}
+	return;
+}
+
+
 void	show_components_from_circuit(Circuit* circ)
 {
 	int counter;
 	printf("\nCircuit %d (\"%s\"):\n%d Components and %d Links on %d Levels, \n", circ->id, circ->label, circ->component_count, circ->link_count, circ->max_level);
-	printf("•----------------------•----------------------•-------------•--------•-------•-------•--------•--------•------------------•\n");
-	printf("| Component Label      | Component Type       | State       | ID     | Level | Align | x      | y      | Links            |\n");
-	printf("•----------------------•----------------------•-------------•--------•-------•-------•--------•--------•------------------•\n");
+	printf("•----------------------•----------------------•--------------•--------•-------•-------•--------•--------•------------------•\n");
+	printf("| Component Label      | Component Type       | State        | ID     | Level | Align | x      | y      | Links            |\n");
+	printf("•----------------------•----------------------•--------------•--------•-------•-------•--------•--------•------------------•\n");
 
 
 	counter = 0;
@@ -20,79 +104,18 @@ void	show_components_from_circuit(Circuit* circ)
 	{
 		const char* component_color;
 		Component* comp = circ->components[counter];
-
-		// Component Label and Component Type color 
-		if (comp->type <= 1){
-			component_color = TERMINAL_CYAN;
-		}
-		else 
-		{
-			component_color = TERMINAL_MAGENTA;
-		}
+		component_color = get_component_color(comp->type);
 
 		// Out-Status State
 		const char* state_color;
 		const char* state_text;
 
-
+		get_component_out_status(comp, &state_color, &state_text);
 		
-		if (comp->type == DIODE_RGB)
-		{
-			if (comp->out_status.rgb.r && comp->out_status.rgb.g && comp->out_status.rgb.b)
-			{
-				state_color = TERMINAL_WHITE;
-				state_text = "ON (white)"; 
-			}
-			else if (comp->out_status.rgb.r && comp->out_status.rgb.g)
-			{
-				state_color = TERMINAL_YELLOW;
-				state_text = "ON (yellow)";
-			}
-			else if (comp->out_status.rgb.r && comp->out_status.rgb.b)
-			{
-				state_color = TERMINAL_MAGENTA;
-				state_text = "ON (magenta)";
-			}
-			else if (comp->out_status.rgb.g && comp->out_status.rgb.b)
-			{
-				state_color = TERMINAL_CYAN;
-				state_text = "ON (cyan)";
-			}
-			else if (comp->out_status.rgb.r)     
-			{
-				state_color = TERMINAL_RED;
-				state_text = "ON (red)";
-			}
-			else if (comp->out_status.rgb.g)     
-			{
-				state_color = TERMINAL_GREEN;
-				state_text = "ON (green)";
-			}
-			else if (comp->out_status.rgb.b)     
-			{
-				state_color = TERMINAL_BLUE;
-				state_text = "ON (blue)";
-			}
-			else
-			{
-				state_color = TERMINAL_RED;
-				state_text = "OFF";
-			}
-		}
-		else
-		{
-			// Out-Status State
-			state_color = comp->out_status.out ? TERMINAL_GREEN : TERMINAL_RED;
-			state_text = comp->out_status.out ? "ON" : "OFF";
-		}
-		
-		printf("| %s%-"LABEL_SIZE"s" TERMINAL_DEFAULT " | %s%-"LABEL_SIZE"s" TERMINAL_DEFAULT " | %s%-12s" TERMINAL_DEFAULT "| %-6d | %-5d | %-5d | %-6d | %-6d | In:%-4d Out:%-4d |\n", 
-			component_color,
-			comp->label,
-			component_color,
-			ComponentNames[comp->type],
-			state_color,
-			state_text,
+		printf("| %s%-"LABEL_SIZE"s" TERMINAL_DEFAULT " | %s%-"LABEL_SIZE"s" TERMINAL_DEFAULT " | %s%-12s" TERMINAL_DEFAULT " | %-6d | %-5d | %-5d | %-6d | %-6d | In:%-4d Out:%-4d |\n", 
+			component_color, comp->label,
+			component_color, ComponentNames[comp->type],
+			state_color, state_text,
 			comp->id, 
 			comp->coordinates->level, 
 			comp->coordinates->alignment, 
@@ -103,7 +126,7 @@ void	show_components_from_circuit(Circuit* circ)
 		
 		counter++;
 	}
-	printf("•----------------------•----------------------•-------------•--------•-------•-------•--------•--------•------------------•\n");
+	printf("•----------------------•----------------------•--------------•--------•-------•-------•--------•--------•------------------•\n");
 }
 
 void	show_components_from_model(Model *model)
@@ -124,13 +147,15 @@ void	show_components_from_model(Model *model)
 void	show_component_links(Component* comp)
 {
 	int count;
-	printf("\nComponent '%s' - (type : '%s' - id : %d)\n", comp->label, ComponentNames[comp->type], comp->id);
+	char inbound[64];
+	char outbound[64];
+	const char* component_color;
+
+	component_color = get_component_color(comp->type);
+	printf("\nComponent '%s%s"TERMINAL_DEFAULT"' - (Type : '%s%s"TERMINAL_DEFAULT"' - ID : %d)\n", component_color, comp->label, component_color, ComponentNames[comp->type], comp->id);
 	printf("•-------------------------------•-------------------------------•\n");
 	printf("| Inbound links                 | Outbound links                |\n");
 	printf("•-------------------------------•-------------------------------•\n");
-
-	char inbound[64];
-	char outbound[64];
 
 	count = 0;
 	while ((count == 0) || (count < comp->nb_in) || (count < comp->nb_out))
@@ -139,7 +164,8 @@ void	show_component_links(Component* comp)
 		{
 			if (comp->in_links[count] != NULL)
 			{
-				snprintf(inbound, sizeof(inbound), "Port %d : %-"LABEL_SIZE"s", count, comp->in_links[count]->src->label);
+				component_color = get_component_color(comp->in_links[count]->src->type);
+				snprintf(inbound, sizeof(inbound), "Port %d : %s%-"LABEL_SIZE"s"TERMINAL_DEFAULT, count, component_color, comp->in_links[count]->src->label);
 			}
 			else
 			{
@@ -150,7 +176,7 @@ void	show_component_links(Component* comp)
 		{
 			if ((count == 0) && (comp->nb_in == 0))
 			{
-				snprintf(inbound, sizeof(inbound), "(empty - no inbound ports)  ");
+				snprintf(inbound, sizeof(inbound), TERMINAL_GRAY"(empty - no inbound ports)   "TERMINAL_DEFAULT);
 			}
 			else 
 			{
@@ -162,7 +188,8 @@ void	show_component_links(Component* comp)
 		{
 			if ((comp->out_links[count] != NULL) && (comp->out_links[count]->dest != NULL))
 			{
-				snprintf(outbound, sizeof(outbound), "%-"LABEL_SIZE"s", comp->out_links[count]->dest->label);
+				component_color = get_component_color(comp->out_links[count]->dest->type);
+				snprintf(outbound, sizeof(outbound), "%s%-"LABEL_SIZE"s"TERMINAL_DEFAULT"         ", component_color, comp->out_links[count]->dest->label);
 			}
 			else
 			{
@@ -173,7 +200,7 @@ void	show_component_links(Component* comp)
 		{
 			if (count == 0 && comp->nb_out == 0)
 			{
-				snprintf(outbound, sizeof(outbound), TERMINAL_GRAY"(empty - no outbound ports) "TERMINAL_DEFAULT);
+				snprintf(outbound, sizeof(outbound), TERMINAL_GRAY"(empty - no outbound ports)  "TERMINAL_DEFAULT);
 			}
 			else
 			{
@@ -181,7 +208,7 @@ void	show_component_links(Component* comp)
 			}
 		}
 
-		printf("| %-29s | %-29s |\n", inbound, outbound);
+		printf("| %29s | %29s |\n", inbound, outbound);
 		count++;
 
 	}
