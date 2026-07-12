@@ -1,12 +1,5 @@
 //functions-links.c
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "prototypes.h"
-#include "structures.h"
-
+#include "../../include/prototypes.h"
 
 // Function to connect components by a Link 
 // Parameters : source component, destination component, port number of the destination

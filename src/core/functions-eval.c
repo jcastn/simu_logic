@@ -1,9 +1,5 @@
 //functions-eval.c
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include "prototypes.h"
-#include "structures.h"
+#include "../../include/prototypes.h"
 
 static bool	op_and(bool a, bool b) 
 {

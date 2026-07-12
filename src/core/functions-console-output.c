@@ -1,10 +1,5 @@
 // functions-console-output.c
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-#include "prototypes.h"
-#include "structures.h"
+#include "../../include/prototypes.h"
 
 static const char* ComponentColors[] = {
 	[SOURCE]      = TERMINAL_CYAN,

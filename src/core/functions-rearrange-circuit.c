@@ -1,9 +1,5 @@
 //functions-rearrange-circuit.c
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include "prototypes.h"
-#include "structures.h"
+#include "../../include/prototypes.h"
 
 Component*	update_coordinates(Component* comp, int x, int y)
 {

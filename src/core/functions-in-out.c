@@ -1,12 +1,6 @@
 //functions-in-out.c
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <nfd.h>
-
-#include "prototypes.h"
-#include "structures.h"
+#include "../../include/prototypes.h"
 
 
 

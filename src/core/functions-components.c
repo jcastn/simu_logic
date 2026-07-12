@@ -1,11 +1,5 @@
 //functions-components.c
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "prototypes.h"
-#include "structures.h"
+#include "../../include/prototypes.h"
 
 static int	auto_nb_in(TypeComponent type, int in_nbr)
 {

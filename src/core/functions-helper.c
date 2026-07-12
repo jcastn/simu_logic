@@ -1,9 +1,5 @@
 //functions-helper.c
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "structures.h"
+#include "../../include/prototypes.h"
 
 // Function used to shift the right part content of a pointer array to the left because a pointer was removed from the array (very specific)
 void			shift_pointer_array(void** array, int start_index, int current_count)

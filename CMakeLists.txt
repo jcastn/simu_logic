@@ -5,18 +5,21 @@ project(simu-logic C)
 add_subdirectory(third_party/nfd)
 
 add_executable(simu-logic-app
-	src/main.c 
-	src/functions-models.c
-	src/functions-circuits.c 
-	src/functions-components.c 
-	src/functions-console-output.c 
-	src/functions-links.c 
-	src/functions-eval.c 
-	src/functions-helper.c 
-	src/functions-in-out.c 
-	src/functions-rearrange-circuit.c
-	src/functions-run-loop.c
-	src/functions-commands.c
+	src/core/main.c
+	src/core/functions-models.c
+	src/core/functions-circuits.c 
+	src/core/functions-components.c 
+	src/core/functions-console-output.c 
+	src/core/functions-links.c 
+	src/core/functions-eval.c 
+	src/core/functions-helper.c 
+	src/core/functions-in-out.c 
+	src/core/functions-rearrange-circuit.c
+	src/core/functions-run-loop.c
+	src/commands/commands.c
+	src/commands/commands-circuit.c
+	src/commands/commands-component.c
+	src/commands/commands-link.c
 )
 
 target_compile_options(simu-logic-app PRIVATE -Wall -Wextra -Werror)

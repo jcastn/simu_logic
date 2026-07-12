@@ -1,12 +1,6 @@
 //functions-run-loop.c
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
-
-#include "structures.h"
-#include "prototypes.h"
+#include "../../include/prototypes.h"
 
 static void scan_user_entry(char* command_user, Model *model)
 {
