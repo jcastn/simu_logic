@@ -38,7 +38,7 @@ CompStatus	generic_eval(Component* comp)
 	not_flag = false;
 	switch (comp->type)
 	{
-		case DIODE : case BUFFER : case INPUT : case OUTPUT :
+		case DIODE : case BUFFER :
 			comp->out_status.out = read_parent_status(comp, 0);
 			return comp->out_status;
 		case GATE_NOT :

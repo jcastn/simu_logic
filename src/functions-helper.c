@@ -38,6 +38,10 @@ TypeComponent	string_to_typecomponent(const char* type_str, bool* found)
 
 bool			read_parent_status(Component* comp, int port_number)
 {
+	if (!comp || port_number < 0 || port_number >= comp->nb_in)
+	{
+		return false; 
+	}
 	if (comp->in_links[port_number] != NULL)
 	{
 		return comp->in_links[port_number]->src->out_status.out;

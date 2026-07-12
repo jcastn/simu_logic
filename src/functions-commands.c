@@ -126,7 +126,7 @@ static void		exec_full_help(char* command_name, const CommandMap command_map[], 
 	{
 		if (command_map[counter].is_alias == false)
 		{
-			exec_command((char*[]){command_name, command_map[counter].command, "help"}, model, 3);
+			exec_command((char*[]){command_name, command_map[counter].command, "help", NULL, NULL}, model, 3);
 		}
 		counter++;
 	}
@@ -267,12 +267,7 @@ static void	command_circuit_create(char* args[MAX_COMMAND_ARGS], Model *model, i
 	{
 		create_circuit(model, args[2]);
 	}
-
-	if (model->active_circuit != NULL)
-	{
-		printf(MESS_INFO"The active circuit is now : \"%s\"\n", model->active_circuit->label);
-		return;
-	}
+	
 	return;
 }
 
@@ -562,8 +557,9 @@ static void	command_circuit_help(char* args[MAX_COMMAND_ARGS], Model *model, int
 // Command circuit 
 static void	command_circuit(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	int counter;
-	int circuit_options_count;
+	int		counter;
+	int		circuit_options_count;
+	char	active_label[LABEL_SIZE_NUM + 1];
 	
 	// If there's the "active" keyword in the command and there's an active cirucit
 	// it will edit the args[2] value to the circuit name of the active circuit
@@ -573,7 +569,9 @@ static void	command_circuit(char* args[MAX_COMMAND_ARGS], Model *model, int arg_
 		{
 			if (model->active_circuit != NULL)
 			{
-				strcpy(args[2], model->active_circuit->label);
+				strncpy(active_label, model->active_circuit->label, sizeof(active_label)-1);
+				active_label[sizeof(active_label)-1] = '\0';
+				args[2] = active_label;
 			}
 			else
 			{

@@ -194,8 +194,10 @@ static void	read_file_content(char* file_path, Model* model)
 					if (type_found)
 					{
 						Component* comp = create_component(comp_type, comp_label, nb_in, current_circ);
-						//rename_component(current_circ, comp, comp_label);
-						update_coordinates(comp, x, y);
+						if (comp != NULL)
+						{
+							update_coordinates(comp, x, y);
+						}						
 					}
 					else
 					{
@@ -321,9 +323,16 @@ static void	write_file_content(char* file_path, Model *model, int circuit_index)
 
 	fclose(file);
 	
-	printf(MESS_INFO"File '%s' is generated with success. It contains %d circuits.\n", file_path, circ);
-
-	return;
+	if (circuit_index == -1)
+	{
+		printf(MESS_INFO"File '%s' is generated with success. It contains %d circuits.\n", file_path, circ);
+		return;
+	}
+	else
+	{
+		printf(MESS_INFO"File '%s' is generated with success. It contains 1 circuit.\n", file_path);
+		return;
+	}
 }
 
 

@@ -26,7 +26,7 @@
 
 #define TERMINAL_DEFAULT	"\e[0;0m"
 
-#define COMPONENTS_COUNT	15
+#define COMPONENTS_COUNT	13
 #define MAX_COMMAND_ARGS	5
 #define COMPONENTS_IN_PORTS	10
 #define LABEL_SIZE_NUM		20
@@ -35,7 +35,7 @@
 #define COMPONENTS_IN_PORTS_STR		TOSTRING(COMPONENTS_IN_PORTS)
 
 #define APP_NAME			"simu-logic"
-#define APP_VERSION			"v0.13.2"
+#define APP_VERSION			"v0.13.3"
 
 #define MESS_ERROR			TERMINAL_RED		"\n/!\\ ERROR : "			TERMINAL_DEFAULT
 #define MESS_SYNTAX			TERMINAL_RED		"\n/!\\ WRONG SYNTAX : "	TERMINAL_DEFAULT
@@ -78,15 +78,13 @@ typedef enum {
 	GATE_NOR,
 	GATE_NXOR,
 	GATE_IMPLY,
-	GATE_NIMPLY,
-	INPUT,
-	OUTPUT,
+	GATE_NIMPLY
 } TypeComponent;
 
 
 
 // Translation of TypeComponent enumeration to strings
-static char* ComponentNames[] = {
+static const char* ComponentNames[] = {
 	"SOURCE",
 	"DIODE",
 	"DIODE_RGB",
@@ -99,9 +97,7 @@ static char* ComponentNames[] = {
 	"GATE_NOR",
 	"GATE_NXOR",
 	"GATE_IMPLY",
-	"GATE_NIMPLY",
-	"INPUT",
-	"OUTPUT",
+	"GATE_NIMPLY"
 };
 
 typedef enum
@@ -165,7 +161,6 @@ struct	Component
 	Link**			in_links;
 	char			label[LABEL_SIZE_NUM+1];
 	CompStatus		out_status;	
-	//bool			out_status;
 };
 
 struct	TypeCounter

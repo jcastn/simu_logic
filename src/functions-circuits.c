@@ -9,8 +9,13 @@
 
 Circuit*	create_circuit(Model* model, const char* circ_label)
 {
-	Circuit* circ = malloc(sizeof(Circuit));
-	if (!model || !circ_label || circ == NULL)
+	if (!model || !circ_label)
+	{
+		return NULL;
+	}
+
+	Circuit* circ = calloc(1, sizeof(Circuit));
+	if (circ == NULL)
 	{
 		return NULL;
 	}
@@ -101,7 +106,7 @@ Circuit* get_circuit_by_label(const char* given_label, Model* model)
 {
 	int counter;
 
-	if (!given_label || !model->circuits)
+	if (!given_label || !model || !model->circuits)
 	{
 		printf(MESS_ERROR"Circuit with label '%s' not found\n", given_label);
 		return NULL;

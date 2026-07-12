@@ -13,7 +13,7 @@ static int	auto_nb_in(TypeComponent type, int in_nbr)
 	{
 		return 0;
 	}
-	else if ((type == DIODE) || (type == GATE_NOT) || (type == BUFFER ) || (type == INPUT) || (type == OUTPUT))
+	else if ((type == DIODE) || (type == GATE_NOT) || (type == BUFFER ))
 	{
 		return 1;
 	}
@@ -54,7 +54,7 @@ Component*	create_component(TypeComponent type, const char* comp_label, int in_n
 		return NULL;
 	}
 
-	comp->coordinates = malloc(sizeof(Coordinates));
+	comp->coordinates = calloc(1, sizeof(Coordinates));
 	if (!comp->coordinates)
 	{
 		free(comp);
@@ -77,6 +77,7 @@ Component*	create_component(TypeComponent type, const char* comp_label, int in_n
 		comp->in_links = malloc(sizeof(Link*) * comp->nb_in);
 		if (comp->in_links == NULL)
 		{
+			free(comp->coordinates);
 			free(comp);
 			return NULL;
 		}
@@ -97,6 +98,9 @@ Component*	create_component(TypeComponent type, const char* comp_label, int in_n
 	if (tmp == NULL)
 	{
 		printf(MESS_ERROR"Realloc of link pointers array failed (function create_component)\n");
+		free(comp->coordinates);
+		free(comp->in_links);
+		free(comp);
 		return NULL;
 	}
 	circ->components = tmp;

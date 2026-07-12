@@ -37,7 +37,6 @@ void		delete_model(Model* model)
 				delete_circuit(model, model->circuits[0]);
 			}
 		}
-		free(model->circuits);
 	}
 	printf("\n"MESS_CIRC"All loaded circuits are deleted.\n\n");
 	free(model);

@@ -6,34 +6,21 @@
 #include "prototypes.h"
 #include "structures.h"
 
-static char*	get_component_color(TypeComponent comptype)
-{
-	if (comptype == SOURCE)
-	{
-		return TERMINAL_CYAN;
-	}
-	else if (comptype <= DIODE_RGB)
-	{
-		return TERMINAL_BLUE;
-	}
-	else if (comptype <= GATE_NOT)
-	{
-		return TERMINAL_PINK;
-	}
-	else if (comptype <= GATE_XOR)
-	{
-		return TERMINAL_MAGENTA;
-	}
-	else if (comptype <= GATE_NXOR)
-	{
-		return TERMINAL_PURPLE;
-	}
-	else if (comptype <= GATE_NIMPLY)
-	{
-		return TERMINAL_VIOLET;
-	}
-	return TERMINAL_DEFAULT;
-}
+static const char* ComponentColors[] = {
+	[SOURCE]      = TERMINAL_CYAN,
+	[DIODE]       = TERMINAL_BLUE,
+	[DIODE_RGB]   = TERMINAL_BLUE,
+	[BUFFER]      = TERMINAL_PINK,
+	[GATE_NOT]    = TERMINAL_PINK,
+	[GATE_AND]    = TERMINAL_MAGENTA,
+	[GATE_OR]     = TERMINAL_MAGENTA,
+	[GATE_XOR]    = TERMINAL_MAGENTA,
+	[GATE_NAND]   = TERMINAL_PURPLE,
+	[GATE_NOR]    = TERMINAL_PURPLE,
+	[GATE_NXOR]   = TERMINAL_PURPLE,
+	[GATE_IMPLY]  = TERMINAL_VIOLET,
+	[GATE_NIMPLY] = TERMINAL_VIOLET,
+};
 
 static void		get_component_out_status(Component* comp, const char** state_color, const char** state_text)
 {
@@ -104,7 +91,7 @@ void	show_components_from_circuit(Circuit* circ)
 	{
 		const char* component_color;
 		Component* comp = circ->components[counter];
-		component_color = get_component_color(comp->type);
+		component_color = ComponentColors[comp->type];
 
 		// Out-Status State
 		const char* state_color;
@@ -151,7 +138,7 @@ void	show_component_links(Component* comp)
 	char outbound[64];
 	const char* component_color;
 
-	component_color = get_component_color(comp->type);
+	component_color = ComponentColors[comp->type];
 	printf("\nComponent '%s%s"TERMINAL_DEFAULT"' - (Type : '%s%s"TERMINAL_DEFAULT"' - ID : %d)\n", component_color, comp->label, component_color, ComponentNames[comp->type], comp->id);
 	printf("•-------------------------------•-------------------------------•\n");
 	printf("| Inbound links                 | Outbound links                |\n");
@@ -164,7 +151,8 @@ void	show_component_links(Component* comp)
 		{
 			if (comp->in_links[count] != NULL)
 			{
-				component_color = get_component_color(comp->in_links[count]->src->type);
+				component_color = ComponentColors[comp->in_links[count]->src->type];
+
 				snprintf(inbound, sizeof(inbound), "Port %d : %s%-"LABEL_SIZE"s"TERMINAL_DEFAULT, count, component_color, comp->in_links[count]->src->label);
 			}
 			else
@@ -188,7 +176,7 @@ void	show_component_links(Component* comp)
 		{
 			if ((comp->out_links[count] != NULL) && (comp->out_links[count]->dest != NULL))
 			{
-				component_color = get_component_color(comp->out_links[count]->dest->type);
+				component_color = ComponentColors[comp->out_links[count]->dest->type];
 				snprintf(outbound, sizeof(outbound), "%s%-"LABEL_SIZE"s"TERMINAL_DEFAULT"         ", component_color, comp->out_links[count]->dest->label);
 			}
 			else
