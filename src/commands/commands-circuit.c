@@ -50,7 +50,7 @@ static void	command_circuit_create(char* args[MAX_COMMAND_ARGS], Model *model, i
 	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(create)" :"
-				"\n  ▻ "COM_OPEN"circuit "OPTION(create) OPTION_CIRCUIT(circuit name) COM_CLOSE"                         : create an empty circuit.\n");
+				"\n  ▻ "COM_OPEN"circuit "OPTION(create) OPTION_CIRCUIT(circuit name) COM_CLOSE"                         : Create an empty circuit.\n");
 		return;
 	}
 
@@ -90,9 +90,9 @@ static void	command_circuit_delete(char* args[MAX_COMMAND_ARGS], Model *model, i
 	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(delete)" :"
-				"\n  ▻ "COM_OPEN"circuit "OPTION(delete) KEYWORD_ALL COM_CLOSE"                                    : delete all the circuits of the model."
-				"\n  ▻ "COM_OPEN"circuit "OPTION(delete) KEYWORD_ACTIVE COM_CLOSE"                                 : delete the active circuit."
-				"\n  ▻ "COM_OPEN"circuit "OPTION(delete) OPTION_CIRCUIT(circuit name) COM_CLOSE"                         : delete a circuit.\n");
+				"\n  ▻ "COM_OPEN"circuit "OPTION(delete) KEYWORD_ALL COM_CLOSE"                                    : Delete all the circuits of the model."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(delete) KEYWORD_ACTIVE COM_CLOSE"                                 : Delete the active circuit."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(delete) OPTION_CIRCUIT(circuit name) COM_CLOSE"                         : Delete a circuit.\n");
 		return;
 	}
 	// 'circuit delete "circuit name"' 
@@ -117,9 +117,9 @@ static void			command_circuit_clear(char* args[MAX_COMMAND_ARGS], Model *model, 
 	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(clear)" :"
-				"\n  ▻ "COM_OPEN"circuit "OPTION(clear) KEYWORD_ALL COM_CLOSE"                                     : clear all circuits."
-				"\n  ▻ "COM_OPEN"circuit "OPTION(clear) KEYWORD_ACTIVE COM_CLOSE"                                  : clear the active circuit."
-				"\n  ▻ "COM_OPEN"circuit "OPTION(clear) OPTION_CIRCUIT(circuit name) COM_CLOSE"                          : clear a precise circuit.\n");
+				"\n  ▻ "COM_OPEN"circuit "OPTION(clear) KEYWORD_ALL COM_CLOSE"                                     : Clear all circuits."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(clear) KEYWORD_ACTIVE COM_CLOSE"                                  : Clear the active circuit."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(clear) OPTION_CIRCUIT(circuit name) COM_CLOSE"                          : Clear a precise circuit.\n");
 		return;
 	}
 
@@ -157,8 +157,8 @@ static void	command_circuit_rename(char* args[MAX_COMMAND_ARGS], Model *model, i
 	if ((arg_count <= 3) && (strcmp(args[2], "help") == 0))
 	{
 		printf( "\n• "OPTION(rename)" :"
-		"\n  ▻ "COM_OPEN"circuit "OPTION(rename) KEYWORD_ACTIVE OPTION_CIRCUIT(new circuit name) COM_CLOSE"              : rename the active circuit."
-		"\n  ▻ "COM_OPEN"circuit "OPTION(rename) OPTION_CIRCUIT(old circuit name) OPTION_CIRCUIT(new circuit name) COM_CLOSE"  : rename a circuit.\n");
+		"\n  ▻ "COM_OPEN"circuit "OPTION(rename) KEYWORD_ACTIVE OPTION_CIRCUIT(new circuit name) COM_CLOSE"              : Rename the active circuit."
+		"\n  ▻ "COM_OPEN"circuit "OPTION(rename) OPTION_CIRCUIT(old circuit name) OPTION_CIRCUIT(new circuit name) COM_CLOSE"  : Rename a circuit.\n");
 		return;
 	}
 
@@ -180,8 +180,8 @@ static void			command_circuit_duplicate(char* args[MAX_COMMAND_ARGS], Model *mod
 	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(duplicate)" :"
-				"\n  ▻ "COM_OPEN"circuit "OPTION(duplicate) KEYWORD_ACTIVE OPTION_CIRCUIT(new circuit name) COM_CLOSE"              : rename the active circuit."
-				"\n  ▻ "COM_OPEN"circuit "OPTION(duplicate) OPTION_CIRCUIT(circuit name) OPTION_CIRCUIT(new circuit name) COM_CLOSE"  : rename a circuit.\n");
+				"\n  ▻ "COM_OPEN"circuit "OPTION(duplicate) KEYWORD_ACTIVE OPTION_CIRCUIT(new circuit name) COM_CLOSE"           : Duplicate the active circuit."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(duplicate) OPTION_CIRCUIT(circuit name) OPTION_CIRCUIT(new circuit name) COM_CLOSE"   : Duplicate a circuit.\n");
 		return;
 	}
 
@@ -200,7 +200,6 @@ static void			command_circuit_duplicate(char* args[MAX_COMMAND_ARGS], Model *mod
 	{
 		Circuit* dest_circ = duplicate_circuit(model, src_circ, "default");
 		printf(MESS_INFO"Circuit '%s' has been duplicated as '%s'\n", src_circ->label, dest_circ->label);
-
 	}
 }
 
@@ -211,7 +210,7 @@ static void	command_circuit_import(char* args[MAX_COMMAND_ARGS], Model *model, i
 	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(import)" :"
-				"\n  ▻ "COM_OPEN"circuit "OPTION(import) KEYWORD_ALL KEYWORD_PATH COM_CLOSE"                     : import all the circuits from a file.\n");
+				"\n  ▻ "COM_OPEN"circuit "OPTION(import) KEYWORD_ALL KEYWORD_PATH COM_CLOSE"                     : Import all the circuits from a file.\n");
 		return;
 	}
 
@@ -242,9 +241,9 @@ static void	command_circuit_export(char* args[MAX_COMMAND_ARGS], Model *model, i
 	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(export)" :"
-				"\n  ▻ "COM_OPEN"circuit "OPTION(export) KEYWORD_ALL KEYWORD_PATH COM_CLOSE"                     : export all the loaded circuits to a file."
-				"\n  ▻ "COM_OPEN"circuit "OPTION(export) KEYWORD_ACTIVE KEYWORD_PATH COM_CLOSE"                  : export the active circuit to a file."
-				"\n  ▻ "COM_OPEN"circuit "OPTION(export) OPTION_CIRCUIT(circuit name) KEYWORD_PATH COM_CLOSE"          : export a circuit to a file.\n");
+				"\n  ▻ "COM_OPEN"circuit "OPTION(export) KEYWORD_ALL KEYWORD_PATH COM_CLOSE"                     : Export all the loaded circuits to a file."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(export) KEYWORD_ACTIVE KEYWORD_PATH COM_CLOSE"                  : Export the active circuit to a file."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(export) OPTION_CIRCUIT(circuit name) KEYWORD_PATH COM_CLOSE"          : Export a circuit to a file.\n");
 
 		return;
 	}
@@ -288,15 +287,14 @@ static void	command_circuit_export(char* args[MAX_COMMAND_ARGS], Model *model, i
 // 'circuit rearrange "circuit name"'
 static void			command_circuit_rearrange(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	(void)model;
 	(void)arg_count;
 
 	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(rearrange)" :"
-				"\n  ▻ "COM_OPEN"circuit "OPTION(rearrange) KEYWORD_ALL COM_CLOSE"                                 : rearrange all circuits."
-				"\n  ▻ "COM_OPEN"circuit "OPTION(rearrange) KEYWORD_ACTIVE COM_CLOSE"                              : rearrange the active circuit."
-				"\n  ▻ "COM_OPEN"circuit "OPTION(rearrange) OPTION_CIRCUIT(circuit name) COM_CLOSE"                      : rearrange a circuit.\n");
+				"\n  ▻ "COM_OPEN"circuit "OPTION(rearrange) KEYWORD_ALL COM_CLOSE"                                 : Rearrange all circuits."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(rearrange) KEYWORD_ACTIVE COM_CLOSE"                              : Rearrange the active circuit."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(rearrange) OPTION_CIRCUIT(circuit name) COM_CLOSE"                      : Rearrange a circuit.\n");
 		return;
 	}
 
@@ -342,9 +340,9 @@ static void	command_circuit_simulate(char* args[MAX_COMMAND_ARGS], Model *model,
 	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(simulate)" :"
-				"\n  ▻ "COM_OPEN"circuit "OPTION(simulate) KEYWORD_ALL COM_CLOSE"                                  : simulate all the components of all loaded circuits."
-				"\n  ▻ "COM_OPEN"circuit "OPTION(simulate) KEYWORD_ACTIVE COM_CLOSE"                               : simulate all the components of the active circuit ('select' option)."
-				"\n  ▻ "COM_OPEN"circuit "OPTION(simulate) OPTION_CIRCUIT(circuit name) COM_CLOSE"                       : simulate all the components of the given circuit.\n");
+				"\n  ▻ "COM_OPEN"circuit "OPTION(simulate) KEYWORD_ALL COM_CLOSE"                                  : Simulate all the components of all loaded circuits."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(simulate) KEYWORD_ACTIVE COM_CLOSE"                               : Simulate all the components of the active circuit ('select' option)."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(simulate) OPTION_CIRCUIT(circuit name) COM_CLOSE"                       : Simulate all the components of the given circuit.\n");
 		return;
 	}
 
@@ -367,7 +365,7 @@ static void	command_circuit_select(char* args[MAX_COMMAND_ARGS], Model *model, i
 	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(select)" :"
-				"\n  ▻ "COM_OPEN"circuit "OPTION(select) OPTION_CIRCUIT(circuit name) COM_CLOSE"                         : define the active circuit.\n");
+				"\n  ▻ "COM_OPEN"circuit "OPTION(select) OPTION_CIRCUIT(circuit name) COM_CLOSE"                         : Define the active circuit.\n");
 		return;
 	}
 
@@ -388,7 +386,7 @@ static void	command_circuit_unselect(char* args[MAX_COMMAND_ARGS], Model *model,
 	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
 		printf(	"\n• "OPTION(unselect)" :"
-				"\n  ▻ "COM_OPEN"circuit "OPTION(unselect) COM_CLOSE"                                      : unselect the active circuit.\n");
+				"\n  ▻ "COM_OPEN"circuit "OPTION(unselect) COM_CLOSE"                                      : Unselect the active circuit.\n");
 		return;
 	}
 

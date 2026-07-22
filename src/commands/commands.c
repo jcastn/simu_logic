@@ -54,7 +54,7 @@ void command_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 	{
 		printf(	MESS_TIP"You can type "OPTION_COM(help)" after the name of a command to learn how to use it !\n"
 				"\nYou can use :"
-				"\n• "OPTION_COM(help aliases)" to the list of commands and options aliases\n"
+				"\n• "OPTION_COM(help aliases)" to the list of commands and options aliases."
 				"\n• "OPTION_COM(help commands)" to see the list of commands."
 				"\n• "OPTION_COM(help components)" to see the list of available components and how they work."
 				"\n• "OPTION_COM(help links)" to see how the links work (not yet implemented).\n");
@@ -104,6 +104,12 @@ void command_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 			return;
 		}
 
+		if (strcmp(args[1], "link") == 0)
+		{
+			printf(	MESS_ERROR"\nSORRY ! This help page is not yet added ! :(\n");
+			return;
+		}
+
 		if ((strcmp(args[1], "components") == 0) || (strcmp(args[1], "comp") == 0))
 		{
 			printf(	"\nList of available components :\n"
@@ -134,7 +140,7 @@ void command_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 			return;
 		}
 	}
-	printf(MESS_ERROR"Unknown help topic '%s'. Type "OPTION_COM(help)" to see all available topics.\n", args[1]);
+	printf(MESS_ERROR"Unknown help topic '%s'. Type"OPTION_COM(help)" to see all available topics.\n", args[1]);
 }
 
 // Command hello 
@@ -180,6 +186,6 @@ void exec_command(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 	}
 
 	// If the command don't exit
-	printf(MESS_SYNTAX"The command you wrote dosen't exit. Please use 'help' command to know the available commands.\n");
+	printf(MESS_SYNTAX"The command you wrote doesn't exist. Please use 'help' command to know the available commands.\n");
 	return;
 }

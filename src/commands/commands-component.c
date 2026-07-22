@@ -6,8 +6,8 @@ static void			command_component_delete	(char* args[MAX_COMMAND_ARGS], Model *mod
 static void			command_component_rename	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_component_move		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_component_toggle	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);	
-static void			command_component_set		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);	//Not yet implemented
-static void			command_component_show		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);	// Will be reworked in the next update
+static void			command_component_set		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+static void			command_component_show		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_component_help		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 
 static const CommandMap component_options[] = {
@@ -142,7 +142,7 @@ static void			command_component_show(char* args[MAX_COMMAND_ARGS], Model *model,
 	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(show)" :"
-				"\n  ▻ "COM_OPEN"component "OPTION(show) OPTION_STR(comp name) COM_CLOSE"                            : show the details of a component (NOT YET IMPLEMENTED).\n");
+				"\n  ▻ "COM_OPEN"component "OPTION(show) OPTION_STR(comp name) COM_CLOSE"                            : Show the details of a component.\n");
 		return;
 	}
 
@@ -157,18 +157,50 @@ static void			command_component_show(char* args[MAX_COMMAND_ARGS], Model *model,
 }
 
 // 'component set "comp name" "state"'
-// NOT YET IMPLEMENTED
 static void			command_component_set(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	(void)model;
 	(void)arg_count;
+
 
 	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(set)" :"
-				"\n  ▻ "COM_OPEN"component "OPTION(set) OPTION_STR(comp name) COM_CLOSE"                            : set the state of a source component (NOT YET IMPLEMENTED).\n");
+				"\n  ▻ "COM_OPEN"component "OPTION(set) OPTION_STR(comp name) TERMINAL_MAGENTA" [ON|OFF]"TERMINAL_DEFAULT COM_CLOSE"                    : Set a source component status to ON or OFF.\n");
 		return;
 	}
+
+	Component* comp = get_component_by_label(args[2], model->active_circuit);
+
+	if (!comp)
+	{
+		return;
+	}
+
+	if (comp->type != SOURCE)
+	{
+		printf(MESS_SYNTAX "The component need to be a SOURCE, it can't be a '%s' !\n", ComponentNames[comp->type]);
+		return;
+	}
+
+	if (strcmp(args[3], "ON") == 0)
+	{
+		comp->out_status.out = true;
+	}
+	else if (strcmp(args[3], "OFF") == 0)
+	{
+		comp->out_status.out = false;		
+	}
+	else
+	{
+		printf(MESS_SYNTAX" Value '%s' not recognized, it should be "OPTION_INT(ON)" or "OPTION_INT(OFF)"\n", args[3]);
+		return;
+	}
+
+	char* state_color = comp->out_status.out ? TERMINAL_GREEN : TERMINAL_RED;
+	char* state_text = comp->out_status.out ? "ON" : "OFF";
+
+	printf(MESS_COMP"Status of the component '"TERMINAL_CYAN"%s"TERMINAL_DEFAULT"' is set to '%s%s'"TERMINAL_DEFAULT"\n", comp->label, state_color, state_text);
+
 }
 
 // 'component toggle "comp name"'
@@ -181,17 +213,20 @@ static void			command_component_toggle(char* args[MAX_COMMAND_ARGS], Model *mode
 	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(toggle)" :"
-				"\n  ▻ "COM_OPEN"component "OPTION(toggle) OPTION_STR(comp name) COM_CLOSE"                          : toggle the state of a source component (NOT YET IMPLEMENTED).\n");
+				"\n  ▻ "COM_OPEN"component "OPTION(toggle) OPTION_STR(comp name) COM_CLOSE"                          : Toggle the state of a source component.\n");
 		return;
 	}
 
 	Component* comp = get_component_by_label(args[2], model->active_circuit);
-
-	invert_source_state(comp);
+	if (!comp)
+	{
+		return;
+	}
+	
 
 	if (comp->type == SOURCE)
 	{
-		comp->out_status.out = !comp->out_status.out;
+		invert_source_state(comp);
 
 		if (comp->out_status.out == true)
 		{
@@ -201,7 +236,7 @@ static void			command_component_toggle(char* args[MAX_COMMAND_ARGS], Model *mode
 		{
 			status_text = TERMINAL_RED"OFF";
 		}
-		printf(MESS_COMP"Status of the component '%s' inverted to '%s'"TERMINAL_DEFAULT"\n", comp->label, status_text);
+		printf(MESS_COMP"Status of the component '"TERMINAL_CYAN"%s"TERMINAL_DEFAULT"' is inverted to '%s'"TERMINAL_DEFAULT"\n", comp->label, status_text);
 	}
 }
 

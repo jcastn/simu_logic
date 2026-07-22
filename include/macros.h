@@ -29,7 +29,7 @@
 #define COMPONENTS_IN_PORTS_STR		TOSTRING(COMPONENTS_IN_PORTS)
 
 #define APP_NAME					"simu-logic"
-#define APP_VERSION					"v0.14.4"
+#define APP_VERSION					"v0.14.5"
 
 #define MESS_ERROR					TERMINAL_RED		"\n/!\\ ERROR : "			TERMINAL_DEFAULT
 #define MESS_SYNTAX					TERMINAL_RED		"\n/!\\ WRONG SYNTAX : "	TERMINAL_DEFAULT

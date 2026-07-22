@@ -19,7 +19,7 @@ static void			command_link_create(char* args[MAX_COMMAND_ARGS], Model *model, in
 	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
 		printf( "\n• "OPTION(create)" :"
-				"\n  ▻ "COM_OPEN"link "OPTION(create) OPTION_STR(comp src) OPTION_STR(comp dest) OPTION_INT(port number) COM_CLOSE"        : create a link from a source component to a destination component and specify\n"
+				"\n  ▻ "COM_OPEN"link "OPTION(create) OPTION_STR(comp src) OPTION_STR(comp dest) OPTION_INT(port number) COM_CLOSE"        : Create a link from a source component to a destination component and specify\n"
 				"                                                              the port number of the destination (from 0 to 10).\n");
 		return;
 	}
@@ -53,8 +53,8 @@ static void			command_link_delete(char* args[MAX_COMMAND_ARGS], Model *model, in
 	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
 		printf( "\n• "OPTION(delete)" :"
-				"\n  ▻ "COM_OPEN"link "OPTION(delete) OPTION_STR(comp src) OPTION_STR(comp dest) COM_CLOSE"                    : delete a link between two components."
-				"\n  ▻ "COM_OPEN"link "OPTION(delete) KEYWORD_ALL OPTION_STR(comp name) COM_CLOSE"                           : delete all the links of a component. (NOT YET IMPLEMENTED)\n");
+				"\n  ▻ "COM_OPEN"link "OPTION(delete) OPTION_STR(comp src) OPTION_STR(comp dest) COM_CLOSE"                    : Delete a link between two components."
+				"\n  ▻ "COM_OPEN"link "OPTION(delete) KEYWORD_ALL OPTION_STR(comp name) COM_CLOSE"                           : Delete all the links of a component.\n");
 		return;
 	}
 	

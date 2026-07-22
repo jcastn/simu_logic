@@ -26,7 +26,7 @@ static void			command_list_circuit		(char* args[MAX_COMMAND_ARGS], Model *model,
 	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
 		printf( "\n• "OPTION(circuits)" :"
-				"\n  ▻ "COM_OPEN "list circuits" COM_CLOSE"                                         : display a list of all the loaded circuits.\n");
+				"\n  ▻ "COM_OPEN "list circuits" COM_CLOSE"                                         : Display a list of all the loaded circuits.\n");
 		return;
 	}
 
@@ -44,9 +44,9 @@ static void			command_list_components		(char* args[MAX_COMMAND_ARGS], Model *mod
 	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(components)" :"
-				"\n  ▻ "COM_OPEN "list components" KEYWORD_ALL COM_CLOSE"                                   : show all the components of all the loaded circuits."
-				"\n  ▻ "COM_OPEN "list components" KEYWORD_ACTIVE COM_CLOSE"                                : show all the components of the active circuit (use 'circuit select' command)."
-				"\n  ▻ "COM_OPEN "list components" OPTION_CIRCUIT(circuit name) COM_CLOSE"                        : show all the components of the given circuit.\n");
+				"\n  ▻ "COM_OPEN "list components" KEYWORD_ALL COM_CLOSE"                                   : Show all the components of all the loaded circuits."
+				"\n  ▻ "COM_OPEN "list components" KEYWORD_ACTIVE COM_CLOSE"                                : Show all the components of the active circuit (use 'circuit select' command)."
+				"\n  ▻ "COM_OPEN "list components" OPTION_CIRCUIT(circuit name) COM_CLOSE"                        : Show all the components of the given circuit.\n");
 		return;
 	}
 
@@ -77,9 +77,9 @@ static void			command_list_links			(char* args[MAX_COMMAND_ARGS], Model *model, 
 	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(links)" :"
-				"\n  ▻ "COM_OPEN "list links" KEYWORD_ALL COM_CLOSE"                                        : show all the links of all the loaded circuits."
-				"\n  ▻ "COM_OPEN "list links" KEYWORD_ACTIVE COM_CLOSE"                                     : show all the links of the active circuit (use 'circuit select' command)."
-				"\n  ▻ "COM_OPEN "list links" OPTION_CIRCUIT(circuit name) COM_CLOSE"                             : show all the links of the given circuit.\n");
+				"\n  ▻ "COM_OPEN "list links" KEYWORD_ALL COM_CLOSE"                                        : Show all the links of all the loaded circuits."
+				"\n  ▻ "COM_OPEN "list links" KEYWORD_ACTIVE COM_CLOSE"                                     : Show all the links of the active circuit (use 'circuit select' command)."
+				"\n  ▻ "COM_OPEN "list links" OPTION_CIRCUIT(circuit name) COM_CLOSE"                             : Show all the links of the given circuit.\n");
 		return;
 	}
 
@@ -112,7 +112,7 @@ static void			command_list_help(char* args[MAX_COMMAND_ARGS], Model *model, int 
 
 	int list_options_count = sizeof(list_options) / sizeof(list_options[0]);
 
-	printf(MESS_INFO OPTION_COM(list)" command : Use it to display a informations the loaded circuits of a circuit.\n\nYou have plenty of options :\n");
+	printf(MESS_INFO OPTION_COM(list)" command : Use it to display information about loaded circuits.\n\nYou have plenty of options :\n");
 	
 	exec_full_help("list", list_options, list_options_count, model);
 
