@@ -8,24 +8,45 @@ Component*	update_coordinates(Component* comp, int x, int y)
 	return comp;
 }
 
-void	rearange_circuit(Circuit* circ)
+static void	reset_circuit_levels(Circuit *circ)
+{
+	int counter; 
+
+	circ->max_level = 0;
+	counter = 0;
+
+	while(counter < circ->component_count)
+	{
+		circ->components[counter]->coordinates->level = 0;
+		counter++;
+	}
+	
+}
+
+void	rearrange_circuit(Circuit* circ)
 {
 	if (!circ)
 	{
 		return;
 	}
 
+	reset_circuit_levels(circ);
 	topological_sort(circ);
 }
 
 static void	propagate_level(Component* comp, int* max_level)
 {
+	if (!comp || max_level < 0)
+	{
+		return;
+	}
+	
 	int counter;
 	int next_level;
 	
 	counter = 0;
 	// Loop on the out_links of the component
-	while (counter < comp->nb_out)
+	while (counter < comp->nb_out_links)
 	{
 		Link* link = comp->out_links[counter];
 		if (link && link->dest)
@@ -40,9 +61,9 @@ static void	propagate_level(Component* comp, int* max_level)
 
 				// Verification and update of the max_level of the circuit
 				if (dest->coordinates->level > *max_level)
-                {
-                    *max_level = dest->coordinates->level;
-                }
+				{
+					*max_level = dest->coordinates->level;
+				}
 
 				propagate_level(dest, max_level);
 			}
@@ -50,6 +71,7 @@ static void	propagate_level(Component* comp, int* max_level)
 		counter++;
 	}
 }
+
 
 
 void	topological_sort(Circuit* circ)
@@ -68,7 +90,7 @@ void	topological_sort(Circuit* circ)
 	while (counter < circ->component_count)
 	{
 		Component* comp = circ->components[counter];
-		if (comp->nb_in == 0 || comp->in_links == NULL)
+		if (comp->nb_in_links == 0 || comp->in_links == NULL)
 		{
 			comp->coordinates->level = 0; 
 		}
@@ -86,4 +108,3 @@ void	topological_sort(Circuit* circ)
 		counter+=1;
 	}
 }
-

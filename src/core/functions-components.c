@@ -34,7 +34,7 @@ static int	auto_nb_in(TypeComponent type, int in_nbr)
 // • its Label (set it to "default" to auto-generate a new label with the circuit type_counter)
 // • its number of inbound links 
 // • the circuit where the component is included
-Component*	create_component(TypeComponent type, const char* comp_label, int in_nbr, Circuit* circ)
+Component*	create_component(Circuit* circ, TypeComponent type, const char* comp_label, int in_nbr)
 {
 	int	counter;
 	static int next_comp_id = 0;
@@ -55,20 +55,18 @@ Component*	create_component(TypeComponent type, const char* comp_label, int in_n
 		return NULL;
 	}
 
-	
-
 	//Init of the component values
 	comp->id = next_comp_id += 1;
 	comp->type = type;
 	comp->out_status.out = false;
-	comp->nb_out = 0;
+	comp->nb_out_links = 0;
 	comp->out_links = NULL;
-	comp->nb_in = auto_nb_in(type, in_nbr);
+	comp->nb_in_links = auto_nb_in(type, in_nbr);
 
 	//Allocation of the table of link pointers 
-	if (comp->nb_in > 0)
+	if (comp->nb_in_links > 0)
 	{
-		comp->in_links = malloc(sizeof(Link*) * comp->nb_in);
+		comp->in_links = malloc(sizeof(Link*) * comp->nb_in_links);
 		if (comp->in_links == NULL)
 		{
 			free(comp->coordinates);
@@ -76,7 +74,7 @@ Component*	create_component(TypeComponent type, const char* comp_label, int in_n
 			return NULL;
 		}
 		counter = 0;
-		while (counter < comp->nb_in)
+		while (counter < comp->nb_in_links)
 		{
 			comp->in_links[counter] = NULL;
 			counter++;
@@ -123,7 +121,7 @@ Component*	create_component(TypeComponent type, const char* comp_label, int in_n
 		snprintf(comp->label, sizeof(comp->label), "%s", comp_label);
 	}
 
-	printf(MESS_COMP"%s component created with label '%s', it contains %d inbound ports. \n", ComponentNames[type], comp->label, comp->nb_in);
+	printf(MESS_COMP"%s component created with label '%s', it contains %d inbound ports. \n", ComponentNames[type], comp->label, comp->nb_in_links);
 
 	return comp;
 }
@@ -247,10 +245,14 @@ Component* get_component_by_label(const char* given_label, Circuit* circ)
 
 Component*	invert_source_state(Component* comp)
 {
+	if (!comp)
+	{
+		return NULL;
+	}
+
 	if (comp->type == SOURCE)
 	{
 		comp->out_status.out = !comp->out_status.out;
-		printf(MESS_COMP"Component status inverted : %s\n", comp->label);
 	}
 	return comp;
 }
@@ -263,7 +265,7 @@ void		delete_all_component_links(Circuit* circ, Component* comp, bool free_all)
 	if (comp->in_links) 
 	{
 		counter = 0;
-		while(counter < comp->nb_in) 
+		while(counter < comp->nb_in_links) 
 		{
 			if (comp->in_links[counter]) 
 			{
@@ -279,7 +281,7 @@ void		delete_all_component_links(Circuit* circ, Component* comp, bool free_all)
 
 	if (comp->out_links) 
 	{
-		counter = comp->nb_out - 1;
+		counter = comp->nb_out_links - 1;
 		while(counter >= 0) 
 		{
 			if (comp->out_links[counter])
@@ -294,4 +296,25 @@ void		delete_all_component_links(Circuit* circ, Component* comp, bool free_all)
 		}
 	}
 
+}
+
+int		get_component_number_in_circuit(Circuit* circ, Component* comp)
+{
+	int counter;
+
+	if (!circ || !comp)
+	{
+		return -1;
+	}
+
+	counter = 0;
+	while (counter < circ->component_count)
+	{
+		if (comp == circ->components[counter])
+		{
+			return counter;
+		}
+		counter++;
+	}
+	return -1;
 }

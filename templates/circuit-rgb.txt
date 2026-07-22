@@ -4,7 +4,7 @@
 
 $Circuit$ "circuit rgb"
 	$Components$ : 
-		//TypeComponent, "label", nb_in, x, y
+		//TypeComponent, "label", nb_in_links, x, y
 		SOURCE, "SOURCE_1", 0, 0, 0
 		SOURCE, "SOURCE_2", 0, 0, 0
 		SOURCE, "SOURCE_3", 0, 0, 0

@@ -74,11 +74,14 @@ For detailed syntax, subcommands, and available arguments, type `help commands` 
 
 - `hello` : Display a "Hello World" message.
 
-Tip: Don't hesitate to use the built-in `help` features (e.g., `circuit help`, `link delete help`, `component create help`) to see exact argument lengths and input formats at any time!
+Tip: Don't hesitate to use the `help` keyword after the name of a command to see available arguments and input formats at any time! (e.g., `circuit help`, `link delete help`, `component create help`) to 
 
 ---
 
 # III. Compilation Commands : 
+
+- Clone the project and the dependencies : 
+`git clone --recursive https://github.com/jcastn/simu_logic`
 
 - Build the project with cmake :
 `cmake -B build`
@@ -88,6 +91,8 @@ Tip: Don't hesitate to use the built-in `help` features (e.g., `circuit help`, `
 
 - Run it : 
 `./build/simu-logic-app`
+
+*Note : once the project is build, you can easily compile it and run it with : `cmake --build build && ./build/simu-logic-app`*
 
 ---
 

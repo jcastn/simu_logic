@@ -51,7 +51,7 @@ static void			command_component_create(char* args[MAX_COMMAND_ARGS], Model *mode
 
 	int in_nbr = string_to_int(args[4]);
 
-	create_component(type, args[3], in_nbr, model->active_circuit);
+	create_component(model->active_circuit, type, args[3], in_nbr);
 
 	return;
 }
@@ -165,14 +165,34 @@ static void			command_component_set(char* args[MAX_COMMAND_ARGS], Model *model, 
 // 'component toggle "comp name"'
 static void			command_component_toggle(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	(void)model;
 	(void)arg_count;
+	const char* status_text;
+
 
 	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(toggle)" :"
 				"\n  ▻ "COM_OPEN"component "OPTION(toggle) OPTION_STR(comp name) COM_CLOSE"                          : toggle the state of a source component (NOT YET IMPLEMENTED).\n");
 		return;
+	}
+
+	Component* comp = get_component_by_label(args[2], model->active_circuit);
+
+	invert_source_state(comp);
+
+	if (comp->type == SOURCE)
+	{
+		comp->out_status.out = !comp->out_status.out;
+
+		if (comp->out_status.out == true)
+		{
+			status_text = TERMINAL_GREEN"ON";
+		}
+		else
+		{
+			status_text = TERMINAL_RED"OFF";
+		}
+		printf(MESS_COMP"Status of the component '%s' inverted to '%s'"TERMINAL_DEFAULT"\n", comp->label, status_text);
 	}
 }
 

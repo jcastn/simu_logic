@@ -114,10 +114,10 @@ struct	Component
 	TypeComponent	type;
 	int				id;
 	Coordinates*	coordinates;
-	int				nb_in;
-	int				nb_out;
-	Link**			out_links;
 	Link**			in_links;
+	int				nb_in_links;
+	Link**			out_links;
+	int				nb_out_links;
 	char			label[LABEL_SIZE_NUM+1];
 	CompStatus		out_status;	
 };
@@ -141,11 +141,12 @@ struct	Circuit
 
 struct	Model
 {
-	int				circuits_count;
+	Circuit*		active_circuit;
 	Circuit**		circuits;
+	int				circuits_count;
 	char			label[LABEL_SIZE_NUM+1];
 	bool			run_loop;
-	Circuit*		active_circuit;
+
 };
 
 struct 	CommandMap

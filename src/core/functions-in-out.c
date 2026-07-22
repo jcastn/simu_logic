@@ -124,7 +124,7 @@ static void	read_file_content(char* file_path, Model* model)
 	char comp_label2[LABEL_SIZE_NUM+1];
 	int port = 0;
 
-	int nb_in = 0;
+	int nb_in_links = 0;
 	int x = 0;
 	int y = 0;
 	TypeComponent comp_type = SOURCE;
@@ -180,14 +180,14 @@ static void	read_file_content(char* file_path, Model* model)
 		{
 			case STATE_COMPONENTS:
 			{
-				if (sscanf(line, " %"LABEL_SIZE"[^,], \"%"LABEL_SIZE"[^\"]\", %d, %d, %d", type_str, comp_label, &nb_in, &x, &y) >= 3)
+				if (sscanf(line, " %"LABEL_SIZE"[^,], \"%"LABEL_SIZE"[^\"]\", %d, %d, %d", type_str, comp_label, &nb_in_links, &x, &y) >= 3)
 				{
 					type_found = false;
 					comp_type = string_to_typecomponent(type_str, &type_found);
 
 					if (type_found)
 					{
-						Component* comp = create_component(comp_type, comp_label, nb_in, current_circ);
+						Component* comp = create_component(current_circ, comp_type, comp_label, nb_in_links);
 						if (comp != NULL)
 						{
 							update_coordinates(comp, x, y);
@@ -277,7 +277,7 @@ static void	write_file_content(char* file_path, Model *model, int circuit_index)
 			fprintf(file, "\t\t%s, \"%s\", %d, %d, %d\n", 
 				ComponentNames[model->circuits[circ]->components[comp]->type],
 				model->circuits[circ]->components[comp]->label,
-				model->circuits[circ]->components[comp]->nb_in,
+				model->circuits[circ]->components[comp]->nb_in_links,
 				model->circuits[circ]->components[comp]->coordinates->x,
 				model->circuits[circ]->components[comp]->coordinates->y);
 			comp++;

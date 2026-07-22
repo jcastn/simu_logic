@@ -1,14 +1,15 @@
 //commands-circuit.c
 #include "../../include/prototypes.h"
+#include <stdbool.h>
 
 static void			command_circuit_create		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_circuit_delete		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_circuit_rename		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_circuit_duplicate	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);	//Not yet implemented
-static void			command_circuit_clear		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);	//Not yet implemented
+static void			command_circuit_duplicate	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+static void			command_circuit_clear		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_circuit_import		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_circuit_export		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_circuit_rearrange	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);	//Not yet implemented
+static void			command_circuit_rearrange	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_circuit_simulate	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_circuit_show		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_circuit_select		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
@@ -21,12 +22,12 @@ static const CommandMap circuit_options[] = {
 	{"cre",			command_circuit_create,		3,	true},
 	{"delete",		command_circuit_delete,		3,	false},
 	{"del",			command_circuit_delete,		3,	true},
+	{"clear",		command_circuit_clear,		3,	false},
+	{"cl",			command_circuit_clear,		3,	true},
 	{"rename",		command_circuit_rename,		4,	false},
 	{"ren",			command_circuit_rename,		4,	true},
-	{"duplicate",	command_circuit_duplicate,	4,	false},
-	{"dup",			command_circuit_duplicate,	4,	true},
-	{"clear",		command_circuit_clear,		4,	false},
-	{"cl",			command_circuit_clear,		4,	true},
+	{"duplicate",	command_circuit_duplicate,	3,	false},
+	{"dup",			command_circuit_duplicate,	3,	true},
 	{"import",		command_circuit_import,		4,	false},
 	{"im",			command_circuit_import,		4,	true},
 	{"export",		command_circuit_export,		4,	false},
@@ -80,7 +81,7 @@ static void	command_circuit_delete(char* args[MAX_COMMAND_ARGS], Model *model, i
 	{
 		while (model->circuits_count > 0)
 		{
-			delete_circuit(model, model->circuits[0]);
+			delete_circuit(model, model->circuits[0], true);
 		}
 		printf("\n"MESS_CIRC"All loaded circuits are deleted.\n");
 		if (model->active_circuit != NULL)
@@ -100,16 +101,58 @@ static void	command_circuit_delete(char* args[MAX_COMMAND_ARGS], Model *model, i
 		return;
 	}
 	// 'circuit delete "circuit name"' 
-	Circuit* circ = get_circuit_by_label(args[2], model);
+	Circuit* circ = get_circuit_by_label(model, args[2]);
 	if (circ == NULL)
 	{
 		return;
 	}
-	if (delete_circuit(model, circ))
+	if (delete_circuit(model, circ, true))
 	{
 		printf("\n"MESS_CIRC"Circuit deleted\n");
 	}
 	return;
+}
+
+// 'circuit clear'
+static void			command_circuit_clear(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+{
+	(void)arg_count;
+	int counter;
+
+	if (strcmp(args[2], "help") == 0)
+	{
+		printf( "\n• "OPTION(clear)" :"
+				"\n  ▻ "COM_OPEN"circuit "OPTION(clear) KEYWORD_ALL COM_CLOSE"                                     : clear all circuits."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(clear) KEYWORD_ACTIVE COM_CLOSE"                                  : clear the active circuit."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(clear) OPTION_STR(circuit name) COM_CLOSE"                          : clear a precise circuit.\n");
+		return;
+	}
+
+	// 'circuit clear all'
+	if (strcmp(args[2], "all") == 0)
+	{
+		counter = 0;
+		while (counter < model->circuits_count)
+		{
+			delete_circuit(model, model->circuits[counter], false);
+			counter++;
+		}
+		printf("\n"MESS_CIRC"All loaded circuits are cleared.\n");
+		return;
+	}
+
+	// 'circuit clear "circuit name"' 
+	Circuit* circ = get_circuit_by_label(model, args[2]);
+	if (circ == NULL)
+	{
+		return;
+	}
+	if (delete_circuit(model, circ, false))
+	{
+		printf("\n"MESS_CIRC"Circuit '%s' cleared !\n", circ->label);
+	}
+	return;
+
 }
 
 // 'circuit rename "old_circuit_name" "new_circuit_name"
@@ -124,7 +167,7 @@ static void	command_circuit_rename(char* args[MAX_COMMAND_ARGS], Model *model, i
 		return;
 	}
 
-	Circuit* circ = get_circuit_by_label(args[2], model);
+	Circuit* circ = get_circuit_by_label(model, args[2]);
 	if (circ == NULL)
 	{
 		return;
@@ -136,8 +179,8 @@ static void	command_circuit_rename(char* args[MAX_COMMAND_ARGS], Model *model, i
 // 'circuit duplicate "circuit name" "new_circuit_name"'
 static void			command_circuit_duplicate(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	(void)model;
 	(void)arg_count;
+	//Circuit* dest_circ = NULL;
 
 	if (strcmp(args[2], "help") == 0)
 	{
@@ -145,19 +188,31 @@ static void			command_circuit_duplicate(char* args[MAX_COMMAND_ARGS], Model *mod
 				"\n  ▻ "COM_OPEN"circuit "OPTION(duplicate) COM_CLOSE"                                     : duplicate a circuit (NOT YET IMPLEMENTED).\n");
 		return;
 	}
-}
 
-// 'circuit clear "circuit name"'
-static void			command_circuit_clear(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
-{
-	(void)model;
-	(void)arg_count;
-
-	if (strcmp(args[2], "help") == 0)
+	/*
+	if(check_circuit_label(model, args[3]) == false)
 	{
-		printf( "\n• "OPTION(clear)" :"
-				"\n  ▻ "COM_OPEN"circuit "OPTION(clear) COM_CLOSE"                                         : clear a circuit (NOT YET IMPLEMENTED).\n");
+		printf(MESS_SYNTAX"This circuit name is already taken, please choose another.\n");
 		return;
+	}
+	*/
+
+	Circuit* src_circ = get_circuit_by_label(model, args[2]);
+	if (src_circ == NULL)
+	{
+		return;
+	}
+
+	if (arg_count == 4)
+	{
+		Circuit* dest_circ = duplicate_circuit(model, src_circ, args[3]);
+		printf(MESS_INFO"Circuit '%s' has been duplicated as '%s'\n", src_circ->label, dest_circ->label);
+	}
+	else
+	{
+		Circuit* dest_circ = duplicate_circuit(model, src_circ, "default");
+		printf(MESS_INFO"Circuit '%s' has been duplicated as '%s'\n", src_circ->label, dest_circ->label);
+
 	}
 }
 
@@ -206,7 +261,6 @@ static void	command_circuit_export(char* args[MAX_COMMAND_ARGS], Model *model, i
 		return;
 	}
 
-	// Bad options 
 	if ((strcmp(args[2], "all") != 0))
 	{
 		if (arg_count < 4)
@@ -217,12 +271,12 @@ static void	command_circuit_export(char* args[MAX_COMMAND_ARGS], Model *model, i
 		}
 		else
 		{
-			Circuit *circ = get_circuit_by_label(args[2], model);
+			Circuit *circ = get_circuit_by_label(model, args[2]);
 			if (circ == NULL)
 			{
 				return;
 			}
-			circ_number = get_circuit_number_in_model(circ, model);
+			circ_number = get_circuit_number_in_model(model, circ);
 		}
 
 	}
@@ -252,11 +306,35 @@ static void			command_circuit_rearrange(char* args[MAX_COMMAND_ARGS], Model *mod
 	if (strcmp(args[2], "help") == 0)
 	{
 		printf( "\n• "OPTION(rearrange)" :"
-				"\n  ▻ "COM_OPEN"circuit "OPTION(rearrange) KEYWORD_ALL COM_CLOSE"                                 : rearrange all circuits (NOT YET IMPLEMENTED)."
-				"\n  ▻ "COM_OPEN"circuit "OPTION(rearrange) KEYWORD_ACTIVE COM_CLOSE"                              : rearrange all circuits (NOT YET IMPLEMENTED)."
-				"\n  ▻ "COM_OPEN"circuit "OPTION(rearrange) OPTION_STR(circuit name) COM_CLOSE"                      : rearrange a circuit (NOT YET IMPLEMENTED).\n");
+				"\n  ▻ "COM_OPEN"circuit "OPTION(rearrange) KEYWORD_ALL COM_CLOSE"                                 : rearrange all circuits."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(rearrange) KEYWORD_ACTIVE COM_CLOSE"                              : rearrange the active circuit."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(rearrange) OPTION_STR(circuit name) COM_CLOSE"                      : rearrange a circuit.\n");
 		return;
 	}
+
+	if ((strcmp(args[2], "all") == 0))
+	{
+		int counter;
+
+		counter = 0;
+		while (counter < model->circuits_count)
+		{
+			rearrange_circuit(model->circuits[counter]);
+			counter++;
+		}
+		printf(MESS_INFO"All loaded circuits are rearranged !\n");
+	}
+	else
+	{
+		Circuit* circ = get_circuit_by_label(model, args[2]);
+		if (circ != NULL)
+		{
+			rearrange_circuit(circ);
+			printf(MESS_INFO"The circuit '%s' is rearranged !\n", circ->label);
+		}
+		return;
+	}
+
 }
 
 // "circuit simulate"
@@ -283,7 +361,7 @@ static void	command_circuit_simulate(char* args[MAX_COMMAND_ARGS], Model *model,
 	}
 
 	// 'circuit simulate "circuit name"'
-	Circuit* circ = get_circuit_by_label(args[2], model);
+	Circuit* circ = get_circuit_by_label(model, args[2]);
 	if (circ != NULL)
 	{
 		simulate_circuit(circ);
@@ -315,7 +393,7 @@ static void	command_circuit_show(char* args[MAX_COMMAND_ARGS], Model *model, int
 	}
 
 	// 'circuit show "circuit name"'
-	Circuit* circ = get_circuit_by_label(args[2], model);
+	Circuit* circ = get_circuit_by_label(model, args[2]);
 	if (circ != NULL)
 	{
 		show_components_from_circuit(circ);
@@ -337,7 +415,7 @@ static void	command_circuit_select(char* args[MAX_COMMAND_ARGS], Model *model, i
 	}
 
 	// 2nd option "circuit name" Searching the circuit corresponding to the circuit label
-	model->active_circuit = get_circuit_by_label(args[2], model);
+	model->active_circuit = get_circuit_by_label(model, args[2]);
 	if (model->active_circuit != NULL)
 	{
 		printf(MESS_INFO"The active circuit is now : \"%s\"\n", model->active_circuit->label);

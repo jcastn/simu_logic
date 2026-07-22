@@ -29,7 +29,7 @@ void		delete_model(Model* model)
 			if (model->circuits[0])
 			{
 				printf("\n"MESS_CIRC"Circuit deleted : \"%s\"\n", model->circuits[0]->label);
-				delete_circuit(model, model->circuits[0]);
+				delete_circuit(model, model->circuits[0], true);
 			}
 		}
 	}

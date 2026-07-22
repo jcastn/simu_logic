@@ -34,7 +34,7 @@ TypeComponent	string_to_typecomponent(const char* type_str, bool* found)
 
 bool			read_parent_status(Component* comp, int port_number)
 {
-	if (!comp || port_number < 0 || port_number >= comp->nb_in)
+	if (!comp || port_number < 0 || port_number >= comp->nb_in_links)
 	{
 		return false; 
 	}

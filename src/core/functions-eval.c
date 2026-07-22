@@ -86,7 +86,7 @@ CompStatus	generic_eval(Component* comp)
 	}
 
 	counter = 0;
-	while (counter < comp->nb_in)
+	while (counter < comp->nb_in_links)
 	{
 		// The logic evaluation only happen if the port is linked to a component (the status can be true or false, but not NULL)
 		if (comp->in_links[counter] != NULL)

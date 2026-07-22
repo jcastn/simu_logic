@@ -5,7 +5,7 @@
 // Parameters : source component, destination component, port number of the destination
 Link*	create_link(Component* src, Component* dest, int port_number, Circuit* circ)
 {
-	if (!circ || !src || !dest || port_number < 0 || port_number >= dest->nb_in)
+	if (!circ || !src || !dest || port_number < 0 || port_number >= dest->nb_in_links)
 	{
 		return NULL;
 	}
@@ -28,7 +28,7 @@ Link*	create_link(Component* src, Component* dest, int port_number, Circuit* cir
 	link->port_number = port_number;
 
 	// Enlargement of the link pointers array
-	Link** tmp_out = realloc(src->out_links, sizeof(Link*) * (src->nb_out + 1));
+	Link** tmp_out = realloc(src->out_links, sizeof(Link*) * (src->nb_out_links + 1));
 	if (tmp_out == NULL)
 	{
 		printf(MESS_ERROR"Realloc of out_links failed (function create_link)");
@@ -36,8 +36,8 @@ Link*	create_link(Component* src, Component* dest, int port_number, Circuit* cir
 		return NULL;
 	}
 	src->out_links = tmp_out;
-	src->out_links[src->nb_out] = link;
-	src->nb_out++;
+	src->out_links[src->nb_out_links] = link;
+	src->nb_out_links++;
 	
 	dest->in_links[port_number] = link;
 
@@ -45,7 +45,7 @@ Link*	create_link(Component* src, Component* dest, int port_number, Circuit* cir
 	if (tmp_circ == NULL)
 	{
 		dest->in_links[port_number] = NULL;
-		src->nb_out--;
+		src->nb_out_links--;
 		free(link);
 		return NULL;
 	}
@@ -89,7 +89,7 @@ void	delete_link(Circuit* circ, Link* link)
 
 	// Loop to remove inbound links 
 	counter = 0;
-	while (counter < link->dest->nb_in) 
+	while (counter < link->dest->nb_in_links) 
 	{
 		if (link->dest->in_links[counter] == link) 
 		{
@@ -100,12 +100,12 @@ void	delete_link(Circuit* circ, Link* link)
 
 	// Loop to remove outbound links 
 	counter = 0;
-	while (counter < link->src->nb_out) 
+	while (counter < link->src->nb_out_links) 
 	{
 		if (link->src->out_links[counter] == link)
 		{
-			shift_pointer_array((void**)link->src->out_links, counter, link->src->nb_out);
-			link->src->nb_out--;
+			shift_pointer_array((void**)link->src->out_links, counter, link->src->nb_out_links);
+			link->src->nb_out_links--;
 			break;
 		}
 		counter+=1;
@@ -126,14 +126,14 @@ void	delete_link(Circuit* circ, Link* link)
 Link*	get_link(Circuit* circ, Component* src, Component* dest, int port_number)
 {
 	int counter;
-	if (!circ || !src || !dest || port_number < 0 || port_number >= dest->nb_in)
+	if (!circ || !src || !dest || port_number < 0 || port_number >= dest->nb_in_links)
 	{
 		printf(MESS_ERROR"No link found using get_link() function\n");
 		return NULL;
 	}
 
 	counter = 0;
-	while(counter < src->nb_out)
+	while(counter < src->nb_out_links)
 	{
 		if (src->out_links[counter]->dest == dest)
 		{

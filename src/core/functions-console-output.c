@@ -75,14 +75,18 @@ static void		get_component_out_status(Component* comp, const char** state_color,
 void	show_components_from_circuit(Circuit* circ)
 {
 	int counter;
-	printf("\nCircuit %d (\"%s\"):\n%d Components and %d Links on %d Levels, \n", circ->id, circ->label, circ->component_count, circ->link_count, circ->max_level);
-	printf("•----------------------•----------------------•--------------•--------•-------•-------•--------•--------•------------------•\n");
-	printf("| Component Label      | Component Type       | State        | ID     | Level | Align | x      | y      | Links            |\n");
-	printf("•----------------------•----------------------•--------------•--------•-------•-------•--------•--------•------------------•\n");
+	printf(	"\nCircuit %d ("TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT"):\n%d Components and %d Links on %d Levels, \n", circ->id, circ->label, circ->component_count, circ->link_count, circ->max_level);
+	printf(	"•----------------------•----------------------•--------------•--------•-------•-------•--------•--------•------------------•\n"
+			"| Component Label      | Component Type       | State        | ID     | Level | Align | x      | y      | Links            |\n"
+			"•----------------------•----------------------•--------------•--------•-------•-------•--------•--------•------------------•\n");
 
 
+	if (circ->component_count == 0)
+	{
+		printf("| "TERMINAL_GRAY"(empty)"TERMINAL_DEFAULT"              |                      |              |        |       |       |        |        |                  |\n");
+	}
 	counter = 0;
-	while(counter<circ->component_count)
+	while(counter < circ->component_count)
 	{
 		const char* component_color;
 		Component* comp = circ->components[counter];
@@ -103,12 +107,47 @@ void	show_components_from_circuit(Circuit* circ)
 			comp->coordinates->alignment, 
 			comp->coordinates->x, 
 			comp->coordinates->y,
-			comp->nb_in,
-			comp->nb_out);
-		
+			comp->nb_in_links,
+			comp->nb_out_links);
 		counter++;
 	}
 	printf("•----------------------•----------------------•--------------•--------•-------•-------•--------•--------•------------------•\n");
+}
+
+
+void	show_links_from_circuit(Circuit* circ)
+{
+	int counter;
+	int counter_bis;
+	const char* component_color;
+	
+	if (circ->link_count == 0)
+	{
+		printf(MESS_INFO"The circuit '%s' contains no links !\n", circ->label);
+		return;
+	}
+
+	printf(	"\nCircuit %d ("TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT"):\n%d Links and %d Components on %d Levels, \n", circ->id, circ->label, circ->link_count, circ->component_count, circ->max_level);
+
+	counter = 0;
+	while (counter < circ->component_count)
+	{
+		counter_bis = 0;
+		Component* comp = circ->components[counter];
+		component_color = ComponentColors[comp->type];
+
+		if (comp->nb_out_links != 0)
+		{
+			printf("\n%s%s"TERMINAL_DEFAULT"\n", component_color, comp->label);
+			while(counter_bis < comp->nb_out_links)
+			{
+				component_color = ComponentColors[comp->out_links[counter_bis]->dest->type];
+				printf(" ⤷ %s%s"TERMINAL_DEFAULT" (Port : %d)\n", component_color, comp->out_links[counter_bis]->dest->label, comp->out_links[counter_bis]->port_number);
+				counter_bis++;
+			}
+		}
+		counter++;
+	}
 }
 
 void	show_components_from_model(Model *model)
@@ -140,9 +179,9 @@ void	show_component_links(Component* comp)
 	printf("•-------------------------------•-------------------------------•\n");
 
 	count = 0;
-	while ((count == 0) || (count < comp->nb_in) || (count < comp->nb_out))
+	while ((count == 0) || (count < comp->nb_in_links) || (count < comp->nb_out_links))
 	{
-		if ((count < comp->nb_in) && (comp->in_links != NULL))
+		if ((count < comp->nb_in_links) && (comp->in_links != NULL))
 		{
 			if (comp->in_links[count] != NULL)
 			{
@@ -157,7 +196,7 @@ void	show_component_links(Component* comp)
 		}
 		else
 		{
-			if ((count == 0) && (comp->nb_in == 0))
+			if ((count == 0) && (comp->nb_in_links == 0))
 			{
 				snprintf(inbound, sizeof(inbound), TERMINAL_GRAY"(empty - no inbound ports)   "TERMINAL_DEFAULT);
 			}
@@ -167,7 +206,7 @@ void	show_component_links(Component* comp)
 			}
 		}
 
-		if ((count < comp->nb_out) && (comp->out_links != NULL))
+		if ((count < comp->nb_out_links) && (comp->out_links != NULL))
 		{
 			if ((comp->out_links[count] != NULL) && (comp->out_links[count]->dest != NULL))
 			{
@@ -181,7 +220,7 @@ void	show_component_links(Component* comp)
 		}
 		else 
 		{
-			if (count == 0 && comp->nb_out == 0)
+			if (count == 0 && comp->nb_out_links == 0)
 			{
 				snprintf(outbound, sizeof(outbound), TERMINAL_GRAY"(empty - no outbound ports)  "TERMINAL_DEFAULT);
 			}
@@ -198,6 +237,8 @@ void	show_component_links(Component* comp)
 	printf("•-------------------------------•-------------------------------•\n");
 	return;
 }
+
+
 
 
 void list_loaded_circuits(Model *model)
