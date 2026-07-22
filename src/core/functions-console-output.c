@@ -85,6 +85,7 @@ void	show_components_from_circuit(Circuit* circ)
 	{
 		printf("| "TERMINAL_GRAY"(empty)"TERMINAL_DEFAULT"              |                      |              |        |       |       |        |        |                  |\n");
 	}
+
 	counter = 0;
 	while(counter < circ->component_count)
 	{
@@ -165,18 +166,36 @@ void	show_components_from_model(Model *model)
 	}
 }
 
-void	show_component_links(Component* comp)
+void	show_component(Component* comp)
 {
-	int count;
-	char inbound[64];
-	char outbound[64];
-	const char* component_color;
+	int			count;
+	char		inbound[64];
+	char		outbound[64];
+	const char*	component_color;
+	const char*	state_color;
+	const char*	state_text;
 
 	component_color = ComponentColors[comp->type];
-	printf("\nComponent '%s%s"TERMINAL_DEFAULT"' - (Type : '%s%s"TERMINAL_DEFAULT"' - ID : %d)\n", component_color, comp->label, component_color, ComponentNames[comp->type], comp->id);
-	printf("•-------------------------------•-------------------------------•\n");
-	printf("| Inbound links                 | Outbound links                |\n");
-	printf("•-------------------------------•-------------------------------•\n");
+	get_component_out_status(comp, &state_color, &state_text);
+
+	printf(	"\nDetails about component %s%s"TERMINAL_DEFAULT" :"
+			"\n▻ Type   : %s%s"TERMINAL_DEFAULT""
+			"\n▻ ID     : %d"
+			"\n▻ x      : %d"
+			"\n▻ y      : %d"
+			"\n▻ Level  : %d"
+			"\n▻ Align  : %d"
+			"\n▻ Status : %s%s"TERMINAL_DEFAULT"\n\n",
+			component_color, comp->label, 
+			component_color, ComponentNames[comp->type], 
+			comp->id,
+			comp->coordinates->x, comp->coordinates->y,
+			comp->coordinates->level, comp->coordinates->alignment,
+			state_color, state_text);
+
+	printf(	"•-------------------------------•-------------------------------•\n"
+			"| Inbound links                 | Outbound links                |\n"
+			"•-------------------------------•-------------------------------•\n");
 
 	count = 0;
 	while ((count == 0) || (count < comp->nb_in_links) || (count < comp->nb_out_links))

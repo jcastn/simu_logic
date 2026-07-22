@@ -27,7 +27,7 @@ TypeComponent	string_to_typecomponent(const char* type_str, bool* found)
 		}
 		counter++;
 	}
-	printf(MESS_SYNTAX"The value entered for TypeComponent is invalid !\n");
+	printf(MESS_SYNTAX"TypeComponent not found !\n");
 	return SOURCE;
 }
 
@@ -76,4 +76,22 @@ int				string_to_int(const char* string)
 	}
 	
 	return number;
+}
+
+// Function to replace the "active" keyword argument from a command by the name of the active circuit
+void			replace_active_keyword(Model* model, char** args, int arg_count)
+{
+	// If there's the "active" keyword in the command and there's an active cirucit
+	// it will edit the args[2] value to the circuit name of the active circuit
+	if ((arg_count >= 3) && (strcmp(args[2], "active") == 0))
+	{
+		if(model->active_circuit != NULL)
+		{
+			args[2] = model->active_circuit->label;
+		}
+		else
+		{
+			printf(MESS_INFO"There's no active circuits, please use "OPTION_COM(circuit select)" command to set an "KEYWORD_ACTIVE" circuit.\n");
+		}
+	}
 }

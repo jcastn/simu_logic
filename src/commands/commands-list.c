@@ -134,6 +134,7 @@ void			command_list(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 	}
 	
 	is_not_help = !((strcmp("help", args[1]) == 0) || ((arg_count >= 3) && (strcmp("help", args[2]) == 0)));
+	replace_active_keyword(model, args, arg_count);
 
 	counter = 0;
 	list_commands_count = sizeof(list_options) / sizeof(list_options[0]);

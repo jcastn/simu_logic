@@ -425,27 +425,10 @@ void	command_circuit(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	int		counter;
 	int		circuit_options_count;
-	char	active_label[LABEL_SIZE_NUM + 1];
 	
 	// If there's the "active" keyword in the command and there's an active cirucit
 	// it will edit the args[2] value to the circuit name of the active circuit
-	if (arg_count >= 3)
-	{
-		if(strcmp(args[2], "active") == 0)
-		{
-			if (model->active_circuit != NULL)
-			{
-				strncpy(active_label, model->active_circuit->label, sizeof(active_label)-1);
-				active_label[sizeof(active_label)-1] = '\0';
-				args[2] = active_label;
-			}
-			else
-			{
-				printf(MESS_INFO"There's no active circuits, please use "OPTION_COM(circuit select)" command to set an "KEYWORD_ACTIVE" circuit.\n");
-				return;
-			}
-		}
-	}
+	replace_active_keyword(model, args, arg_count);
 
 	counter = 0;
 	circuit_options_count = sizeof(circuit_options) / sizeof(circuit_options[0]);

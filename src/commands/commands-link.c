@@ -3,7 +3,6 @@
 
 static void			command_link_create			(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_link_delete			(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_link_show			(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_link_help			(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 
 static const CommandMap link_options[] = {
@@ -11,8 +10,6 @@ static const CommandMap link_options[] = {
 	{"cre",			command_link_create,		4,	true},
 	{"delete",		command_link_delete,		3,	false},
 	{"del",			command_link_delete,		3,	true},
-	{"show",		command_link_show,			3,	false}, // Will be merged in 'component show' command
-	{"sh",			command_link_show,			3,	true},
 	{"help",		command_link_help,			2,	true}
 };
 
@@ -109,26 +106,6 @@ static void			command_link_delete(char* args[MAX_COMMAND_ARGS], Model *model, in
 	return;
 }
 
-// 'link show' 
-static void			command_link_show(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
-{
-	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
-	{
-		printf( "\n• "OPTION(show)" :"
-				"\n  ▻ "COM_OPEN"link "OPTION(show) OPTION_STR(comp name) COM_CLOSE"                                 : show all the inbound and outbound links of a component.\n");
-		return;
-	}
-
-	Component* comp = get_component_by_label(args[2], model->active_circuit);
-	if (comp == NULL)
-	{
-		return;
-	}
-
-	show_component_links(comp);
-	return;
-}
-
 // 'link help' 
 static void			command_link_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
@@ -186,6 +163,6 @@ void			command_link(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 		counter++;
 	}
 
-	printf(MESS_ERROR"Unknown "OPTION_COM(help)" command option : '%s'. Type "OPTION_COM(link help)" to see available options with "OPTION_COM(link)" command.\n", args[1]);
+	printf(MESS_ERROR"Unknown"OPTION_COM(link)" command option : '%s'. Type"OPTION_COM(link help)" to see available options with"OPTION_COM(link)" command.\n", args[1]);
 	return;
 }

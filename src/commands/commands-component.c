@@ -19,11 +19,11 @@ static const CommandMap component_options[] = {
 	{"ren",			command_component_rename,		4,	true},
 	{"move",		command_component_move,			5,	false},
 	{"mv",			command_component_move,			5,	true},
-	{"show",		command_component_show,			5,	false},
-	{"sh",			command_component_show,			5,	true},
-	{"toggle",		command_component_toggle,		5,	false},
-	{"tog",		command_component_toggle,		5,	true},
-	{"set",		command_component_set,			5,	false},
+	{"show",		command_component_show,			3,	false},
+	{"sh",			command_component_show,			3,	true},
+	{"toggle",		command_component_toggle,		3,	false},
+	{"tog",		command_component_toggle,		3,	true},
+	{"set",		command_component_set,			4,	false},
 	{"help",		command_component_help,			3,	true}
 };
 
@@ -137,7 +137,6 @@ static void			command_component_move(char* args[MAX_COMMAND_ARGS], Model *model,
 // 'component show "comp name"'
 static void			command_component_show(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	(void)model;
 	(void)arg_count;
 
 	if (strcmp(args[2], "help") == 0)
@@ -146,6 +145,15 @@ static void			command_component_show(char* args[MAX_COMMAND_ARGS], Model *model,
 				"\n  ▻ "COM_OPEN"component "OPTION(show) OPTION_STR(comp name) COM_CLOSE"                            : show the details of a component (NOT YET IMPLEMENTED).\n");
 		return;
 	}
+
+	Component* comp = get_component_by_label(args[2], model->active_circuit);
+	if (!comp)
+	{
+		return;
+	}
+
+	show_component(comp);
+	return;
 }
 
 // 'component set "comp name" "state"'
