@@ -64,6 +64,7 @@ void			exec_full_help					(char* command_name, const CommandMap command_map[], i
 void			command_circuit					(char* args[MAX_COMMAND_ARGS], Model* model, int arg_count);
 void			command_component				(char* args[MAX_COMMAND_ARGS], Model* model, int arg_count);
 void			command_link					(char* args[MAX_COMMAND_ARGS], Model* model, int arg_count);
+void			command_list					(char* args[MAX_COMMAND_ARGS], Model* model, int arg_count);
 
 
 

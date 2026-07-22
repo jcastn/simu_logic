@@ -5,9 +5,9 @@ static void			command_component_create	(char* args[MAX_COMMAND_ARGS], Model *mod
 static void			command_component_delete	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_component_rename	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_component_move		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_component_toggle	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);	//Not yet implemented
+static void			command_component_toggle	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);	
 static void			command_component_set		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);	//Not yet implemented
-static void			command_component_show		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);	//Not yet implemented
+static void			command_component_show		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);	// Will be reworked in the next update
 static void			command_component_help		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 
 static const CommandMap component_options[] = {
@@ -149,6 +149,7 @@ static void			command_component_show(char* args[MAX_COMMAND_ARGS], Model *model,
 }
 
 // 'component set "comp name" "state"'
+// NOT YET IMPLEMENTED
 static void			command_component_set(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	(void)model;

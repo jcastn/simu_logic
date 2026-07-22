@@ -3,7 +3,6 @@
 
 static void			command_link_create			(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_link_delete			(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_link_list			(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);	//Not yet implemented
 static void			command_link_show			(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void			command_link_help			(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 
@@ -12,12 +11,10 @@ static const CommandMap link_options[] = {
 	{"cre",			command_link_create,		4,	true},
 	{"delete",		command_link_delete,		3,	false},
 	{"del",			command_link_delete,		3,	true},
-	{"list",		command_link_list,			3,	false}, // Need to be reworked
-	{"show",		command_link_show,			3,	false},
+	{"show",		command_link_show,			3,	false}, // Will be merged in 'component show' command
 	{"sh",			command_link_show,			3,	true},
 	{"help",		command_link_help,			2,	true}
 };
-
 
 // 'link create' 
 static void			command_link_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
@@ -110,44 +107,6 @@ static void			command_link_delete(char* args[MAX_COMMAND_ARGS], Model *model, in
 
 	printf(MESS_LINK"Link deleted : '%s' -> '%s' (port %d)\n", src->label, dest->label, port_number);
 	return;
-}
-
-// 'link list'
-static void			command_link_list(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
-{
-	int counter;
-	(void)model;
-	(void)arg_count;
-
-	if (strcmp(args[2], "help") == 0)
-	{
-		printf( "\n• "OPTION(list)" :"
-				"\n  ▻ "COM_OPEN"link "OPTION(list) OPTION_STR(circuit name) COM_CLOSE"                              : list all the links of a circuit (NOT YET IMPLEMENTED).\n");
-		return;
-	}
-
-	// 'link list all'
-	if (strcmp(args[2], "all") == 0)
-	{
-		counter = 0;
-		while(counter < model->circuits_count)
-		{
-			Circuit* circ = get_circuit_by_label(model, model->circuits[counter]->label);
-			show_links_from_circuit(circ);
-			counter++;
-		}
-
-		return;
-	}
-
-	// 'link list "circuit name"'
-	Circuit* circ = get_circuit_by_label(model, args[2]);
-	if (circ == NULL)
-	{
-		return;
-	}
-
-	show_links_from_circuit(circ);
 }
 
 // 'link show' 

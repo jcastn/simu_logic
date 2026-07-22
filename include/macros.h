@@ -29,7 +29,7 @@
 #define COMPONENTS_IN_PORTS_STR		TOSTRING(COMPONENTS_IN_PORTS)
 
 #define APP_NAME					"simu-logic"
-#define APP_VERSION					"v0.14"
+#define APP_VERSION					"v0.14.3"
 
 #define MESS_ERROR					TERMINAL_RED		"\n/!\\ ERROR : "			TERMINAL_DEFAULT
 #define MESS_SYNTAX					TERMINAL_RED		"\n/!\\ WRONG SYNTAX : "	TERMINAL_DEFAULT
@@ -44,10 +44,12 @@
 #define COM_CLOSE					TERMINAL_YELLOW		"'"					TERMINAL_DEFAULT
 #define STR_OPEN					TERMINAL_ORANGE		" \""
 #define STR_CLOSE					"\""				TERMINAL_DEFAULT
-#define STR_PATH					TERMINAL_ORANGE		" \"path/to/file\""	TERMINAL_DEFAULT
+#define KEYWORD_PATH				TERMINAL_ORANGE		" \"path/to/file\""	TERMINAL_DEFAULT
 #define KEYWORD_ALL					TERMINAL_BLUE		" all"				TERMINAL_YELLOW
 #define KEYWORD_ACTIVE				TERMINAL_GREEN		" active"			TERMINAL_YELLOW
+
 #define OPTION(option)				TERMINAL_YELLOW		#option 			TERMINAL_DEFAULT
-#define OPTION_COM(option)			TERMINAL_YELLOW		" '"					#option 			"'"					TERMINAL_DEFAULT
-#define OPTION_INT(option)			TERMINAL_MAGENTA	" " 				#option 			TERMINAL_DEFAULT
-#define OPTION_STR(option)			TERMINAL_ORANGE		" \""				#option				"\""				TERMINAL_DEFAULT
+#define OPTION_COM(option)			TERMINAL_YELLOW		" '"				#option 			"'"						TERMINAL_DEFAULT
+#define OPTION_INT(option)			TERMINAL_PINK		" " 				#option 			TERMINAL_DEFAULT
+#define OPTION_STR(option)			TERMINAL_ORANGE		" \""				#option				"\""					TERMINAL_DEFAULT
+#define OPTION_CIRCUIT(option)		TERMINAL_MAGENTA	" \"" 				#option 			"\""					TERMINAL_DEFAULT

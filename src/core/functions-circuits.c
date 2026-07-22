@@ -243,6 +243,7 @@ Circuit*	duplicate_circuit(Model* model, Circuit* src_circ, const char* new_labe
 
 	dest_circ->max_level = src_circ->max_level;
 
+	// Duplicate all circuit components
 	counter = 0;
 	while(counter < src_circ->component_count)
 	{
@@ -260,6 +261,7 @@ Circuit*	duplicate_circuit(Model* model, Circuit* src_circ, const char* new_labe
 		counter++;
 	}
 
+	// Duplicate all circuit links
 	counter = 0;
 	while(counter < src_circ->link_count)
 	{

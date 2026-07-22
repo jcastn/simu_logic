@@ -4,7 +4,8 @@
 static void		command_help	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void		command_hello	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void		command_quit	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-// The functions command_circuit, command_component and command_link are prototyped in the prototypes.h file
+
+// The commands functions that have their own file are prototyped in the include/prototypes.h file
 
 
 // Mapping of the commands names with the linked functions and the required number of args needed when running a command.
@@ -20,6 +21,8 @@ static const CommandMap commands[] = {
 	{"wesh",		command_hello,				1,	true},
 	{"yo",			command_hello,				1,	true},
 	{"link",		command_link,				2, 	false},
+	{"list",		command_list,				2, 	false},
+	{"ls",			command_list,				2, 	true},
 	{"quit",		command_quit,				1,	false},
 	{"exit",		command_quit,				1,	true},
 	{"close",		command_quit,				1,	true},
@@ -67,11 +70,12 @@ void command_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 					"\n• "OPTION_COM(circuit)"   : "OPTION_COM(circ)
 					"\n• "OPTION_COM(component)" : "OPTION_COM(comp)
 					"\n• "OPTION_COM(hello)"     : "OPTION_COM(wesh) "," OPTION_COM(yo)
+					"\n• "OPTION_COM(list)"      : "OPTION_COM(ls)
 					"\n• "OPTION_COM(quit)"      : "OPTION_COM(exit) "," OPTION_COM(close) "," OPTION_COM(leave)"\n"
 					"\nList of options aliases :"
 					"\n• "OPTION_COM(create)"    : "OPTION_COM(cre)
 					"\n• "OPTION_COM(delete)"    : "OPTION_COM(del)
-					"\n• "OPTION_COM(duplicate)" : "OPTION_COM(dupl)
+					"\n• "OPTION_COM(duplicate)" : "OPTION_COM(dup)
 					"\n• "OPTION_COM(clear)"     : "OPTION_COM(cl)
 					"\n• "OPTION_COM(rearrange)" : "OPTION_COM(rea)
 					"\n• "OPTION_COM(rename)"    : "OPTION_COM(ren)
@@ -94,6 +98,7 @@ void command_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 					"\n• "OPTION_COM(hello)"     : Displays an"OPTION_STR(Hello World !)" message."
 					"\n• "OPTION_COM(help)"      : User guide of the app."
 					"\n• "OPTION_COM(link)"      : Interact with the links of a circuit."
+					"\n• "OPTION_COM(list)"      : Displays a list of all the loaded circuits or all the components/links of a circuit."
 					"\n• "OPTION_COM(quit)"      : Close the application properly.\n"
 					MESS_TIP"You can write"OPTION_COM(help)" after the name of a command to know how to use it !\n");
 			return;

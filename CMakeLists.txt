@@ -20,6 +20,7 @@ add_executable(simu-logic-app
 	src/commands/commands-circuit.c
 	src/commands/commands-component.c
 	src/commands/commands-link.c
+	src/commands/commands-list.c
 )
 
 target_compile_options(simu-logic-app PRIVATE -Wall -Wextra -Werror)
