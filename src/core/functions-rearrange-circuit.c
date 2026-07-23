@@ -36,7 +36,7 @@ void	rearrange_circuit(Circuit* circ)
 
 static void	propagate_level(Component* comp, int* max_level)
 {
-	if (!comp || max_level < 0)
+	if (!comp || *max_level < 0)
 	{
 		return;
 	}

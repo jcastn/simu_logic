@@ -3,7 +3,7 @@
 #include "../../include/prototypes.h"
 
 
-
+#ifdef __APPLE__
 // Temporary fix for a known issue :
 // nfd_file() don't really work on MacOS devices if the application is a binary file in terminal.
 // To temporary fix that, we can use apple scripts to directly interact with the OS, without using an external module.  
@@ -47,7 +47,7 @@ static char* macos_file(FileMode mode)
 	printf(MESS_INFO"File found : %s\n", path);
 	return strdup(path);
 }
-
+#endif
 
 
 

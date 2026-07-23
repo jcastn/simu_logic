@@ -11,7 +11,7 @@ void			simulate_model					(Model* model);
 
 //Functions-circuits
 Circuit*		create_circuit					(Model* model,		const char* label);
-bool			delete_circuit					(Model *model,		Circuit *circ,		bool flag_free_circuit);
+bool			delete_circuit					(Model* model,		Circuit *circ,		bool flag_free_circuit);
 void			rename_circuit					(Model* model,		Circuit* circ, 		const char* new_label);
 Circuit*		get_circuit_by_label			(Model* model,		const char* label);
 void			simulate_circuit				(Circuit* circ);
@@ -69,6 +69,7 @@ void			command_list					(char* args[MAX_COMMAND_ARGS], Model* model, int arg_cou
 
 
 // Helper 
+void			init_platform					(void);
 void			shift_pointer_array				(void** array,			int start_index,	int current_count);
 TypeComponent	string_to_typecomponent			(const char* type_str,	bool* found);
 bool			read_parent_status				(Component* comp,		int port_number);

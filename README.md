@@ -36,76 +36,105 @@ Feel free to contribute !
 
 The application contains a lot of commands, making it fully usable from the terminal.
 
-For detailed syntax, subcommands, and available arguments, type `help commands` or `<command> help` directly inside the CLI.
+For detailed syntax, subcommands, and available arguments, type `help commands` and `<command> help` directly inside the CLI.
 
-- `circuit` : use it to mangage the loaded circuits (alias: `circ` )
+- `circuit` : use it to manage the loaded circuits (alias: `circ` )
 	Available options : 
 	- `create` (to create a new circuit)
 	- `delete` (to delete a circuit)
 	- `rename` (to edit the name of a circuit)
-	- `list` (to list all the loaded circuits)
+	- `duplicate` (to duplicate a circuit)
+	- `clear` (to clear a circuit)
 	- `select` (to set an active circuit)
 	- `unselect` (to unset an active circuit)
-	- `show` (print compoennts of a circuit)
 	- `simulate` (to simulate the loaded circuits)
-	- `import` (to export circuits to an external file)
-	- `export` (to import circuits from an external file)
+	- `rearrange` (to rearrange the components of a circuit by using a topological sort algorithm)
+	- `import` (to import circuits from an external file)
+	- `export` (to export circuits to an external file)
 
 - `component` : Interact with the components inside the active circuit (alias: `comp`)
-	Available actions: 
+	Available options: 
 	- `create` (add a component (logic gates/sources/diodes) to the circuit)
 	- `delete` (to delete a component)
 	- `rename` (to rename a component)
 	- `move` (to update the x,y coordinates of a component)
+	- `show` (to show the details of a component and its inbound/outbound links)
+	- `toggle` (to toggle the status of a SOURCE component)
+	- `set` (to set the status of a SOURCE component to ON or OFF)
 
-- `link` : Create and manage connections between your circuit components.
+- `link` : Create and manage connections between the components of a circuit.
 	Available actions: 
-	- `create` (wire two components through specific input ports)
-	- `delete` (delete a link from two components, or all links of a components)
-	- `show` (view the inbound and outbound links of a component)
+	- `create` (create a link between two components)
+	- `delete` (delete a link from two components, or all the links of a component)
+
+- `list` : List all the loaded circuits or the content of a circuit.
+	Available options:  
+	- `circuit` (display a list of all loaded circuits)
+	- `components` (display all the components of a circuit)
+	- `links` (display all the links of a circuit)
+
 
 - `help` : Open the user guide.
-	Use : 
-	- `help commands` to list all availables commands types, 
-	- `help aliases` to see all available shorthand commands
-	- `help components` to see all components types.
+	Available options: 
+	- `commands` to list all available commands types, 
+	- `aliases` to see all available shorthand commands
+	- `components` to see all components types.
 
-- `quit` : Proprely exit the application .
+- `quit` : Properly exit the application .
 
 - `hello` : Display a "Hello World" message.
 
-Tip: Don't hesitate to use the `help` keyword after the name of a command to see available arguments and input formats at any time! (e.g., `circuit help`, `link delete help`, `component create help`) to 
-
 ---
 
-# III. Compilation Commands : 
+# III. Compilation : 
 
-- Clone the project and the dependencies : 
-`git clone --recursive https://github.com/jcastn/simu_logic`
+## 1. Needed tools 
 
-- Build the project with cmake :
-`cmake -B build`
+To compile the project, you need to install :
+- Git 
+- GCC (C compiler)
+- CMake (C build tool)
 
-- Compile the project :
-`cmake --build build`
+Toolchains : 
+- **Windows devices** : [w64devkit](https://github.com/skeeto/w64devkit/releases) or MinGW-w64 with CMake.
+- **Mac devices** : Command Line Tools or XCode from the Mac App Store (with C package).
 
-- Run it : 
-`./build/simu-logic-app`
 
-*Note : once the project is build, you can easily compile it and run it with : `cmake --build build && ./build/simu-logic-app`*
+## 2. Compilation steps : 
+
+1. Clone the project and the dependencies : 
+	- `git clone --recursive https://github.com/jcastn/simu_logic`
+
+2. Move to the simu_logic folder :
+	- `cd ...../simu_logic`
+
+3. Build the project with cmake :
+	- *Mac/Linux : `cmake -B build`*
+	- *Windows : `cmake -B build -G "MinGW Makefiles"`*
+
+4. Compile the project :
+	- `cmake --build build`
+
+5. Run it :
+	- *Mac/Linux : `./build/simu-logic-app`*
+	- *Windows : `.\build\simu-logic-app.exe`*
+
+*Note : once the project is built, you can easily compile it and run it with :*
+- *Mac/Linux : `cmake --build build && ./build/simu-logic-app`*
+- *Windows : `cmake --build build ; .\build\simu-logic-app.exe`*
+
 
 ---
 
 # IV. Templates & File management
 
-The repository contains a `/templates` folder, it contains a few cirucits you can import and simulate with the app.
+The repository contains a `/templates` folder, it contains a few circuits you can import and simulate with the app.
 
-The circuits files can be imported using `circuit import` and `circuit export` commands from the terminal. 
+The circuits files can be imported and exported using `circuit import` and `circuit export` commands from the terminal. 
 
 ---
 
 # V. Dependencies 
 
-- Native File Dialog Extended : https://github.com/btzy/nativefiledialog-extended.git
-Used to show a popup from the File Explorer (from any OS) when importing or exporting a file to the app.
-
+- Native File Dialog Extended (https://github.com/btzy/nativefiledialog-extended.git) :
+	- Used to show a popup from the File Explorer (from any OS) when importing or exporting a file.
