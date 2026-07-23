@@ -5,7 +5,7 @@
 
 //Functions-models 
 Model*			create_model					();
-void			delete_model					(Model* model);
+void			delete_model					(Model* model,		bool flag_free_model);
 void			simulate_model					(Model* model);
 
 

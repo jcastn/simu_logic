@@ -15,11 +15,16 @@ Model*		create_model()
 	return model;
 }
 
-void		delete_model(Model* model)
+void		delete_model(Model* model, bool flag_free_model)
 {
 	if (!model)
 	{
 		return;
+	}
+
+	if (model->active_circuit != NULL)
+	{
+		model->active_circuit = NULL;
 	}
 
 	if (model->circuits)
@@ -33,8 +38,12 @@ void		delete_model(Model* model)
 			}
 		}
 	}
-	printf("\n"MESS_CIRC"All loaded circuits are deleted.\n\n");
-	free(model);
+	printf("\n"MESS_CIRC"All loaded circuits are deleted.\n");
+
+	if (flag_free_model)
+	{
+		free(model);
+	}
 }
 
 void	simulate_model(Model *model)

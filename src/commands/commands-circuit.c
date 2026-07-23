@@ -74,11 +74,8 @@ static void	command_circuit_delete(char* args[MAX_COMMAND_ARGS], Model *model, i
 
 	if (strcmp(args[2], "all") == 0)
 	{
-		while (model->circuits_count > 0)
-		{
-			delete_circuit(model, model->circuits[0], true);
-		}
-		printf("\n"MESS_CIRC"All loaded circuits are deleted.\n");
+		delete_model(model, false);
+		
 		if (model->active_circuit != NULL)
 		{
 			model->active_circuit = NULL;

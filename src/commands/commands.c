@@ -3,7 +3,9 @@
 
 static void		command_help	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void		command_hello	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+static void		command_reset	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 static void		command_quit	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+
 
 // The commands functions that have their own file are prototyped in the include/prototypes.h file
 
@@ -27,6 +29,7 @@ static const CommandMap commands[] = {
 	{"exit",		command_quit,				1,	true},
 	{"close",		command_quit,				1,	true},
 	{"leave",		command_quit,				1,	true},
+	{"reset",		command_reset,				1,	false}
 };
 
 void		exec_full_help(char* command_name, const CommandMap command_map[], int command_count, Model* model)
@@ -46,7 +49,7 @@ void		exec_full_help(char* command_name, const CommandMap command_map[], int com
 }
 
 // Command help
-void command_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+static void command_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	(void)model;
 
@@ -144,7 +147,7 @@ void command_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 }
 
 // Command hello 
-void	command_hello(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+static void	command_hello(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	(void)args;
 	(void)arg_count;
@@ -154,14 +157,23 @@ void	command_hello(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 	return;
 }
 
-
-// Command quit 
-void	command_quit(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+// Command 'reset' 
+static void	command_reset(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	(void)args;
 	(void)arg_count;
 
-	printf(MESS_INFO"The run_loop was stopped by the user.\n");
+	delete_model(model, false);
+	return;
+}
+
+// Command quit 
+static void	command_quit(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+{
+	(void)args;
+	(void)arg_count;
+
+	printf(MESS_INFO"The app was stopped by the user.\n");
 
 	model->run_loop = false;
 	return;

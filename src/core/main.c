@@ -5,11 +5,11 @@ int main(void)
 {
 	init_platform();
 
-	Model* my_model = create_model();
+	Model* model = create_model();
 
-	run_loop(my_model);
+	run_loop(model);
 
-	delete_model(my_model);
+	delete_model(model, true);
 
 	return (0);
 }
