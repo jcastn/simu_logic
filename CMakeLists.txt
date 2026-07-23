@@ -23,6 +23,17 @@ add_executable(simu-logic-app
 	src/commands/commands-list.c
 )
 
-target_compile_options(simu-logic-app PRIVATE -Wall -Wextra -Werror)
+target_compile_options(simu-logic-app PRIVATE 
+	-Wall
+	-Wextra
+	-Werror
+	-finput-charset=UTF-8
+	-fexec-charset=UTF-8
+)
+
+if(WIN32)
+	target_compile_definitions(simu-logic-app PRIVATE _WIN32_WINNT=0x0600 WINVER=0x0600)
+	target_link_libraries(simu-logic-app PRIVATE ole32 uuid shell32)
+endif()
 
 target_link_libraries(simu-logic-app PRIVATE nfd)

@@ -3,6 +3,8 @@
 
 int main(void)
 {
+	init_platform();
+
 	Model* my_model = create_model();
 
 	run_loop(my_model);

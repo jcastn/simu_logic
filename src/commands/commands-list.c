@@ -17,7 +17,6 @@ static const CommandMap list_options[] = {
 	{"links",		command_list_links,			3,	false},
 	{"link",		command_list_links,			3,	true},
 	{"help",		command_list_help,			2,	true}
-
 };
 
 // list circuits
@@ -26,7 +25,7 @@ static void			command_list_circuit		(char* args[MAX_COMMAND_ARGS], Model *model,
 	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
 		printf( "\n• "OPTION(circuits)" :"
-				"\n  ▻ "COM_OPEN "list circuits" COM_CLOSE"                                         : Display a list of all the loaded circuits.\n");
+				"\n  ▻ "COM_OPEN "list circuits" COM_CLOSE"                                         : Display a list of all loaded circuits.\n");
 		return;
 	}
 

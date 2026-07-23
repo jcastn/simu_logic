@@ -43,7 +43,7 @@ typedef enum {
 
 
 // Translation of TypeComponent enumeration to strings
-static const char* ComponentNames[] = {
+static const char* ComponentNames[] __attribute__((unused)) = {
 	"SOURCE",
 	"DIODE",
 	"DIODE_RGB",
