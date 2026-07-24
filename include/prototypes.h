@@ -39,7 +39,7 @@ Link*			get_link						(Circuit* circ, Component* src, Component* dest, int port_
 
 
 // Eval
-CompStatus		generic_eval					(Component* comp);
+CompStatus		component_eval					(Component* comp);
 void			propagate_evaluation			(Component* comp);
 
 

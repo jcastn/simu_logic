@@ -1,32 +1,51 @@
 //functions-components.c
 #include "../../include/prototypes.h"
 
-static int	auto_nb_in(TypeComponent type, int in_nbr)
+static Component* component_init(Component* comp, int in_nbr)
 {
-	if (type == SOURCE)
+	comp->nb_out_links = 0;
+	comp->out_links = NULL;
+	comp->nb_in_links = in_nbr;
+
+	switch (comp->type)
 	{
-		return 0;
+		case DIODE_RGB : 
+			comp->nb_in_links = 3;
+			comp->out_status.rgb.r = 0;
+			comp->out_status.rgb.g = 0;
+			comp->out_status.rgb.b = 0;
+			break;
+
+		case DISPLAY_DEC : case DISPLAY_HEX : 
+			comp->nb_in_links = MAX_COMP_IN_PORTS;
+			comp->out_status.number = 0;
+			break;
+
+		default : 
+			comp->out_status.out = false;
+			if (comp->type == SOURCE)
+			{
+				comp->nb_in_links = 0;
+			}
+			else if ((comp->type == DIODE) || (comp->type == GATE_NOT) || (comp->type == BUFFER))
+			{
+				comp->nb_in_links = 1;
+			}
+			else if ((comp->type == GATE_IMPLY) || (comp->type == GATE_NIMPLY) || (in_nbr <= 2))
+			{
+				comp->nb_in_links = 2;
+			}
+			else if (in_nbr >= MAX_COMP_IN_PORTS)
+			{
+				comp->nb_in_links = MAX_COMP_IN_PORTS;
+			}
+			else
+			{
+				comp->nb_in_links = in_nbr;
+			}
+			break;
 	}
-	else if ((type == DIODE) || (type == GATE_NOT) || (type == BUFFER ))
-	{
-		return 1;
-	}
-	else if (type == DIODE_RGB)
-	{
-		return 3;
-	}
-	else if ((type == GATE_IMPLY) || (type == GATE_NIMPLY) || (in_nbr <= 2))
-	{
-		return 2;
-	}
-	else if (in_nbr >= COMPONENTS_IN_PORTS)
-	{
-		return COMPONENTS_IN_PORTS;
-	}
-	else
-	{
-		return in_nbr;
-	}
+	return comp;
 }
 
 // Function to create a component with : 
@@ -58,10 +77,7 @@ Component*	create_component(Circuit* circ, TypeComponent type, const char* comp_
 	//Init of the component values
 	comp->id = next_comp_id += 1;
 	comp->type = type;
-	comp->out_status.out = false;
-	comp->nb_out_links = 0;
-	comp->out_links = NULL;
-	comp->nb_in_links = auto_nb_in(type, in_nbr);
+	comp = component_init(comp, in_nbr);
 
 	//Allocation of the table of link pointers 
 	if (comp->nb_in_links > 0)

@@ -22,12 +22,13 @@ typedef union	CompStatus CompStatus;
 
 
 // Types of components 
-// accepted values : (SOURCE, DIODE, DIODE_RGB, BUFFER, GATE_NOT, GATE_AND, GATE_OR, GATE_NAND, GATE_NOR, GATE_XOR, GATE_NXOR, GATE_IMPLY, GATE_NIMPLY)
 // Please edit COMPONENTS_COUNT and ComponentsNames[] when adding or removing a component ! 
 typedef enum {
 	SOURCE,
 	DIODE,
 	DIODE_RGB,
+	DISPLAY_HEX,
+	DISPLAY_DEC,
 	BUFFER,
 	GATE_NOT,
 	GATE_AND,
@@ -47,6 +48,8 @@ static const char* ComponentNames[] __attribute__((unused)) = {
 	"SOURCE",
 	"DIODE",
 	"DIODE_RGB",
+	"DISPLAY_HEX",
+	"DISPLAY_DEC",
 	"BUFFER",
 	"GATE_NOT",
 	"GATE_AND",
@@ -104,8 +107,9 @@ struct	ColorStatus
 
 union CompStatus
 {
-    bool 		out;
-	ColorStatus	rgb;
+    bool 			out;
+	ColorStatus		rgb;
+	uint8_t			number;
 };
 
 

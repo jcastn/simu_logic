@@ -13,94 +13,119 @@ static bool	op_xor(bool a, bool b)
 {
 	return a ^ b;
 }
-static bool	op_imply(bool a, bool b) 
+
+static CompStatus	eval_gate(Component* comp, bool (*operation)(bool, bool), bool accumulator, bool invert_flag)
 {
-	return !a || b;
-}
-
-CompStatus	generic_eval(Component* comp)
-{
-	int		counter;
-	bool	result;
-	bool	not_flag;
-	bool	(*operation)(bool, bool) = NULL;
-
-	if (!comp )
-	{
-		CompStatus	empty = {0};
-		return empty;
-	}
-
-	not_flag = false;
-	switch (comp->type)
-	{
-		case DIODE : case BUFFER :
-			comp->out_status.out = read_parent_status(comp, 0);
-			return comp->out_status;
-		case GATE_NOT :
-			comp->out_status.out = !read_parent_status(comp, 0);
-			return comp->out_status;
-		case GATE_AND :
-			result = true;
-			operation = op_and;
-			break;
-		case GATE_OR :
-			result = false;
-			operation = op_or;
-			break;
-		case GATE_NAND :
-			result = true;
-			operation = op_and;
-			not_flag = true;
-			break;
-		case GATE_NOR :
-			result = false;
-			operation = op_or;
-			not_flag = true;
-			break;
-		case GATE_XOR :
-			result = false;
-			operation = op_xor;
-			break;
-		case GATE_NXOR :
-			result = false;
-			operation = op_xor;
-			not_flag = true;
-			break;
-		case GATE_IMPLY :
-			comp->out_status.out = op_imply(read_parent_status(comp, 0), read_parent_status(comp, 1));
-			return comp->out_status;
-		case GATE_NIMPLY :
-			comp->out_status.out = !op_imply(read_parent_status(comp, 0), read_parent_status(comp, 1));
-			return comp->out_status;
-		case DIODE_RGB :
-			comp->out_status.rgb.r = read_parent_status(comp, 0);
-			comp->out_status.rgb.g = read_parent_status(comp, 1);
-			comp->out_status.rgb.b = read_parent_status(comp, 2);
-			return comp->out_status;
-		case SOURCE : 
-			return comp->out_status;
-		default:
-			comp->out_status.out = false;
-			return comp->out_status;
-	}
-
+	int counter;
 	counter = 0;
 	while (counter < comp->nb_in_links)
 	{
 		// The logic evaluation only happen if the port is linked to a component (the status can be true or false, but not NULL)
 		if (comp->in_links[counter] != NULL)
 		{
-			result = operation(result, read_parent_status(comp, counter));
+			accumulator = operation(accumulator, read_parent_status(comp, counter));
 		}
 		counter++;
 	}
 
-	// not_flag is a flag used by the gates who needs a final inversion with the NOT GATE (NAND, NOR and NXOR operations)
-	if (not_flag)
+	// invert_flag is a flag used by the gates who needs a final inversion with the NOT GATE (NAND, NOR and NXOR operations)
+	if (invert_flag)
 	{
-		result = !result;
+		accumulator = !(accumulator);
 	}
-	comp->out_status.out = result;
+	comp->out_status.out = accumulator;
 	return comp->out_status;
+}
+
+static CompStatus	eval_imply_gate(Component* comp, bool final_not)
+{
+	comp->out_status.out = !read_parent_status(comp, 0) || read_parent_status(comp, 1);
+
+	if (final_not)
+	{
+		comp->out_status.out = !comp->out_status.out;
+	}
+
+	return comp->out_status;
+}
+
+static CompStatus	eval_rgb(Component* comp)
+{
+	comp->out_status.rgb.r = read_parent_status(comp, 0);
+	comp->out_status.rgb.g = read_parent_status(comp, 1);
+	comp->out_status.rgb.b = read_parent_status(comp, 2);
+	return comp->out_status;
+}
+
+static CompStatus	eval_display(Component *comp)
+{
+	int counter = 0;
+	comp->out_status.number = 0;
+	
+	while (counter < comp->nb_in_links)
+	{
+		if ((comp->in_links[counter] != NULL) && (read_parent_status(comp, counter)))
+		{
+			comp->out_status.number += (1 << counter);
+		}
+		counter++;
+	}
+	
+	return comp->out_status;
+}
+
+CompStatus	component_eval(Component* comp)
+{
+	if (!comp)
+	{
+		return (CompStatus){0};
+	}
+
+	switch (comp->type)
+	{
+		case SOURCE : 
+			return comp->out_status;
+
+		case DIODE : case BUFFER :
+			comp->out_status.out = read_parent_status(comp, 0);
+			return comp->out_status;
+
+		case DIODE_RGB :
+			return eval_rgb(comp);
+
+		case GATE_NOT :
+			comp->out_status.out = !read_parent_status(comp, 0);
+			return comp->out_status;
+
+		case GATE_AND :
+			return eval_gate(comp, op_and, true, false);
+
+		case GATE_NAND :
+			return eval_gate(comp, op_and, true, true);
+
+		case GATE_OR :
+			return eval_gate(comp, op_or, false, false);
+
+		case GATE_NOR :
+			return eval_gate(comp, op_or, false, true);
+
+		case GATE_XOR :
+			return eval_gate(comp, op_xor, false, false);
+
+		case GATE_NXOR :
+			return eval_gate(comp, op_xor, false, true);
+
+		case GATE_IMPLY :
+			return eval_imply_gate(comp, false);
+
+		case GATE_NIMPLY :
+			return eval_imply_gate(comp, true);
+
+		case DISPLAY_DEC : case DISPLAY_HEX : 
+			return eval_display(comp);
+
+		default:
+			comp->out_status.out = false;
+			return comp->out_status;
+	}
 }

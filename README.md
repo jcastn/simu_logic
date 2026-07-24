@@ -10,7 +10,9 @@ Feel free to contribute !
 - **SOURCE**      : Outputs a binary signal (TRUE or FALSE).
 - **DIODE**       : Single-input indicator showing the received binary state (ON = TRUE / OFF = FALSE).
 - **DIODE_RGB**   : Three-input indicator displaying a color, based on the binary combination.
-
+- **DISPLAY_DEC** : Display a decimal number depending on the inbound binary signals.
+- **DISPLAY_HEX** : Display a hex number depending on the inbound binary signals.
+					
 ### 2. Single-Input Gates: (1 input)
 - **GATE_NOT**    : Inverts the input binary signal.
 - **BUFFER**      : Replicates the input binary signal.
@@ -29,7 +31,6 @@ Feel free to contribute !
 - **GATE_IMPLY**  : Logical Implication gate.
 - **GATE_NIMPLY** : Logical Non-Implication gate.
 
-
 ---
 
 # II. App commands :
@@ -38,7 +39,7 @@ The application contains a lot of commands, making it fully usable from the term
 
 For detailed syntax, subcommands, and available arguments, type `help commands` and `<command> help` directly inside the CLI.
 
-- `circuit` : use it to manage the loaded circuits (alias: `circ` )
+- `circuit` : use it to manage the loaded circuits (alias: `circ`)
 	Available options : 
 	- `create` (to create a new circuit)
 	- `delete` (to delete a circuit)
@@ -73,14 +74,15 @@ For detailed syntax, subcommands, and available arguments, type `help commands` 
 	- `components` (display all the components of a circuit)
 	- `links` (display all the links of a circuit)
 
-
 - `help` : Open the user guide.
 	Available options: 
 	- `commands` to list all available commands types, 
 	- `aliases` to see all available shorthand commands
 	- `components` to see all components types.
 
-- `quit` : Properly exit the application .
+- `quit` : Properly exit the application.
+
+- `reset` : Reset the app to its loading state.
 
 - `hello` : Display a "Hello World" message.
 
@@ -90,6 +92,11 @@ For detailed syntax, subcommands, and available arguments, type `help commands` 
 
 ## 1. Needed tools 
 
+Tested Operating Systems (the project should compile/run well if you've installed the right tools) : 
+- MacOS (26) 
+- Windows (10/11)
+- Linux (Arch)
+
 To compile the project, you need to install :
 - Git 
 - GCC (C compiler)
@@ -97,7 +104,7 @@ To compile the project, you need to install :
 
 Toolchains : 
 - **Windows devices** : [w64devkit](https://github.com/skeeto/w64devkit/releases) or MinGW-w64 with CMake.
-- **Mac devices** : Command Line Tools or XCode from the Mac App Store (with C package).
+- **Mac devices** : Command Line Tools or XCode App from the Mac App Store (with C package).
 
 
 ## 2. Compilation steps : 
@@ -122,7 +129,6 @@ Toolchains :
 *Note : once the project is built, you can easily compile it and run it with :*
 - *Mac/Linux : `cmake --build build && ./build/simu-logic-app`*
 - *Windows : `cmake --build build ; .\build\simu-logic-app.exe`*
-
 
 ---
 

@@ -102,7 +102,9 @@ static void command_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_cou
 					"\n• "OPTION_COM(help)"      : User guide of the app."
 					"\n• "OPTION_COM(link)"      : Interact with the links of a circuit."
 					"\n• "OPTION_COM(list)"      : Displays a list of all the loaded circuits or all the components/links of a circuit."
-					"\n• "OPTION_COM(quit)"      : Close the application properly.\n"
+					"\n• "OPTION_COM(quit)"      : Close the application properly."
+					"\n• "OPTION_COM(reset)"     : Reset the app to its loading state.\n"
+
 					MESS_TIP"You can write"OPTION_COM(help)" after the name of a command to know how to use it !\n");
 			return;
 		}
@@ -116,10 +118,12 @@ static void command_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_cou
 		if ((strcmp(args[1], "components") == 0) || (strcmp(args[1], "comp") == 0))
 		{
 			printf(	"\nList of available components :\n"
-					"\n" TERMINAL_WHITE "Sources & Diodes:" TERMINAL_DEFAULT "\n"
+					"\n" TERMINAL_WHITE "Sources, Diodes & Numbers display:" TERMINAL_DEFAULT "\n"
 					"  ▻ "TERMINAL_CYAN"SOURCE"TERMINAL_DEFAULT"      : Outputs a binary signal ("TERMINAL_GRAY"TRUE"TERMINAL_DEFAULT" or "TERMINAL_GRAY"FALSE"TERMINAL_DEFAULT").\n"
 					"  ▻ "TERMINAL_BLUE"DIODE"TERMINAL_DEFAULT"       : Single-input indicator that shows the received binary state ("TERMINAL_GRAY"ON = TRUE"TERMINAL_DEFAULT" / "TERMINAL_GRAY"OFF = FALSE"TERMINAL_DEFAULT").\n"
 					"  ▻ "TERMINAL_BLUE"DIODE_RGB"TERMINAL_DEFAULT"   : Three-input indicator that shows a color based on the binary combination.\n"
+					"  ▻ "TERMINAL_YELLOW"DISPLAY_DEC"TERMINAL_DEFAULT" : Display a decimal number depending on the inbound binary signals.\n"
+					"  ▻ "TERMINAL_YELLOW"DISPLAY_HEX"TERMINAL_DEFAULT" : Display a hex number depending on the inbound binary signals.\n"
 					
 					"\n" TERMINAL_WHITE "Single-Input Gates: (1 input)" TERMINAL_DEFAULT "\n"
 					"  ▻ "TERMINAL_PINK"GATE_NOT"TERMINAL_DEFAULT"    : Inverts the input binary signal ("TERMINAL_GRAY"TRUE → FALSE"TERMINAL_DEFAULT" / "TERMINAL_GRAY"FALSE → TRUE"TERMINAL_DEFAULT").\n"
@@ -138,7 +142,6 @@ static void command_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_cou
 					"\n" TERMINAL_WHITE "Implication Gates (2 inputs):" TERMINAL_DEFAULT "\n"
 					"  ▻ "TERMINAL_VIOLET"GATE_IMPLY"TERMINAL_DEFAULT"  : Logical Implication gate.\n"
 					"  ▻ "TERMINAL_VIOLET"GATE_NIMPLY"TERMINAL_DEFAULT" : Logical Non-Implication gate.\n"
-					
 					MESS_TIP"To connect these components together in a circuit, use the"OPTION_COM(link)" command. Learn how they work with"OPTION_COM(help link)" command.\n" TERMINAL_DEFAULT);
 			return;
 		}

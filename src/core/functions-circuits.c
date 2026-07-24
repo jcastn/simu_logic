@@ -200,7 +200,7 @@ void	simulate_circuit(Circuit* circ)
 	counter = 0;
 	while (counter < circ->component_count)
 	{
-		circ->components[counter]->out_status = generic_eval(circ->components[counter]);
+		circ->components[counter]->out_status = component_eval(circ->components[counter]);
 		counter++;
 	}
 }
