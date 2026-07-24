@@ -20,7 +20,7 @@ static void			command_link_create(char* args[MAX_COMMAND_ARGS], Model *model, in
 	{
 		printf( "\n• "OPTION(create)" :"
 				"\n  ▻ "COM_OPEN"link "OPTION(create) OPTION_STR(comp src) OPTION_STR(comp dest) OPTION_INT(port number) COM_CLOSE"        : Create a link from a source component to a destination component and specify\n"
-				"                                                              the port number of the destination (from 0 to 10).\n");
+				"                                                              the port number of the destination (from 1 to 8).\n");
 		return;
 	}
 
@@ -36,10 +36,11 @@ static void			command_link_create(char* args[MAX_COMMAND_ARGS], Model *model, in
 		return;
 	}
 
-	int port_number = string_to_int(args[4]);
+	int input_port = string_to_int(args[4]);
+	int port_number = PORT_INPUT(input_port);
 
 	if ((port_number < 0) || (port_number >= dest->nb_in_links)){
-		printf(MESS_ERROR"Link not created because the port number '%d' is invalid !\n", port_number);
+		printf(MESS_ERROR"Link not created because the port number '%d' is invalid. It should be between 1 and %d\n", input_port, dest->nb_in_links);
 		return;
 	}
 
@@ -89,10 +90,11 @@ static void			command_link_delete(char* args[MAX_COMMAND_ARGS], Model *model, in
 		return;
 	}
 
-	int port_number = string_to_int(args[4]);
+	int input_port = string_to_int(args[4]);
+	int port_number = PORT_INPUT(input_port);
 
 	if ((port_number < 0) || (port_number >= dest->nb_in_links)){
-		printf(MESS_ERROR"Link not deleted because the port number '%d' is invalid !\n", port_number);
+		printf(MESS_ERROR"Link not deleted because the port number '%d' is invalid !\n", input_port);
 		return;
 	}
 
@@ -102,7 +104,7 @@ static void			command_link_delete(char* args[MAX_COMMAND_ARGS], Model *model, in
 		delete_link(model->active_circuit, link);
 	}
 
-	printf(MESS_LINK"Link deleted : '%s' -> '%s' (port %d)\n", src->label, dest->label, port_number);
+	printf(MESS_LINK"Link deleted : '%s' -> '%s' (port %d)\n", src->label, dest->label, input_port);
 	return;
 }
 

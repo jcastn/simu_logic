@@ -183,7 +183,7 @@ void	show_links_from_circuit(Circuit* circ)
 			while(counter_bis < comp->nb_out_links)
 			{
 				component_color = ComponentColors[comp->out_links[counter_bis]->dest->type];
-				printf(" ⤷ %s%s"TERMINAL_DEFAULT" (Port : %d)\n", component_color, comp->out_links[counter_bis]->dest->label, comp->out_links[counter_bis]->port_number);
+				printf(" ⤷ %s%s"TERMINAL_DEFAULT" (Port : %d)\n", component_color, comp->out_links[counter_bis]->dest->label, PORT_DISPLAY(comp->out_links[counter_bis]->port_number));
 				counter_bis++;
 			}
 		}
@@ -246,11 +246,11 @@ void	show_component(Component* comp)
 			{
 				component_color = ComponentColors[comp->in_links[count]->src->type];
 
-				snprintf(inbound, sizeof(inbound), "Port %d : %s%-"LABEL_SIZE"s"TERMINAL_DEFAULT, count, component_color, comp->in_links[count]->src->label);
+				snprintf(inbound, sizeof(inbound), "Port %d : %s%-"LABEL_SIZE"s"TERMINAL_DEFAULT, PORT_DISPLAY(count), component_color, comp->in_links[count]->src->label);
 			}
 			else
 			{
-				snprintf(inbound, sizeof(inbound), "Port %d : "TERMINAL_GRAY"(empty)"TERMINAL_DEFAULT"             ", count);
+				snprintf(inbound, sizeof(inbound), "Port %d : "TERMINAL_GRAY"(empty)"TERMINAL_DEFAULT"             ", PORT_DISPLAY(count));
 			}
 		}
 		else

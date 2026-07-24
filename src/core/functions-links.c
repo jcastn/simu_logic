@@ -13,7 +13,7 @@ Link*	create_link(Component* src, Component* dest, int port_number, Circuit* cir
 	// If the user try to connect a link to a port where one already exist, an error is generated 
 	if (dest->in_links[port_number] != NULL)
 	{
-		printf(MESS_ERROR"A link is already connected on the port '%d' of the component '%s'. Link not created !\n", port_number, dest->label);
+		printf(MESS_ERROR"A link is already connected on the port '%d' of the component '%s'. Link not created !\n", PORT_DISPLAY(port_number), dest->label);
 		return NULL;
 	}
 
@@ -53,7 +53,7 @@ Link*	create_link(Component* src, Component* dest, int port_number, Circuit* cir
 	circ->links[circ->link_count] = link;
 	circ->link_count++;
 
-	printf(MESS_LINK"Link created : '%s' → '%s' (port %d)\n", src->label, dest->label, port_number);
+	printf(MESS_LINK"Link created : '%s' → '%s' (port %d)\n", src->label, dest->label, PORT_DISPLAY(port_number));
 
 	return	link;
 }

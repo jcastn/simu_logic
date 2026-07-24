@@ -18,12 +18,12 @@ $Circuit$ "circuit xor gate"
 		"SOURCE_1"
 
 	$Links$
-		"SOURCE_1", "GATE_NOT_1", 0
-		"SOURCE_2", "GATE_NOT_2", 0
-		"SOURCE_1", "GATE_AND_2", 0
-		"SOURCE_2", "GATE_AND_1", 0
-		"GATE_NOT_1", "GATE_AND_1", 1
-		"GATE_NOT_2", "GATE_AND_2", 1
-		"GATE_AND_1", "GATE_OR_1", 0
-		"GATE_AND_2", "GATE_OR_1", 1
-		"GATE_OR_1", "DIODE_1", 0
+		"SOURCE_1", "GATE_NOT_1", 1
+		"SOURCE_2", "GATE_NOT_2", 1
+		"SOURCE_1", "GATE_AND_2", 1
+		"SOURCE_2", "GATE_AND_1", 1
+		"GATE_NOT_1", "GATE_AND_1", 2
+		"GATE_NOT_2", "GATE_AND_2", 2
+		"GATE_AND_1", "GATE_OR_1", 1
+		"GATE_AND_2", "GATE_OR_1", 2
+		"GATE_OR_1", "DIODE_1", 1

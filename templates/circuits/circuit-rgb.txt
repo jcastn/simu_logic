@@ -1,7 +1,3 @@
-// This circuit is a XOR GATE, built with 2 NOT_GATEs, 2 AND_GATEs and 1 OR_GATE.
-// Read README.md file to learn how to use it ! 
-
-
 $Circuit$ "circuit rgb"
 	$Components$ : 
 		//TypeComponent, "label", nb_in_links, x, y
@@ -37,26 +33,26 @@ $Circuit$ "circuit rgb"
 		//"SOURCE_9"
 
 	$Links$
-		"SOURCE_1", "DIODE_RGB_1", 0
-		"SOURCE_2", "DIODE_RGB_1", 1
-		"SOURCE_3", "DIODE_RGB_1", 2
+		"SOURCE_1", "DIODE_RGB_1", 1
+		"SOURCE_2", "DIODE_RGB_1", 2
+		"SOURCE_3", "DIODE_RGB_1", 3
 
-		"SOURCE_1", "DISPLAY_DEC_1", 0
-		"SOURCE_2", "DISPLAY_DEC_1", 1
-		"SOURCE_3", "DISPLAY_DEC_1", 2
+		"SOURCE_1", "DISPLAY_DEC_1", 1
+		"SOURCE_2", "DISPLAY_DEC_1", 2
+		"SOURCE_3", "DISPLAY_DEC_1", 3
 
-		"SOURCE_4", "DIODE_RGB_2", 0
-		"SOURCE_5", "DIODE_RGB_2", 1
-		"SOURCE_6", "DIODE_RGB_2", 2
+		"SOURCE_4", "DIODE_RGB_2", 1
+		"SOURCE_5", "DIODE_RGB_2", 2
+		"SOURCE_6", "DIODE_RGB_2", 3
 
-		"SOURCE_4", "DISPLAY_DEC_2", 0
-		"SOURCE_5", "DISPLAY_DEC_2", 1
-		"SOURCE_6", "DISPLAY_DEC_2", 2
+		"SOURCE_4", "DISPLAY_DEC_2", 1
+		"SOURCE_5", "DISPLAY_DEC_2", 2
+		"SOURCE_6", "DISPLAY_DEC_2", 3
 
-		"SOURCE_7", "DIODE_RGB_3", 0
-		"SOURCE_8", "DIODE_RGB_3", 1
-		"SOURCE_9", "DIODE_RGB_3", 2
+		"SOURCE_7", "DIODE_RGB_3", 1
+		"SOURCE_8", "DIODE_RGB_3", 2
+		"SOURCE_9", "DIODE_RGB_3", 3
 
-		"SOURCE_7", "DISPLAY_DEC_3", 0
-		"SOURCE_8", "DISPLAY_DEC_3", 1
-		"SOURCE_9", "DISPLAY_DEC_3", 2
+		"SOURCE_7", "DISPLAY_DEC_3", 1
+		"SOURCE_8", "DISPLAY_DEC_3", 2
+		"SOURCE_9", "DISPLAY_DEC_3", 3

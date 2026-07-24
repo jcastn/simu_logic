@@ -24,20 +24,20 @@ $Circuit$ "circuit counter"
 		//"S_128"
 
 	$Links$
-		"S_1", 	 "DISPLAY_DEC_1", 0
-		"S_2", 	 "DISPLAY_DEC_1", 1
-		"S_4", 	 "DISPLAY_DEC_1", 2
-		"S_8", 	 "DISPLAY_DEC_1", 3
-		"S_16",  "DISPLAY_DEC_1", 4
-		"S_32",  "DISPLAY_DEC_1", 5
-		"S_64",  "DISPLAY_DEC_1", 6
-		"S_128", "DISPLAY_DEC_1", 7
+		"S_1", 	 "DISPLAY_DEC_1", 1
+		"S_2", 	 "DISPLAY_DEC_1", 2
+		"S_4", 	 "DISPLAY_DEC_1", 3
+		"S_8", 	 "DISPLAY_DEC_1", 4
+		"S_16",  "DISPLAY_DEC_1", 5
+		"S_32",  "DISPLAY_DEC_1", 6
+		"S_64",  "DISPLAY_DEC_1", 7
+		"S_128", "DISPLAY_DEC_1", 8
 
-		"S_1", 	 "DISPLAY_HEX_1", 0
-		"S_2", 	 "DISPLAY_HEX_1", 1
-		"S_4", 	 "DISPLAY_HEX_1", 2
-		"S_8", 	 "DISPLAY_HEX_1", 3
-		"S_16",  "DISPLAY_HEX_1", 4
-		"S_32",  "DISPLAY_HEX_1", 5
-		"S_64",  "DISPLAY_HEX_1", 6
-		"S_128", "DISPLAY_HEX_1", 7
+		"S_1", 	 "DISPLAY_HEX_1", 1
+		"S_2", 	 "DISPLAY_HEX_1", 2
+		"S_4", 	 "DISPLAY_HEX_1", 3
+		"S_8", 	 "DISPLAY_HEX_1", 4
+		"S_16",  "DISPLAY_HEX_1", 5
+		"S_32",  "DISPLAY_HEX_1", 6
+		"S_64",  "DISPLAY_HEX_1", 7
+		"S_128", "DISPLAY_HEX_1", 8
