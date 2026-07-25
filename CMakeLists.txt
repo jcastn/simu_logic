@@ -18,6 +18,8 @@ add_executable(simu-logic-app
 	src/core/functions-rearrange-circuit.c
 	src/core/functions-run-loop.c
 	src/commands/commands.c
+	src/commands/commands-map.c
+	src/commands/commands-help.c
 	src/commands/commands-circuit.c
 	src/commands/commands-component.c
 	src/commands/commands-link.c

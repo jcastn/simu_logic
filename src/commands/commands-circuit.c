@@ -1,48 +1,9 @@
 //commands-circuit.c
 #include "../../include/prototypes.h"
-#include <stdbool.h>
-
-static void			command_circuit_create		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_circuit_delete		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_circuit_rename		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_circuit_duplicate	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_circuit_clear		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_circuit_import		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_circuit_export		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_circuit_rearrange	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_circuit_simulate	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_circuit_select		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_circuit_unselect	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_circuit_help		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-
-static const CommandMap circuit_options[] = {
-	{"create",		command_circuit_create,		3,	false},
-	{"cre",			command_circuit_create,		3,	true},
-	{"delete",		command_circuit_delete,		3,	false},
-	{"del",			command_circuit_delete,		3,	true},
-	{"clear",		command_circuit_clear,		3,	false},
-	{"cl",			command_circuit_clear,		3,	true},
-	{"rename",		command_circuit_rename,		4,	false},
-	{"ren",			command_circuit_rename,		4,	true},
-	{"duplicate",	command_circuit_duplicate,	3,	false},
-	{"dup",			command_circuit_duplicate,	3,	true},
-	{"import",		command_circuit_import,		4,	false},
-	{"im",			command_circuit_import,		4,	true},
-	{"export",		command_circuit_export,		4,	false},
-	{"ex",			command_circuit_export,		4,	true},
-	{"rearrange",	command_circuit_rearrange,	3,	false},
-	{"rea",		command_circuit_rearrange,	3,	true},
-	{"select",		command_circuit_select,		3,	false},
-	{"sel",		command_circuit_select,		3,	true},
-	{"unselect",	command_circuit_unselect,	2,	false},
-	{"unsel",		command_circuit_unselect,	2,	true},
-	{"simulate",	command_circuit_simulate,	3,	false},
-	{"simu",		command_circuit_simulate,	3,	true},
-	{"help",		command_circuit_help,		2,	true}
-};
+#include "../../include/prototypes-commands.h"
 
 // "circuit create"
-static void	command_circuit_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void	command_circuit_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	(void)arg_count;
 
@@ -68,7 +29,7 @@ static void	command_circuit_create(char* args[MAX_COMMAND_ARGS], Model *model, i
 }
 
 // "circuit delete"
-static void	command_circuit_delete(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void	command_circuit_delete(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	(void)arg_count;
 
@@ -106,7 +67,7 @@ static void	command_circuit_delete(char* args[MAX_COMMAND_ARGS], Model *model, i
 }
 
 // 'circuit clear'
-static void			command_circuit_clear(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void			command_circuit_clear(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	(void)arg_count;
 	int counter;
@@ -148,7 +109,7 @@ static void			command_circuit_clear(char* args[MAX_COMMAND_ARGS], Model *model, 
 }
 
 // 'circuit rename "old_circuit_name" "new_circuit_name"
-static void	command_circuit_rename(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void	command_circuit_rename(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	// 'circuit rename help'
 	if ((arg_count <= 3) && (strcmp(args[2], "help") == 0))
@@ -169,7 +130,7 @@ static void	command_circuit_rename(char* args[MAX_COMMAND_ARGS], Model *model, i
 }
 
 // 'circuit duplicate "circuit name" "new_circuit_name"'
-static void			command_circuit_duplicate(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void			command_circuit_duplicate(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	(void)arg_count;
 	//Circuit* dest_circ = NULL;
@@ -201,7 +162,7 @@ static void			command_circuit_duplicate(char* args[MAX_COMMAND_ARGS], Model *mod
 }
 
 // 'circuit import all "file/path"'
-static void	command_circuit_import(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void	command_circuit_import(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	// 'circuit import help'
 	if (strcmp(args[2], "help") == 0)
@@ -231,7 +192,7 @@ static void	command_circuit_import(char* args[MAX_COMMAND_ARGS], Model *model, i
 }
 
 // 'circuit export all "file/path'
-static void	command_circuit_export(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void	command_circuit_export(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	int circ_number;
 	// 'circuit export help'
@@ -282,7 +243,7 @@ static void	command_circuit_export(char* args[MAX_COMMAND_ARGS], Model *model, i
 }
 
 // 'circuit rearrange "circuit name"'
-static void			command_circuit_rearrange(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void			command_circuit_rearrange(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	(void)arg_count;
 
@@ -321,7 +282,7 @@ static void			command_circuit_rearrange(char* args[MAX_COMMAND_ARGS], Model *mod
 }
 
 // "circuit simulate"
-static void	command_circuit_simulate(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void	command_circuit_simulate(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	(void)arg_count;
 
@@ -354,7 +315,7 @@ static void	command_circuit_simulate(char* args[MAX_COMMAND_ARGS], Model *model,
 }
 
 // "circuit select"
-static void	command_circuit_select(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void	command_circuit_select(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	(void)arg_count;
 
@@ -377,7 +338,7 @@ static void	command_circuit_select(char* args[MAX_COMMAND_ARGS], Model *model, i
 }
 
 // "circuit unselect"
-static void	command_circuit_unselect(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void	command_circuit_unselect(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	// 'circuit unselect help'
 	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
@@ -398,37 +359,21 @@ static void	command_circuit_unselect(char* args[MAX_COMMAND_ARGS], Model *model,
 	return;
 }
 
-
-// 'circuit help'
-static void	command_circuit_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
-{
-	(void)args;
-	(void)arg_count;
-	int circuit_options_count = sizeof(circuit_options) / sizeof(circuit_options[0]);
-
-
-	printf(MESS_INFO""OPTION_COM(circuit)" command : Use it to manage loaded circuits.\n\nYou have plenty of options :\n");
-	
-	exec_full_help("circuit", circuit_options, circuit_options_count, model);
-
-	printf(MESS_TIP"After you've set an "TERMINAL_GREEN"active"TERMINAL_DEFAULT" circuit (with "COM_OPEN"circuit select"COM_CLOSE" command), you will be able to edit the content of it with "COM_OPEN"component"COM_CLOSE" and "COM_OPEN"link"COM_CLOSE" commands.\n");
-	return;
-}
-
 // Command circuit 
 void	command_circuit(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	int		counter;
-	int		circuit_options_count;
+	int		counter = 0;
+	int		options_count = 0;
+	
 	
 	// If there's the "active" keyword in the command and there's an active cirucit
 	// it will edit the args[2] value to the circuit name of the active circuit
 	replace_active_keyword(model, args, arg_count);
 
-	counter = 0;
-	circuit_options_count = sizeof(circuit_options) / sizeof(circuit_options[0]);
+	const SubCommandMap* circuit_options = get_sub_command_map("circuit", &options_count);
+	
 
-	while (counter < circuit_options_count)
+	while (counter < options_count)
 	{
 		if (strcmp(args[1], circuit_options[counter].command) == 0)
 		{

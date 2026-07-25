@@ -59,13 +59,8 @@ void			run_loop						(Model* model);
 
 // Commands
 void			exec_command					(char* args[MAX_COMMAND_ARGS], Model* model, int word_count);
-void			exec_full_help					(char* command_name, const CommandMap command_map[], int command_count, Model* model);
-
-void			command_circuit					(char* args[MAX_COMMAND_ARGS], Model* model, int arg_count);
-void			command_component				(char* args[MAX_COMMAND_ARGS], Model* model, int arg_count);
-void			command_link					(char* args[MAX_COMMAND_ARGS], Model* model, int arg_count);
-void			command_list					(char* args[MAX_COMMAND_ARGS], Model* model, int arg_count);
-
+const			CommandMap*		get_command_map				(int* count);
+const			SubCommandMap*	get_sub_command_map			(const char* command_name, int* count);
 
 
 // Helper 

@@ -1,35 +1,64 @@
 //functions-run-loop.c
-#include <unistd.h>
 #include "../../third_party/linenoise/linenoise.h"
 #include "../../include/prototypes.h"
 
-static const char*	main_commands[] = {
-	"circuit",
-	"component",
-	"link",
-	"list",
-	"help",
-	"hello",
-	"quit",
-	"reset",
-	NULL
-};
-
-// Commands auto-completion (with tab) for linenoise 
-static void			linenoise_completion(const char *buf, linenoiseCompletions *lc)
+static void		auto_complete_entry(const char *user_entry, linenoiseCompletions *lc)
 {
-	int i = 0;
+	int					commands_count = 0;
+	const CommandMap*	commands = get_command_map(&commands_count);
+	int counter = 0;
 
-	while (main_commands[i] != NULL)
+	const char*	space = strchr(user_entry, ' ');
+
+	// If there's no space in the entry, it means that we're on the first word 
+	if (space == NULL)
 	{
-		// If what the user wrote is the beggining of a command, it completes it
-		if (strncmp(buf, main_commands[i], strlen(buf)) == 0)
+		// If we're on the first word, the auto-completion will work on it
+		while(counter < commands_count)
 		{
-			linenoiseAddCompletion(lc, main_commands[i]);
+			if ((strncmp(user_entry, commands[counter].command, strlen(user_entry)) == 0) && (!commands[counter].is_alias))
+			{
+				linenoiseAddCompletion(lc, commands[counter].command);
+			}
+			counter++;
 		}
-		i++;
+		return;
+	}
+
+	// If more than once space, we stop trying to auto-complete
+	if (strchr(space + 1, ' ') != NULL)
+	{
+		return;
+	}
+
+	char	first_arg[64];
+	char	completion[128];
+
+	snprintf(first_arg, sizeof(first_arg), "%.*s", (int)(space - user_entry), user_entry);
+
+	commands_count = 0;
+	const SubCommandMap* sub_commands = get_sub_command_map(first_arg, &commands_count);
+
+	// Loop on all the available sub-commands
+	counter = 0;
+	while (sub_commands != NULL && counter < commands_count)
+	{
+		if ((strncmp(space + 1, sub_commands[counter].command, strlen(space + 1)) == 0) && (!sub_commands[counter].is_alias))
+		{
+			snprintf(completion, sizeof(completion), "%s %s", first_arg, sub_commands[counter].command);
+			linenoiseAddCompletion(lc, completion);
+		}
+		counter++; 
+	}
+
+	// If all the options have been showed, "help" is showed
+	if (strncmp(space + 1, "help", strlen(space + 1)) == 0)
+	{
+		snprintf(completion, sizeof(completion), "%s help", first_arg);
+		linenoiseAddCompletion(lc, completion);
 	}
 }
+
 
 static void 		scan_user_entry(char* command_user, Model *model)
 {
@@ -99,7 +128,7 @@ void			run_loop(Model *model)
 	char*	user_entry;
 	char	prompt[256];
 
-	linenoiseSetCompletionCallback(linenoise_completion);
+	linenoiseSetCompletionCallback(auto_complete_entry);
 	linenoiseHistorySetMaxLen(100);
 
 	model->run_loop = true;

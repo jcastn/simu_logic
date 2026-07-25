@@ -8,15 +8,16 @@
 #include "macros.h"
 
 
-typedef struct	Coordinates Coordinates;
-typedef struct	Component Component;
-typedef struct	Link Link;
-typedef struct	TypeCounter TypeCounter;
-typedef struct	Circuit Circuit;
-typedef struct	Model Model;
-typedef struct	CommandMap CommandMap;
-typedef struct	ColorStatus ColorStatus;
-typedef union	CompStatus CompStatus;
+typedef struct	Coordinates		Coordinates;
+typedef struct	Component		Component;
+typedef struct	Link			Link;
+typedef struct	TypeCounter		TypeCounter;
+typedef struct	Circuit			Circuit;
+typedef struct	Model			Model;
+typedef struct	CommandMap		CommandMap;
+typedef struct	SubCommandMap	SubCommandMap;
+typedef struct	ColorStatus		ColorStatus;
+typedef union	CompStatus		CompStatus;
 
 // Enumerations 
 
@@ -76,11 +77,6 @@ typedef enum
 	EXPORT
 } FileMode;
 
-typedef void (*Command)(char* args[MAX_COMMAND_ARGS], Model* model, int word_count);
-
-
-
-
 // Structures 
 struct	Coordinates 
 {
@@ -107,7 +103,7 @@ struct	ColorStatus
 
 union CompStatus
 {
-    bool 			out;
+	bool 			out;
 	ColorStatus		rgb;
 	uint8_t			number;
 };
@@ -153,7 +149,20 @@ struct	Model
 
 };
 
-struct 	CommandMap
+typedef void (*Command)(char* args[MAX_COMMAND_ARGS], Model* model, int word_count);
+
+struct CommandMap
+{
+	char*						command;
+	char*						description;
+	Command						function;
+	int							needed_args;
+	bool						is_alias;
+	const struct SubCommandMap*	sub_commands;
+	int							sub_commands_count;
+};
+
+struct 	SubCommandMap
 {
 	char*			command;
 	Command			function;

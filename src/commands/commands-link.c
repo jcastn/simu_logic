@@ -1,20 +1,9 @@
 //commands-link.c
 #include "../../include/prototypes.h"
-
-static void			command_link_create			(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_link_delete			(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_link_help			(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-
-static const CommandMap link_options[] = {
-	{"create",		command_link_create,		4,	false},
-	{"cre",			command_link_create,		4,	true},
-	{"delete",		command_link_delete,		3,	false},
-	{"del",			command_link_delete,		3,	true},
-	{"help",		command_link_help,			2,	true}
-};
+#include "../../include/prototypes-commands.h"
 
 // 'link create' 
-static void			command_link_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void			command_link_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
@@ -49,7 +38,7 @@ static void			command_link_create(char* args[MAX_COMMAND_ARGS], Model *model, in
 }
 
 // 'link delete' 
-static void			command_link_delete(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void			command_link_delete(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
@@ -108,26 +97,12 @@ static void			command_link_delete(char* args[MAX_COMMAND_ARGS], Model *model, in
 	return;
 }
 
-// 'link help' 
-static void			command_link_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
-{
-	(void)args;
-	(void)arg_count;
-	int link_options_count = sizeof(link_options) / sizeof(link_options[0]);
-
-	printf(MESS_INFO OPTION_COM(link)" command : Use it to manage the links of a circuit.\n\nYou have plenty of options :\n");
-	
-	exec_full_help("link", link_options, link_options_count, model);
-
-	return;
-}
-
 // 'link' 
 void			command_link(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	int counter;
+	int options_count;
 	bool is_not_help;
-	int link_commands_count; 
 	
 	// If there's no options after link 
 	if (arg_count < 2)
@@ -146,9 +121,10 @@ void			command_link(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 	}
 
 	counter = 0;
-	link_commands_count = sizeof(link_options) / sizeof(link_options[0]);
+	const SubCommandMap* link_options = get_sub_command_map("link", &options_count);
 
-	while (counter < link_commands_count)
+
+	while (counter < options_count)
 	{
 		if (strcmp(args[1], link_options[counter].command) == 0)
 		{

@@ -1,26 +1,9 @@
 //commands-list.c
 #include "../../include/prototypes.h"
-
-static void			command_list_circuit		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_list_components		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_list_links			(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_list_help			(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-
-
-static const CommandMap list_options[] = {
-	{"circuits",	command_list_circuit,		2,	false},
-	{"circuit",		command_list_circuit,		2,	true},
-	{"circ",		command_list_circuit,		2,	true},
-	{"components",	command_list_components,	3,	false},
-	{"component",	command_list_components,	3,	true},
-	{"comp",		command_list_components,	3,	true},
-	{"links",		command_list_links,			3,	false},
-	{"link",		command_list_links,			3,	true},
-	{"help",		command_list_help,			2,	true}
-};
+#include "../../include/prototypes-commands.h"
 
 // list circuits
-static void			command_list_circuit		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void			command_list_circuit		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
@@ -35,7 +18,7 @@ static void			command_list_circuit		(char* args[MAX_COMMAND_ARGS], Model *model,
 
 
 // list components (of a circuit)
-static void			command_list_components		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void			command_list_components		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	(void)arg_count;
 
@@ -67,7 +50,7 @@ static void			command_list_components		(char* args[MAX_COMMAND_ARGS], Model *mod
 
 
 // list links (of a circuit)
-static void			command_list_links			(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void			command_list_links			(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	(void)arg_count;
 	int counter;
@@ -102,28 +85,12 @@ static void			command_list_links			(char* args[MAX_COMMAND_ARGS], Model *model, 
 	}
 }
 
-
-// 'list help' 
-static void			command_list_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
-{
-	(void)args;
-	(void)arg_count;
-
-	int list_options_count = sizeof(list_options) / sizeof(list_options[0]);
-
-	printf(MESS_INFO OPTION_COM(list)" command : Use it to display information about loaded circuits.\n\nYou have plenty of options :\n");
-	
-	exec_full_help("list", list_options, list_options_count, model);
-
-	return;
-}
-
 // 'list' 
 void			command_list(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	int counter;
 	bool is_not_help;
-	int list_commands_count; 
+	int options_count; 
 	
 	// If there's no options after list 
 	if (arg_count < 2)
@@ -136,9 +103,11 @@ void			command_list(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 	replace_active_keyword(model, args, arg_count);
 
 	counter = 0;
-	list_commands_count = sizeof(list_options) / sizeof(list_options[0]);
+	options_count = 0;
+	const SubCommandMap* list_options = get_sub_command_map("list", &options_count);
 
-	while (counter < list_commands_count)
+
+	while (counter < options_count)
 	{
 		if (strcmp(args[1], list_options[counter].command) == 0)
 		{

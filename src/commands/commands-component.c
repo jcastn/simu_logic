@@ -1,35 +1,9 @@
 //commands-component.c
 #include "../../include/prototypes.h"
-
-static void			command_component_create	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_component_delete	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_component_rename	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_component_move		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_component_toggle	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);	
-static void			command_component_set		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_component_show		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-static void			command_component_help		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
-
-static const CommandMap component_options[] = {
-	{"create",		command_component_create,		5,	false},
-	{"cre",			command_component_create,		5,	true},
-	{"delete",		command_component_delete,		3,	false},
-	{"del",			command_component_delete,		3,	true},
-	{"rename",		command_component_rename,		4,	false},
-	{"ren",			command_component_rename,		4,	true},
-	{"move",		command_component_move,			5,	false},
-	{"mv",			command_component_move,			5,	true},
-	{"show",		command_component_show,			3,	false},
-	{"sh",			command_component_show,			3,	true},
-	{"toggle",		command_component_toggle,		3,	false},
-	{"tog",		command_component_toggle,		3,	true},
-	{"set",		command_component_set,			4,	false},
-	{"help",		command_component_help,			3,	true}
-};
-
+#include "../../include/prototypes-commands.h"
 
 // 'component create' 
-static void			command_component_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void			command_component_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	TypeComponent	type;
 	bool			type_found;
@@ -57,7 +31,7 @@ static void			command_component_create(char* args[MAX_COMMAND_ARGS], Model *mode
 }
 
 // 'component delete'
-static void			command_component_delete(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void			command_component_delete(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
@@ -82,7 +56,7 @@ static void			command_component_delete(char* args[MAX_COMMAND_ARGS], Model *mode
 }
 
 // 'component rename'
-static void			command_component_rename(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void			command_component_rename(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
@@ -103,7 +77,7 @@ static void			command_component_rename(char* args[MAX_COMMAND_ARGS], Model *mode
 }
 
 // 'component move'
-static void			command_component_move(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void			command_component_move(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
@@ -135,7 +109,7 @@ static void			command_component_move(char* args[MAX_COMMAND_ARGS], Model *model,
 }
 
 // 'component show "comp name"'
-static void			command_component_show(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void			command_component_show(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	(void)arg_count;
 
@@ -157,10 +131,9 @@ static void			command_component_show(char* args[MAX_COMMAND_ARGS], Model *model,
 }
 
 // 'component set "comp name" "state"'
-static void			command_component_set(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void			command_component_set(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	(void)arg_count;
-
 
 	if (strcmp(args[2], "help") == 0)
 	{
@@ -204,11 +177,10 @@ static void			command_component_set(char* args[MAX_COMMAND_ARGS], Model *model, 
 }
 
 // 'component toggle "comp name"'
-static void			command_component_toggle(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+void			command_component_toggle(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	(void)arg_count;
 	const char* status_text;
-
 
 	if (strcmp(args[2], "help") == 0)
 	{
@@ -222,7 +194,6 @@ static void			command_component_toggle(char* args[MAX_COMMAND_ARGS], Model *mode
 	{
 		return;
 	}
-	
 
 	if (comp->type == SOURCE)
 	{
@@ -240,27 +211,15 @@ static void			command_component_toggle(char* args[MAX_COMMAND_ARGS], Model *mode
 	}
 }
 
-
-// 'component help'
-static void			command_component_help(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
-{
-	(void)args;
-	(void)arg_count;
-	int component_commands_count = sizeof(component_options) / sizeof(component_options[0]);
-
-	printf(MESS_INFO OPTION_COM(component)" command : Use it to manage the components of a circuit.\n\nYou have plenty of options :\n");
-	
-	exec_full_help("component", component_options, component_commands_count, model);
-
-}
-
 // 'component'
 void			command_component(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
-	int counter;
+	int counter = 0;
+	int options_count = 0;
 	bool is_not_help;
-	int component_commands_count = sizeof(component_options) / sizeof(component_options[0]);
+	//int component_commands_count = sizeof(component_options) / sizeof(component_options[0]);
 
+	const SubCommandMap* component_options = get_sub_command_map("component", &options_count);
 	
 	// If there's no options after component 
 	if (arg_count < 2)
@@ -278,12 +237,10 @@ void			command_component(char* args[MAX_COMMAND_ARGS], Model *model, int arg_cou
 		return;
 	}
 
-	counter = 0;
-	while (counter < component_commands_count)
+	while (counter < options_count)
 	{
 		if (strcmp(args[1], component_options[counter].command) == 0)
 		{
-
 			//If it's not an help command and there is not enough args : display an error
 			if ((is_not_help) && (arg_count < component_options[counter].needed_args))
 			{
