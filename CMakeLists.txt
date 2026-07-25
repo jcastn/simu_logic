@@ -5,6 +5,7 @@ project(simu-logic C)
 add_subdirectory(third_party/nfd)
 
 add_executable(simu-logic-app
+	third_party/linenoise/linenoise.c
 	src/core/main.c
 	src/core/functions-models.c
 	src/core/functions-circuits.c 
