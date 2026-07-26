@@ -60,6 +60,7 @@ static CompStatus	eval_rgb(Component* comp)
 static CompStatus	eval_display(Component *comp)
 {
 	int counter = 0;
+	
 	comp->out_status.number = 0;
 	
 	while (counter < comp->nb_in_links)
@@ -67,6 +68,7 @@ static CompStatus	eval_display(Component *comp)
 		if ((comp->in_links[counter] != NULL) && (read_parent_status(comp, counter)))
 		{
 			comp->out_status.number += (1 << counter);
+			//printf("\n%s number : %hhu", comp->label, comp->out_status.number);
 		}
 		counter++;
 	}
@@ -129,3 +131,37 @@ CompStatus	component_eval(Component* comp)
 			return comp->out_status;
 	}
 }
+
+// Recursive function to propagate the modification of a binary status (WIP - It will be implemented in a future update)
+void	propagate_eval_from_component(Component* comp)
+{
+	int counter;
+
+	if (!comp)
+	{
+		return;
+	}
+	// The evaluation is propagated to the next components
+	counter = 0;
+	while  (counter < comp->nb_out_links)
+	{
+		Link* link = comp->out_links[counter];
+		if (link && link->dest)
+		{
+			Component* child_comp = link->dest;
+			CompStatus child_old_status = child_comp->out_status;
+
+			component_eval(child_comp);
+
+			// If the state of the child changed, the propagation will continue
+			if (child_old_status.raw_value != child_comp->out_status.raw_value)
+			{
+				propagate_eval_from_component(link->dest);
+				//printf(MESS_INFO"Evaluation propagated to %s\n", link->dest->label);
+
+			}
+		}
+		counter++;
+	}
+}
+

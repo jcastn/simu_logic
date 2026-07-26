@@ -1,33 +1,75 @@
 # simu_logic
-An app to create and simulate logic circuits from the terminal. Fully written in C, from scratch.
-Feel free to contribute ! 
+A lightweight app to create, manage and simulate logic circuits from the terminal. Fully written in C, from scratch.
 
----
 
-# I. Supported components
+# I. Major Features
 
-### 1. Sources & Diodes:
+## 1. Circuit Engine & Real-Time Simulation
+- **Multiple Components and Circuits Support:**
+	- You have access to multiple types of components : 
+		- simple components (SOURCE and DIODE, to product or display binary signals states)
+		- single-input gates (NOT, BUFFER).
+		- multi-input gates (AND, OR, XOR, NAND, NOR, NXOR, up to 8 inputs).
+		- implication gates (IMPLY, NIMPLY, with 2 inputs).
+		- number display (DISPLAY_DEC, DISPLAY_HEX, with 8 inputs).
+		- rgb led color display (DIODE_RGB, 3 inputs).
+	- You can load multiple logic circuits at same time. Also, you're able to load, create, manage, delete or clone specific circuits without affecting the others.
+
+- **Event-Driven Signal Propagation:**
+	- When a source state changes or a link is updated, the evaluation of the component state is propagated to the affected components and stops automatically once the signal stabilize.
+
+
+## 2. Topological Sorting & Circuit Structure
+- **Automatic Topological Rearrangement:**
+	- The topological sorting algorithm can analyze the inbound and outbound dependencies of components to calculate their level into the circuit (like an oriented graph).
+
+- **Dynamic Memory:**
+	- Circuit management (which can involve thousands of components and links at the same time) relies on a meticulous system to manage the memory allocations in real-time.
+
+- **Connection Safety & Validation:** 
+	- Strict validation rules preventing port double-booking, invalid port bounds, or orphan connections.
+
+
+
+## 3. Interactive CLI & User Experience
+
+- **Rich Feedback & In-App Help:**
+	- Embedded formatted help system (`<command> help`) for each command of the app. 
+
+- **CLI Navigation (LineNoise integration):** 
+	- Commands auto-completion (with TAB key), commands history navigation (with up/down arrows keys), inline line editing (with left/right arrows keys), and short command aliases (circ, comp, etc.).
+
+- **Native File Dialogs (NFD Integration):**
+	- Uses file explorer popups (macOS, Windows, Linux) to import and export external circuit files.
+
+- **Script-Based File Format & Templates:**
+	- Import and export circuits and templates as external files. 
+
+
+## 4. List of supported components 
+
+### A. Sources & Diodes:
 - **SOURCE**      : Outputs a binary signal (TRUE or FALSE).
 - **DIODE**       : Single-input indicator showing the received binary state (ON = TRUE / OFF = FALSE).
 - **DIODE_RGB**   : Three-input indicator displaying a color, based on the binary combination.
 - **DISPLAY_DEC** : Display a decimal number depending on the inbound binary signals.
 - **DISPLAY_HEX** : Display a hex number depending on the inbound binary signals.
 					
-### 2. Single-Input Gates: (1 input)
+### B. Single-Input Gates: (1 input)
 - **GATE_NOT**    : Inverts the input binary signal.
 - **BUFFER**      : Replicates the input binary signal.
 
-### 3. Multi-Input Gates: (2 to 10 inputs)
+### C. Multi-Input Gates: (2 to 8 inputs)
 - **GATE_AND**    : Outputs TRUE only if ALL inputs are TRUE.
 - **GATE_OR**     : Outputs TRUE if AT LEAST ONE input is TRUE.
 - **GATE_XOR**    : Outputs TRUE if the number of TRUE inputs is ODD.
 
-### 4. Inverted Multi-Input Gates: (2 to 10 inputs)
+### D. Inverted Multi-Input Gates: (2 to 8 inputs)
 - **GATE_NAND**   : Inverted GATE_AND. Outputs TRUE if AT LEAST ONE input is FALSE.
 - **GATE_NOR**    : Inverted GATE_OR. Outputs TRUE only if ALL inputs are FALSE.
 - **GATE_NXOR**   : Inverted GATE_XOR. Outputs TRUE if the number of TRUE inputs is EVEN.
 
-### 5. Implication Gates (2 inputs):
+### E. Implication Gates (2 inputs):
 - **GATE_IMPLY**  : Logical Implication gate.
 - **GATE_NIMPLY** : Logical Non-Implication gate.
 
@@ -92,10 +134,10 @@ For detailed syntax, subcommands, and available arguments, type `help commands` 
 
 ## 1. Needed tools 
 
-Tested Operating Systems (the project should compile/run well if you've installed the right tools) : 
+Supported Operating Systems (the project should compile/run well if you've installed the right tools) : 
 - MacOS (26) 
 - Windows (10/11)
-- Linux (Arch)
+- Linux (Arch, Debian)
 
 To compile the project, you need to install :
 - Git 
@@ -113,7 +155,7 @@ Toolchains :
 	- `git clone --recursive https://github.com/jcastn/simu_logic`
 
 2. Move to the simu_logic folder :
-	- `cd ...../simu_logic`
+	- `cd simu_logic`
 
 3. Build the project with cmake :
 	- *Mac/Linux : `cmake -B build`*
@@ -134,13 +176,19 @@ Toolchains :
 
 # IV. Templates & File management
 
-The repository contains a `/templates` folder, it contains a few circuits you can import and simulate with the app.
+The repository have a `/templates` folder, which contains a few circuits you can import and simulate with the app.
 
-The circuits files can be imported and exported using `circuit import` and `circuit export` commands from the terminal. 
+The circuits files can be imported and exported using `circuit import all` and `circuit export all` commands from the terminal. 
 
 ---
 
 # V. Dependencies 
 
-- Native File Dialog Extended (https://github.com/btzy/nativefiledialog-extended.git) :
+1. Native File Dialog Extended (https://github.com/btzy/nativefiledialog-extended.git) :
 	- Used to show a popup from the File Explorer (from any OS) when importing or exporting a file.
+
+2. Linenoise (https://github.com/antirez/linenoise.git) :
+	- It adds more functionalities to the CLI :
+		- an history of the last typed commands (with up/down arrows keys)
+		- moving the cursor when typing a command (with left/right arrows keys)
+		- command auto-completion (with tab key).

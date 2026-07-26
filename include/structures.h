@@ -1,5 +1,6 @@
 //structures.h
 #pragma once
+#include <stdint.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -106,6 +107,7 @@ union CompStatus
 	bool 			out;
 	ColorStatus		rgb;
 	uint8_t			number;
+	uint8_t			raw_value;
 };
 
 

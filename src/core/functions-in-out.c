@@ -224,7 +224,7 @@ static void	read_file_content(char* file_path, Model* model)
 					Component* dest = get_component_by_label(comp_label2, current_circ);
 					if (src && dest && port >= 0)
 					{
-						create_link(src, dest, port, current_circ);
+						create_link(src, dest, PORT_INPUT(port), current_circ);
 					}
 					else 
 					{

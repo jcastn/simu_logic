@@ -52,6 +52,8 @@ void			command_component_delete(char* args[MAX_COMMAND_ARGS], Model *model, int 
 
 	}
 
+	simulate_circuit(model->active_circuit);
+
 	return;
 }
 
@@ -104,7 +106,7 @@ void			command_component_move(char* args[MAX_COMMAND_ARGS], Model *model, int ar
 	comp->coordinates->x = x;
 	comp->coordinates->y = y;
 
-	printf(MESS_COMP"Component '%s' moved to x:%d y:%d", comp->label, comp->coordinates->x, comp->coordinates->y);
+	printf(MESS_COMP"Component '%s' moved to x:%d y:%d\n", comp->label, comp->coordinates->x, comp->coordinates->y);
 	return;
 }
 
@@ -151,7 +153,7 @@ void			command_component_set(char* args[MAX_COMMAND_ARGS], Model *model, int arg
 
 	if (comp->type != SOURCE)
 	{
-		printf(MESS_SYNTAX "The component need to be a SOURCE, it can't be a '%s' !\n", ComponentNames[comp->type]);
+		printf(MESS_SYNTAX "You cannot change the status of a component that is not a SOURCE, it can't be a '%s' !\n", ComponentNames[comp->type]);
 		return;
 	}
 
@@ -173,7 +175,8 @@ void			command_component_set(char* args[MAX_COMMAND_ARGS], Model *model, int arg
 	char* state_text = comp->out_status.out ? "ON" : "OFF";
 
 	printf(MESS_COMP"Status of the component '"TERMINAL_CYAN"%s"TERMINAL_DEFAULT"' is set to '%s%s'"TERMINAL_DEFAULT"\n", comp->label, state_color, state_text);
-
+	
+	propagate_eval_from_component(comp);
 }
 
 // 'component toggle "comp name"'
@@ -207,8 +210,15 @@ void			command_component_toggle(char* args[MAX_COMMAND_ARGS], Model *model, int 
 		{
 			status_text = TERMINAL_RED"OFF";
 		}
+
 		printf(MESS_COMP"Status of the component '"TERMINAL_CYAN"%s"TERMINAL_DEFAULT"' is inverted to '%s'"TERMINAL_DEFAULT"\n", comp->label, status_text);
+		propagate_eval_from_component(comp);
 	}
+	else
+	{
+		printf(MESS_SYNTAX "You cannot change the status of a component that is not a SOURCE, it can't be a '%s' !\n", ComponentNames[comp->type]);
+	}
+
 }
 
 // 'component'

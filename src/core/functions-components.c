@@ -270,6 +270,9 @@ Component*	invert_source_state(Component* comp)
 	{
 		comp->out_status.out = !comp->out_status.out;
 	}
+	component_eval(comp);
+	propagate_eval_from_component(comp);
+
 	return comp;
 }
 

@@ -35,25 +35,31 @@ Link*	create_link(Component* src, Component* dest, int port_number, Circuit* cir
 		free(link);
 		return NULL;
 	}
-	src->out_links = tmp_out;
-	src->out_links[src->nb_out_links] = link;
-	src->nb_out_links++;
-	
-	dest->in_links[port_number] = link;
 
 	Link** tmp_circ = realloc(circ->links, sizeof(Link*) * (circ->link_count + 1));
 	if (tmp_circ == NULL)
 	{
-		dest->in_links[port_number] = NULL;
-		src->nb_out_links--;
+		printf(MESS_ERROR"Realloc of circ->links failed (function create_link)");
 		free(link);
 		return NULL;
 	}
+
+	src->out_links = tmp_out;
+	src->out_links[src->nb_out_links] = link;
+	src->nb_out_links++;
+	
 	circ->links = tmp_circ;
 	circ->links[circ->link_count] = link;
 	circ->link_count++;
 
+	dest->in_links[port_number] = link;
+
+
 	printf(MESS_LINK"Link created : '%s' → '%s' (port %d)\n", src->label, dest->label, PORT_DISPLAY(port_number));
+
+	// Propagate eval to linked component
+	component_eval(dest);
+	propagate_eval_from_component(dest);
 
 	return	link;
 }
@@ -66,7 +72,7 @@ void	delete_link(Circuit* circ, Link* link)
 
 	if (!circ || !link)
 	{
-		printf(MESS_ERROR"No circuit or link found when trying to delete a link.");
+		printf(MESS_ERROR"No circuit or link found when trying to delete a link.\n");
 		return;
 	}
 
@@ -87,28 +93,28 @@ void	delete_link(Circuit* circ, Link* link)
 		return;
 	}
 
+	Component *dest = link->dest;
+
 	// Loop to remove inbound links 
-	counter = 0;
-	while (counter < link->dest->nb_in_links) 
+	if ((dest) && (link->port_number >= 0) && (link->port_number < dest->nb_in_links))
 	{
-		if (link->dest->in_links[counter] == link) 
-		{
-			link->dest->in_links[counter] = NULL;
-		}
-		counter+=1;
+		link->dest->in_links[link->port_number] = NULL;
 	}
 
 	// Loop to remove outbound links 
 	counter = 0;
-	while (counter < link->src->nb_out_links) 
+	if (link->src)
 	{
-		if (link->src->out_links[counter] == link)
+		while (counter < link->src->nb_out_links) 
 		{
-			shift_pointer_array((void**)link->src->out_links, counter, link->src->nb_out_links);
-			link->src->nb_out_links--;
-			break;
+			if (link->src->out_links[counter] == link)
+			{
+				shift_pointer_array((void**)link->src->out_links, counter, link->src->nb_out_links);
+				link->src->nb_out_links--;
+				break;
+			}
+			counter+=1;
 		}
-		counter+=1;
 	}
 
 	free(link);
@@ -119,6 +125,12 @@ void	delete_link(Circuit* circ, Link* link)
 	{
 		free(circ->links); 
 		circ->links = NULL;
+	}
+
+	if (dest)
+	{
+		component_eval(dest);
+		propagate_eval_from_component(dest);
 	}
 	return;
 }
@@ -135,20 +147,12 @@ Link*	get_link(Circuit* circ, Component* src, Component* dest, int port_number)
 	counter = 0;
 	while(counter < src->nb_out_links)
 	{
-		if (src->out_links[counter]->dest == dest)
+		if ((src->out_links[counter]->dest == dest) && (src->out_links[counter]->port_number == port_number))
 		{
-			if (src->out_links[counter]->port_number == port_number)
-			{
-				return src->out_links[counter];
-			}
-			else 
-			{
-				printf(MESS_ERROR"Invalid port number !\n");
-				return NULL;
-			}
+			return src->out_links[counter];
 		}
 		counter++;
 	}
-	printf(MESS_ERROR"No link found using get_link()\n");
+	printf(MESS_INFO"No link found ! (Maybe the port number is invalid ?) \n");
 	return NULL;
 }

@@ -34,7 +34,7 @@
 #define PORT_INPUT(port)			((port) - 1)
 
 #define APP_NAME					"simu-logic"
-#define APP_VERSION					"v0.15.3"
+#define APP_VERSION					"v0.15.4"
 
 #define MESS_ERROR					TERMINAL_RED		"\n/!\\ ERROR : "			TERMINAL_DEFAULT
 #define MESS_SYNTAX					TERMINAL_RED		"\n/!\\ WRONG SYNTAX : "	TERMINAL_DEFAULT

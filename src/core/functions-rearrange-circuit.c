@@ -31,10 +31,12 @@ void	rearrange_circuit(Circuit* circ)
 	}
 
 	reset_circuit_levels(circ);
-	topological_sort(circ);
+	topological_sort(circ, true);
+
+	return;
 }
 
-static void	propagate_level(Component* comp, int* max_level)
+static void	propagate_level(Component* comp, int* max_level, bool flag_rearrange_components)
 {
 	if (!comp || *max_level < 0)
 	{
@@ -57,7 +59,10 @@ static void	propagate_level(Component* comp, int* max_level)
 			if (next_level > dest->coordinates->level)
 			{
 				dest->coordinates->level = next_level;
-				update_coordinates(dest, dest->coordinates->level*100, dest->coordinates->alignment*100);
+				if (flag_rearrange_components)
+				{
+					update_coordinates(dest, dest->coordinates->level*100, dest->coordinates->alignment*100);
+				}
 
 				// Verification and update of the max_level of the circuit
 				if (dest->coordinates->level > *max_level)
@@ -65,7 +70,7 @@ static void	propagate_level(Component* comp, int* max_level)
 					*max_level = dest->coordinates->level;
 				}
 
-				propagate_level(dest, max_level);
+				propagate_level(dest, max_level, flag_rearrange_components);
 			}
 		}
 		counter++;
@@ -74,7 +79,7 @@ static void	propagate_level(Component* comp, int* max_level)
 
 
 
-void	topological_sort(Circuit* circ)
+void	topological_sort(Circuit* circ, bool flag_rearrange_components)
 {
 	int counter;
 
@@ -103,7 +108,7 @@ void	topological_sort(Circuit* circ)
 	{
 		if (circ->components[counter]->coordinates->level == 0)
 		{
-			propagate_level(circ->components[counter], &(circ->max_level));
+			propagate_level(circ->components[counter], &(circ->max_level), flag_rearrange_components);
 		}
 		counter+=1;
 	}

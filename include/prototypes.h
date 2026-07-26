@@ -30,7 +30,6 @@ bool			check_component_label			(Circuit* circ,		Component* comp,	const char* new
 void			delete_all_component_links		(Circuit* circ,		Component* comp,	bool free_all);
 int				get_component_number_in_circuit	(Circuit* circ,		Component* comp);
 
-
 //Functions-links 
 Link*			create_link						(Component* src, Component* dest, int port_number, Circuit* circ);
 void			delete_link						(Circuit* circ, Link* link);
@@ -40,7 +39,7 @@ Link*			get_link						(Circuit* circ, Component* src, Component* dest, int port_
 
 // Eval
 CompStatus		component_eval					(Component* comp);
-void			propagate_evaluation			(Component* comp);
+void			propagate_eval_from_component	(Component* comp);
 
 
 // In / Out 
@@ -76,5 +75,5 @@ void			replace_active_keyword			(Model* model, char** args, int arg_count);
 // Rearrange circuit
 Component*		update_coordinates				(Component* comp, int x, int y);
 void			rearrange_circuit				(Circuit* circ);
-void			topological_sort				(Circuit* circ);
+void			topological_sort				(Circuit* circ, bool flag_rearrange_components);
 //void			new_topological_sort			(Circuit* circ);

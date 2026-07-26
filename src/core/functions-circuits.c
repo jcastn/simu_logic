@@ -200,7 +200,12 @@ void	simulate_circuit(Circuit* circ)
 	counter = 0;
 	while (counter < circ->component_count)
 	{
-		circ->components[counter]->out_status = component_eval(circ->components[counter]);
+		Component* comp = circ->components[counter];
+		if (comp->coordinates->level == 0)
+		{
+			component_eval(comp);
+			propagate_eval_from_component(comp);
+		}
 		counter++;
 	}
 }
@@ -274,6 +279,7 @@ Circuit*	duplicate_circuit(Model* model, Circuit* src_circ, const char* new_labe
 		}
 		counter++;
 	}
+	simulate_circuit(dest_circ);
 	return dest_circ;
 }
 
