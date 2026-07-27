@@ -55,7 +55,7 @@ Link*	create_link(Component* src, Component* dest, int port_number, Circuit* cir
 	dest->in_links[port_number] = link;
 
 
-	printf(MESS_LINK"Link created : '%s' → '%s' (port %d)\n", src->label, dest->label, PORT_DISPLAY(port_number));
+	printf(MESS_LINK"Link created : '%s%s%s' → '%s%s%s' (port %d)\n", COMPONENT_MAP[src->type].color, src->label, TERMINAL_DEFAULT, COMPONENT_MAP[dest->type].color, dest->label, TERMINAL_DEFAULT, PORT_DISPLAY(port_number));
 
 	// Propagate eval to linked component
 	component_eval(dest);

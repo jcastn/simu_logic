@@ -60,19 +60,26 @@ static CompStatus	eval_rgb(Component* comp)
 static CompStatus	eval_display(Component *comp)
 {
 	int counter = 0;
-	
+	int value = 0;
 	comp->out_status.number = 0;
 	
 	while (counter < comp->nb_in_links)
 	{
 		if ((comp->in_links[counter] != NULL) && (read_parent_status(comp, counter)))
 		{
-			comp->out_status.number += (1 << counter);
-			//printf("\n%s number : %hhu", comp->label, comp->out_status.number);
+			value += (1 << counter);
 		}
 		counter++;
 	}
-	
+
+	if (comp->type == DISPLAY_CHAR)
+	{
+		comp->out_status.character = value;
+	}
+	else
+	{
+		comp->out_status.number = value;
+	}
 	return comp->out_status;
 }
 
@@ -85,7 +92,7 @@ CompStatus	component_eval(Component* comp)
 
 	switch (comp->type)
 	{
-		case SOURCE : 
+		case SOURCE : case CONST_OFF : case CONST_ON : 
 			return comp->out_status;
 
 		case DIODE : case BUFFER :
@@ -123,7 +130,7 @@ CompStatus	component_eval(Component* comp)
 		case GATE_NIMPLY :
 			return eval_imply_gate(comp, true);
 
-		case DISPLAY_DEC : case DISPLAY_HEX : 
+		case DISPLAY_DEC : case DISPLAY_HEX : case DISPLAY_CHAR :
 			return eval_display(comp);
 
 		default:

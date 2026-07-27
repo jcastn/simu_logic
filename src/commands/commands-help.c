@@ -10,11 +10,11 @@ void	display_help	(char* command_name, char* command_description)
 
 	if (options_count == 0)
 	{
-		printf(MESS_INFO "You can use the "TERMINAL_YELLOW "'%s'"TERMINAL_DEFAULT " command to %s.\n", command_name, command_description);
+		printf(MESS_INFO "You can use the "COM_OPEN "%s" COM_CLOSE " command to %s.\n", command_name, command_description);
 	}
 	else
 	{
-		printf(MESS_INFO "You can use the "TERMINAL_YELLOW "'%s'"TERMINAL_DEFAULT " command to %s.\nYou have plenty of options :\n", command_name, command_description);
+		printf(MESS_INFO "You can use the "COM_OPEN "%s" COM_CLOSE " command to %s.\nYou have plenty of options :\n", command_name, command_description);
 		
 		while (counter < options_count)
 		{

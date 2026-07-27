@@ -18,7 +18,9 @@ typedef struct	Model			Model;
 typedef struct	CommandMap		CommandMap;
 typedef struct	SubCommandMap	SubCommandMap;
 typedef struct	ColorStatus		ColorStatus;
+typedef	struct	ComponentMap	ComponentMap;
 typedef union	CompStatus		CompStatus;
+
 
 // Enumerations 
 
@@ -27,10 +29,13 @@ typedef union	CompStatus		CompStatus;
 // Please edit COMPONENTS_COUNT and ComponentsNames[] when adding or removing a component ! 
 typedef enum {
 	SOURCE,
+	CONST_ON,
+	CONST_OFF,
 	DIODE,
 	DIODE_RGB,
 	DISPLAY_HEX,
 	DISPLAY_DEC,
+	DISPLAY_CHAR,
 	BUFFER,
 	GATE_NOT,
 	GATE_AND,
@@ -43,26 +48,6 @@ typedef enum {
 	GATE_NIMPLY
 } TypeComponent;
 
-
-
-// Translation of TypeComponent enumeration to strings
-static const char* ComponentNames[] __attribute__((unused)) = {
-	"SOURCE",
-	"DIODE",
-	"DIODE_RGB",
-	"DISPLAY_HEX",
-	"DISPLAY_DEC",
-	"BUFFER",
-	"GATE_NOT",
-	"GATE_AND",
-	"GATE_OR",
-	"GATE_XOR",
-	"GATE_NAND",
-	"GATE_NOR",
-	"GATE_NXOR",
-	"GATE_IMPLY",
-	"GATE_NIMPLY"
-};
 
 typedef enum
 {
@@ -108,8 +93,8 @@ union CompStatus
 	ColorStatus		rgb;
 	uint8_t			number;
 	uint8_t			raw_value;
+	unsigned char	character;
 };
-
 
 struct	Component
 {
@@ -171,3 +156,11 @@ struct 	SubCommandMap
 	int				needed_args;
 	bool			is_alias;
 };
+
+struct ComponentMap
+{
+	const char*		name;
+	const char*		color;
+};
+
+extern const ComponentMap COMPONENT_MAP[];

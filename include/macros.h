@@ -24,7 +24,7 @@
 #define MAX_COMMAND_ARGS			5
 #define MAX_COMP_IN_PORTS			8
 #define LABEL_SIZE_NUM				20
-#define STATE_SIZE_NUM				12
+#define STATE_SIZE_NUM				14
 
 #define LABEL_SIZE					TOSTRING(LABEL_SIZE_NUM)
 #define STATE_SIZE					TOSTRING(STATE_SIZE_NUM)
@@ -34,7 +34,7 @@
 #define PORT_INPUT(port)			((port) - 1)
 
 #define APP_NAME					"simu-logic"
-#define APP_VERSION					"v0.15.4"
+#define APP_VERSION					"v0.15.5"
 
 #define MESS_ERROR					TERMINAL_RED		"\n/!\\ ERROR : "			TERMINAL_DEFAULT
 #define MESS_SYNTAX					TERMINAL_RED		"\n/!\\ WRONG SYNTAX : "	TERMINAL_DEFAULT

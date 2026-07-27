@@ -153,7 +153,7 @@ void			command_component_set(char* args[MAX_COMMAND_ARGS], Model *model, int arg
 
 	if (comp->type != SOURCE)
 	{
-		printf(MESS_SYNTAX "You cannot change the status of a component that is not a SOURCE, it can't be a '%s' !\n", ComponentNames[comp->type]);
+		printf(MESS_SYNTAX "You cannot change the status of a component that is not a SOURCE, it can't be a '%s' !\n", COMPONENT_MAP[comp->type].name);
 		return;
 	}
 
@@ -174,7 +174,7 @@ void			command_component_set(char* args[MAX_COMMAND_ARGS], Model *model, int arg
 	char* state_color = comp->out_status.out ? TERMINAL_GREEN : TERMINAL_RED;
 	char* state_text = comp->out_status.out ? "ON" : "OFF";
 
-	printf(MESS_COMP"Status of the component '"TERMINAL_CYAN"%s"TERMINAL_DEFAULT"' is set to '%s%s'"TERMINAL_DEFAULT"\n", comp->label, state_color, state_text);
+	printf(MESS_COMP"Status of the component '%s%s"TERMINAL_DEFAULT"' is set to '%s%s'"TERMINAL_DEFAULT"\n", COMPONENT_MAP[comp->type].color, comp->label, state_color, state_text);
 	
 	propagate_eval_from_component(comp);
 }
@@ -216,7 +216,7 @@ void			command_component_toggle(char* args[MAX_COMMAND_ARGS], Model *model, int 
 	}
 	else
 	{
-		printf(MESS_SYNTAX "You cannot change the status of a component that is not a SOURCE, it can't be a '%s' !\n", ComponentNames[comp->type]);
+		printf(MESS_SYNTAX "You cannot change the status of a component that is not a SOURCE, it can't be a '%s' !\n", COMPONENT_MAP[comp->type].name);
 	}
 
 }

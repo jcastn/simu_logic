@@ -29,11 +29,11 @@ Circuit*	create_circuit(Model* model, const char* label)
 	
 	if (check_circuit_label(model, label) == false)
 	{
-		printf(MESS_ERROR"A circuit is already named '%s', the created circuit will keep its default label '%s'.\n\n", label, circ->label);
+		printf(MESS_ERROR"A circuit is already named "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT", the created circuit will keep its default label '%s'.\n\n", label, circ->label);
 	}
 	else if (strcmp(label, "default") == 0)
 	{
-		printf(MESS_INFO"The circuit will use its default name : '%s'\n", circ->label);
+		printf(MESS_INFO"The circuit will use its default name : "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT"\n", circ->label);
 	}
 	else
 	{
@@ -52,7 +52,7 @@ Circuit*	create_circuit(Model* model, const char* label)
 	model->circuits[model->circuits_count] = circ;
 	model->circuits_count += 1; 
 
-	printf(MESS_CIRC"Circuit created : '%s'\n", circ->label);
+	printf(MESS_CIRC"Circuit created : "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT"\n", circ->label);
 	return circ;
 }
 
@@ -66,20 +66,20 @@ void rename_circuit(Model *model, Circuit* circ, const char* new_label)
 
 	if (strcmp(circ->label, new_label) == 0)
 	{
-		printf(MESS_ERROR"The circuit is already named '%s'. Rename operation is aborted.\n", new_label);
+		printf(MESS_ERROR"The circuit is already named "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT". Rename operation is aborted.\n", new_label);
 		return; 
 	}
 
 	if (check_circuit_label(model, new_label) == false)
 	{
-		printf(MESS_ERROR"A circuit is already named '%s'. Rename operation of circuit '%s' (id:%d) is aborted.\n", new_label, circ->label, circ->id);
+		printf(MESS_ERROR"A circuit is already named "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT". Rename operation of circuit "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT" (id:%d) is aborted.\n", new_label, circ->label, circ->id);
 		return;
 	}
 
 	strncpy(circ->label, new_label, sizeof(circ->label) - 1);
 	circ->label[sizeof(circ->label) - 1] = '\0';
 
-	printf(MESS_CIRC"Circuit renamed : '%s'\n", circ->label);
+	printf(MESS_CIRC"Circuit renamed : "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT"\n", circ->label);
 
 }
 
@@ -114,7 +114,7 @@ Circuit* get_circuit_by_label(Model* model, const char* given_label)
 
 	if (!given_label || !model || !model->circuits)
 	{
-		printf(MESS_SYNTAX"Circuit with label '%s' not found\n", given_label);
+		printf(MESS_SYNTAX"Circuit with label "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT" not found\n", given_label);
 		return NULL;
 	}
 
@@ -132,7 +132,7 @@ Circuit* get_circuit_by_label(Model* model, const char* given_label)
 		counter++;
 	}
 
-	printf(MESS_SYNTAX"Circuit with label '%s' not found, check circuit names with 'circuit list'.\n", given_label);
+	printf(MESS_SYNTAX"Circuit with label "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT" not found, check circuit names with "OPTION_COM(list circuits)".\n", given_label);
 	return NULL;
 }
 

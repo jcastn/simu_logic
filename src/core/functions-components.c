@@ -1,11 +1,36 @@
 //functions-components.c
 #include "../../include/prototypes.h"
 
+
+const ComponentMap COMPONENT_MAP[] = {
+	// [comp_type]  = { "name",             color               },
+	[SOURCE]		= { "SOURCE",			TERMINAL_CYAN		},
+	[CONST_ON]		= { "CONST_ON",			TERMINAL_CYAN		},
+	[CONST_OFF]		= { "CONST_OFF",		TERMINAL_CYAN		},
+	[DIODE]			= { "DIODE",			TERMINAL_BLUE		},
+	[DIODE_RGB]		= { "DIODE_RGB",		TERMINAL_BLUE		},
+	[DISPLAY_HEX]	= { "DISPLAY_HEX",		TERMINAL_YELLOW		},
+	[DISPLAY_DEC]	= { "DISPLAY_DEC",		TERMINAL_YELLOW		},
+	[DISPLAY_CHAR]	= { "DISPLAY_CHAR",		TERMINAL_YELLOW		},
+	[BUFFER]		= { "BUFFER",			TERMINAL_PINK		},
+	[GATE_NOT]		= { "GATE_NOT",			TERMINAL_PINK		},
+	[GATE_AND]		= { "GATE_AND",			TERMINAL_MAGENTA	},
+	[GATE_OR]		= { "GATE_OR",			TERMINAL_MAGENTA	},
+	[GATE_XOR]		= { "GATE_XOR",			TERMINAL_MAGENTA	},
+	[GATE_NAND]		= { "GATE_NAND",		TERMINAL_PURPLE		},
+	[GATE_NOR]		= { "GATE_NOR",			TERMINAL_PURPLE		},
+	[GATE_NXOR]		= { "GATE_NXOR",		TERMINAL_PURPLE		},
+	[GATE_IMPLY]	= { "GATE_IMPLY",		TERMINAL_VIOLET		},
+	[GATE_NIMPLY]	= { "GATE_NIMPLY",		TERMINAL_VIOLET		}
+};
+
 static Component* component_init(Component* comp, int in_nbr)
 {
 	comp->nb_out_links = 0;
 	comp->out_links = NULL;
 	comp->nb_in_links = in_nbr;
+	comp->coordinates->level = 0;
+	comp->coordinates->alignment = 0;
 
 	switch (comp->type)
 	{
@@ -20,11 +45,22 @@ static Component* component_init(Component* comp, int in_nbr)
 			comp->nb_in_links = MAX_COMP_IN_PORTS;
 			comp->out_status.number = 0;
 			break;
+		
+		case DISPLAY_CHAR :
+			comp->nb_in_links = MAX_COMP_IN_PORTS;
+			comp->out_status.character = ' ';
+			break;
 
 		default : 
 			comp->out_status.out = false;
-			if (comp->type == SOURCE)
+			
+			if ((comp->type == SOURCE) || (comp->type == CONST_OFF))
 			{
+				comp->nb_in_links = 0;
+			}
+			else if (comp->type == CONST_ON)
+			{
+				comp->out_status.out = true;
 				comp->nb_in_links = 0;
 			}
 			else if ((comp->type == DIODE) || (comp->type == GATE_NOT) || (comp->type == BUFFER))
@@ -35,7 +71,7 @@ static Component* component_init(Component* comp, int in_nbr)
 			{
 				comp->nb_in_links = 2;
 			}
-			else if (in_nbr >= MAX_COMP_IN_PORTS)
+			else if ((in_nbr < 0) || (in_nbr >= MAX_COMP_IN_PORTS))
 			{
 				comp->nb_in_links = MAX_COMP_IN_PORTS;
 			}
@@ -118,26 +154,26 @@ Component*	create_component(Circuit* circ, TypeComponent type, const char* comp_
 	circ->type_counter[type].count += 1;
 	
 	// By default, we generate a label for the component with the component id
-	snprintf(comp->label, sizeof(comp->label), "%s_%d", ComponentNames[type], circ->type_counter[type].count);
+	snprintf(comp->label, sizeof(comp->label), "%s_%d", COMPONENT_MAP[type].name, circ->type_counter[type].count);
 
 	if ((comp_label == NULL) || (strlen(comp_label) == 0))
 	{
-		printf(MESS_ERROR"There's no value for the component label, so we'll keep the auto-generated label : '%s'\n", comp->label);
+		printf(MESS_ERROR"There's no value for the component label, so we'll keep the auto-generated label : '%s%s%s'\n", COMPONENT_MAP[comp->type].color, comp->label, TERMINAL_DEFAULT);
 	}
 	else if (strcmp(comp_label, "default") == 0)
 	{
-		printf(MESS_INFO"The component will use the auto-generated label : '%s'\n", comp->label);
+		printf(MESS_INFO"The component will use the auto-generated label : '%s%s%s'\n", COMPONENT_MAP[comp->type].color, comp->label, TERMINAL_DEFAULT);
 	}
 	else if (check_component_label(circ, comp, comp_label) == false)
 	{
-		printf(MESS_ERROR"The label '%s' is already used in this circuit. We'll keep the auto-generated label : '%s'\n", comp_label, comp->label);
+		printf(MESS_ERROR"The label '%s%s%s' is already used in this circuit. We'll keep the auto-generated label : '%s%s%s'\n", COMPONENT_MAP[comp->type].color, comp_label, TERMINAL_DEFAULT, COMPONENT_MAP[comp->type].color, comp->label, TERMINAL_DEFAULT);
 	}
 	else
 	{
 		snprintf(comp->label, sizeof(comp->label), "%s", comp_label);
 	}
 
-	printf(MESS_COMP"%s component created with label '%s', it contains %d inbound ports. \n", ComponentNames[type], comp->label, comp->nb_in_links);
+	printf(MESS_COMP"'%s%s%s' component created with label '%s%s%s', it contains %d inbound ports. \n", COMPONENT_MAP[comp->type].color, COMPONENT_MAP[type].name, TERMINAL_DEFAULT, COMPONENT_MAP[comp->type].color, comp->label, TERMINAL_DEFAULT, comp->nb_in_links);
 
 	return comp;
 }
@@ -198,14 +234,14 @@ void rename_component(Circuit* circ, Component* comp, const char* new_label)
 
 	if (check_component_label(circ, comp, new_label) == false)
 	{
-		printf(MESS_ERROR"In the circuit '%s' (id:%d), a component is already named '%s'.\nRename operation of '%s' aborted.\n", circ->label, circ->id, new_label, comp->label);
+		printf(MESS_ERROR"In the circuit "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT" (id:%d), a component is already named '%s%s%s'.\nRename operation of '%s%s%s' aborted.\n", circ->label, circ->id, COMPONENT_MAP[comp->type].color, new_label, TERMINAL_DEFAULT, COMPONENT_MAP[comp->type].color, comp->label, TERMINAL_DEFAULT);
 		return;
 	}
 
 	strncpy(comp->label, new_label, sizeof(comp->label) - 1);
 	comp->label[sizeof(comp->label) - 1] = '\0'; 
 
-	printf(MESS_COMP"Component renamed : %s\n", comp->label);
+	printf(MESS_COMP"Component renamed : '%s%s%s'\n", COMPONENT_MAP[comp->type].color, comp->label, TERMINAL_DEFAULT);
 }
 
 // Function to check if a component label already exist in a circuit

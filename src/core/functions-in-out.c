@@ -275,7 +275,7 @@ static void	write_file_content(char* file_path, Model *model, int circuit_index)
 		while(comp < model->circuits[circ]->component_count)
 		{
 			fprintf(file, "\t\t%s, \"%s\", %d, %d, %d\n", 
-				ComponentNames[model->circuits[circ]->components[comp]->type],
+				COMPONENT_MAP[model->circuits[circ]->components[comp]->type].name,
 				model->circuits[circ]->components[comp]->label,
 				model->circuits[circ]->components[comp]->nb_in_links,
 				model->circuits[circ]->components[comp]->coordinates->x,

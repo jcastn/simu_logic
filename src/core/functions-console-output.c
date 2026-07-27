@@ -1,24 +1,6 @@
 // functions-console-output.c
 #include "../../include/prototypes.h"
 
-static const char* ComponentColors[] = {
-	[SOURCE]		=	TERMINAL_CYAN,
-	[DIODE]			=	TERMINAL_BLUE,
-	[DIODE_RGB]		=	TERMINAL_BLUE,
-	[BUFFER]		=	TERMINAL_PINK,
-	[GATE_NOT]		=	TERMINAL_PINK,
-	[GATE_AND]		=	TERMINAL_MAGENTA,
-	[GATE_OR]		=	TERMINAL_MAGENTA,
-	[GATE_XOR]		=	TERMINAL_MAGENTA,
-	[GATE_NAND]		=	TERMINAL_PURPLE,
-	[GATE_NOR]		=	TERMINAL_PURPLE,
-	[GATE_NXOR]		=	TERMINAL_PURPLE,
-	[GATE_IMPLY]	=	TERMINAL_VIOLET,
-	[GATE_NIMPLY]	=	TERMINAL_VIOLET,
-	[DISPLAY_DEC]	=	TERMINAL_YELLOW,
-	[DISPLAY_HEX]	=	TERMINAL_YELLOW
-};
-
 static void		compute_color(ColorStatus color, const char** state_color, const char** state_text)
 {
 	if (color.r && color.g && color.b)
@@ -65,20 +47,31 @@ static void		compute_color(ColorStatus color, const char** state_color, const ch
 
 static void		compute_number(Component* comp, const char** state_color, const char** state_text, char* state_text_buffer)
 {
-	*state_color = TERMINAL_WHITE;
+	*state_color = COMPONENT_MAP[comp->type].color;
 	if (comp->type == DISPLAY_DEC)
 	{
 		snprintf(state_text_buffer, STATE_SIZE_NUM, "Value : %d", comp->out_status.number);
-		
 	}
 	else if (comp->type == DISPLAY_HEX)
 	{
-		*state_color = TERMINAL_WHITE;
 		snprintf(state_text_buffer, STATE_SIZE_NUM, "Value : %X", comp->out_status.number);
+	}
+	else if (comp->type == DISPLAY_CHAR)
+	{
+		if (comp->out_status.character >= 32 && comp->out_status.character <= 126)
+		{
+			snprintf(state_text_buffer, STATE_SIZE_NUM, "Char : '%c'", comp->out_status.character);
+		}
+		else
+		{
+			*state_color = TERMINAL_RED;
+			snprintf(state_text_buffer, STATE_SIZE_NUM, "Char : UNDEF");
+		}	
 	}
 	else 
 	{
-		snprintf(state_text_buffer, sizeof(state_text_buffer), "Value : ERROR");
+		*state_color = TERMINAL_RED;
+		snprintf(state_text_buffer, STATE_SIZE_NUM, "Value : ERROR");
 	}
 	*state_text = state_text_buffer;
 }
@@ -91,7 +84,7 @@ static void		get_component_out_status(Component* comp, const char** state_color,
 	{
 		compute_color(comp->out_status.rgb, state_color, state_text);
 	}
-	else if ((comp->type == DISPLAY_DEC) || (comp->type == DISPLAY_HEX))
+	else if ((comp->type == DISPLAY_DEC) || (comp->type == DISPLAY_HEX) || (comp->type == DISPLAY_CHAR))
 	{
 		compute_number(comp, state_color, state_text, state_text_buffer);
 	}
@@ -117,13 +110,13 @@ void	show_components_from_circuit(Circuit* circ)
 {
 	int counter;
 	printf(	"\nCircuit %d ("TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT"):\n%d Components and %d Links on %d Levels, \n", circ->id, circ->label, circ->component_count, circ->link_count, circ->max_level);
-	printf(	"•----------------------•----------------------•--------------•--------•-------•-------•--------•--------•------------------•\n"
-			"| Component Label      | Component Type       | State        | ID     | Level | Align | x      | y      | Links            |\n"
-			"•----------------------•----------------------•--------------•--------•-------•-------•--------•--------•------------------•\n");
+	printf(	"•----------------------•----------------------•----------------•--------•-------•-------•--------•--------•------------------•\n"
+			"| Component Label      | Component Type       | State          | ID     | Level | Align | x      | y      | Links            |\n"
+			"•----------------------•----------------------•----------------•--------•-------•-------•--------•--------•------------------•\n");
 
 	if (circ->component_count == 0)
 	{
-		printf("| "TERMINAL_GRAY"(empty)"TERMINAL_DEFAULT"              |                      |              |        |       |       |        |        |                  |\n");
+		printf("| "TERMINAL_GRAY"(empty)"TERMINAL_DEFAULT"              |                      |                |        |       |       |        |        |                  |\n");
 	}
 
 	counter = 0;
@@ -131,7 +124,7 @@ void	show_components_from_circuit(Circuit* circ)
 	{
 		const char* component_color;
 		Component* comp = circ->components[counter];
-		component_color = ComponentColors[comp->type];
+		component_color = COMPONENT_MAP[comp->type].color;
 
 		// Out-Status State
 		const char* state_color;
@@ -141,7 +134,7 @@ void	show_components_from_circuit(Circuit* circ)
 		
 		printf("| %s%-"LABEL_SIZE"s" TERMINAL_DEFAULT " | %s%-"LABEL_SIZE"s" TERMINAL_DEFAULT " | %s%-"STATE_SIZE"s" TERMINAL_DEFAULT " | %-6d | %-5d | %-5d | %-6d | %-6d | In:%-4d Out:%-4d |\n", 
 			component_color, comp->label,
-			component_color, ComponentNames[comp->type],
+			component_color, COMPONENT_MAP[comp->type].name,
 			state_color, state_text,
 			comp->id, 
 			comp->coordinates->level, 
@@ -152,7 +145,7 @@ void	show_components_from_circuit(Circuit* circ)
 			comp->nb_out_links);
 		counter++;
 	}
-	printf("•----------------------•----------------------•--------------•--------•-------•-------•--------•--------•------------------•\n");
+	printf("•----------------------•----------------------•----------------•--------•-------•-------•--------•--------•------------------•\n");
 }
 
 
@@ -175,14 +168,13 @@ void	show_links_from_circuit(Circuit* circ)
 	{
 		counter_bis = 0;
 		Component* comp = circ->components[counter];
-		component_color = ComponentColors[comp->type];
-
+		component_color = COMPONENT_MAP[comp->type].color;
 		if (comp->nb_out_links != 0)
 		{
 			printf("\n%s%s"TERMINAL_DEFAULT"\n", component_color, comp->label);
 			while(counter_bis < comp->nb_out_links)
 			{
-				component_color = ComponentColors[comp->out_links[counter_bis]->dest->type];
+				component_color = COMPONENT_MAP[comp->out_links[counter_bis]->dest->type].color;
 				printf(" ⤷ %s%s"TERMINAL_DEFAULT" (Port : %d)\n", component_color, comp->out_links[counter_bis]->dest->label, PORT_DISPLAY(comp->out_links[counter_bis]->port_number));
 				counter_bis++;
 			}
@@ -215,7 +207,7 @@ void	show_component(Component* comp)
 	const char*	state_color;
 	const char*	state_text;
 
-	component_color = ComponentColors[comp->type];
+	component_color = COMPONENT_MAP[comp->type].color;
 	get_component_out_status(comp, &state_color, &state_text);
 
 	printf(	"\nDetails about component %s%s"TERMINAL_DEFAULT" :"
@@ -225,9 +217,9 @@ void	show_component(Component* comp)
 			"\n▻ y      : '%d'"
 			"\n▻ Level  : '%d'"
 			"\n▻ Align  : '%d'"
-			"\n▻ Status : '%s%s"TERMINAL_DEFAULT"'\n\n",
+			"\n▻ State : '%s%s"TERMINAL_DEFAULT"'\n\n",
 			component_color, comp->label, 
-			component_color, ComponentNames[comp->type], 
+			component_color, COMPONENT_MAP[comp->type].name, 
 			comp->id,
 			comp->coordinates->x, comp->coordinates->y,
 			comp->coordinates->level, comp->coordinates->alignment,
@@ -244,7 +236,7 @@ void	show_component(Component* comp)
 		{
 			if (comp->in_links[count] != NULL)
 			{
-				component_color = ComponentColors[comp->in_links[count]->src->type];
+				component_color = COMPONENT_MAP[comp->in_links[count]->src->type].color;
 
 				snprintf(inbound, sizeof(inbound), "Port %d : %s%-"LABEL_SIZE"s"TERMINAL_DEFAULT, PORT_DISPLAY(count), component_color, comp->in_links[count]->src->label);
 			}
@@ -269,7 +261,7 @@ void	show_component(Component* comp)
 		{
 			if ((comp->out_links[count] != NULL) && (comp->out_links[count]->dest != NULL))
 			{
-				component_color = ComponentColors[comp->out_links[count]->dest->type];
+				component_color = COMPONENT_MAP[comp->out_links[count]->dest->type].color;
 				snprintf(outbound, sizeof(outbound), "%s%-"LABEL_SIZE"s"TERMINAL_DEFAULT"         ", component_color, comp->out_links[count]->dest->label);
 			}
 			else

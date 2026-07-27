@@ -102,7 +102,7 @@ void			command_circuit_clear(char* args[MAX_COMMAND_ARGS], Model *model, int arg
 	}
 	if (delete_circuit(model, circ, false))
 	{
-		printf("\n"MESS_CIRC"Circuit '%s' cleared !\n", circ->label);
+		printf("\n"MESS_CIRC"Circuit "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT" cleared !\n", circ->label);
 	}
 	return;
 
@@ -152,12 +152,12 @@ void			command_circuit_duplicate(char* args[MAX_COMMAND_ARGS], Model *model, int
 	if (arg_count == 4)
 	{
 		Circuit* dest_circ = duplicate_circuit(model, src_circ, args[3]);
-		printf(MESS_INFO"Circuit '%s' has been duplicated as '%s'\n", src_circ->label, dest_circ->label);
+		printf(MESS_INFO"Circuit "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT" has been duplicated as "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT"\n", src_circ->label, dest_circ->label);
 	}
 	else
 	{
 		Circuit* dest_circ = duplicate_circuit(model, src_circ, "default");
-		printf(MESS_INFO"Circuit '%s' has been duplicated as '%s'\n", src_circ->label, dest_circ->label);
+		printf(MESS_INFO"Circuit "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT" has been duplicated as "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT"\n", src_circ->label, dest_circ->label);
 	}
 }
 
@@ -174,8 +174,8 @@ void	command_circuit_import(char* args[MAX_COMMAND_ARGS], Model *model, int arg_
 
 	if (arg_count < 4 || strcmp(args[2], "all") != 0)
 	{
-		printf(	MESS_SYNTAX"Expected: 'circuit import all "KEYWORD_PATH" or 'circuit import all IDK'\n"
-				MESS_TIP"Don't hesitate to refer to 'circuit help' command !");
+		printf(	MESS_SYNTAX"Expected: "COM_OPEN"circuit import all "KEYWORD_PATH COM_CLOSE" or "OPTION_COM(circuit import all IDK)"\n"
+				MESS_TIP"Don't hesitate to refer to "OPTION_COM(circuit help)" command !");
 		return;
 	}
 
@@ -274,7 +274,7 @@ void			command_circuit_rearrange(char* args[MAX_COMMAND_ARGS], Model *model, int
 		if (circ != NULL)
 		{
 			rearrange_circuit(circ);
-			printf(MESS_INFO"The circuit '%s' is rearranged !\n", circ->label);
+			printf(MESS_INFO"The circuit "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT" is rearranged !\n", circ->label);
 		}
 		return;
 	}
@@ -309,7 +309,7 @@ void	command_circuit_simulate(char* args[MAX_COMMAND_ARGS], Model *model, int ar
 	if (circ != NULL)
 	{
 		simulate_circuit(circ);
-		printf(MESS_INFO"Circuit \"%s\" simulated !\n", args[2]);
+		printf(MESS_INFO"Circuit "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT" simulated !\n", args[2]);
 	}
 	return;
 }
@@ -331,7 +331,7 @@ void	command_circuit_select(char* args[MAX_COMMAND_ARGS], Model *model, int arg_
 	model->active_circuit = get_circuit_by_label(model, args[2]);
 	if (model->active_circuit != NULL)
 	{
-		printf(MESS_INFO"The active circuit is now : \"%s\"\n", model->active_circuit->label);
+		printf(MESS_INFO"The active circuit is now : "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT"\n", model->active_circuit->label);
 		return;
 	}
 	return;
@@ -350,7 +350,7 @@ void	command_circuit_unselect(char* args[MAX_COMMAND_ARGS], Model *model, int ar
 
 	if (model->active_circuit != NULL)
 	{
-		printf(MESS_INFO"The circuit '%s' is no longer activated.\n", model->active_circuit->label);
+		printf(MESS_INFO"The circuit "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT" is no longer activated.\n", model->active_circuit->label);
 		model->active_circuit = NULL;
 		return;
 	}

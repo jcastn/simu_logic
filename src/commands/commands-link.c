@@ -29,7 +29,7 @@ void			command_link_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_c
 	int port_number = PORT_INPUT(input_port);
 
 	if ((port_number < 0) || (port_number >= dest->nb_in_links)){
-		printf(MESS_ERROR"Link not created because the port number '%d' is invalid. It should be between 1 and %d\n", input_port, dest->nb_in_links);
+		printf(MESS_ERROR"Link not created because the port number '"TERMINAL_MAGENTA"%d"TERMINAL_DEFAULT"' is invalid. It should be between 1 and %d\n", input_port, dest->nb_in_links);
 		return;
 	}
 
@@ -57,7 +57,7 @@ void			command_link_delete(char* args[MAX_COMMAND_ARGS], Model *model, int arg_c
 		}
 
 		delete_all_component_links(model->active_circuit, comp, false);
-		printf(MESS_INFO"All inbound and outbound links of '%s' are deleted.\n", comp->label);
+		printf(MESS_INFO"All inbound and outbound links of '%s%s%s' are deleted.\n", COMPONENT_MAP[comp->type].color, comp->label, TERMINAL_DEFAULT);
 		return;
 	}
 	
@@ -93,7 +93,7 @@ void			command_link_delete(char* args[MAX_COMMAND_ARGS], Model *model, int arg_c
 		delete_link(model->active_circuit, link);
 	}
 
-	printf(MESS_LINK"Link deleted : '%s' -> '%s' (port %d)\n", src->label, dest->label, input_port);
+	printf(MESS_LINK"Link deleted : '%s%s%s' -> '%s%s%s' (port %d)\n", COMPONENT_MAP[src->type].color, src->label, TERMINAL_DEFAULT, COMPONENT_MAP[dest->type].color, dest->label, TERMINAL_DEFAULT, input_port);
 	return;
 }
 

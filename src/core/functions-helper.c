@@ -33,14 +33,14 @@ TypeComponent	string_to_typecomponent(const char* type_str, bool* found)
 	counter = 0;
 	while (counter < COMPONENTS_COUNT)
 	{
-		if (strcmp(type_str, ComponentNames[counter])== 0)
+		if (strcmp(type_str, COMPONENT_MAP[counter].name) == 0)
 		{
 			*found = true;
 			return (TypeComponent)counter;
 		}
 		counter++;
 	}
-	printf(MESS_SYNTAX"TypeComponent not found !\n");
+	printf(MESS_SYNTAX"Component type not found !\n");
 	return SOURCE;
 }
 
@@ -61,7 +61,7 @@ bool			read_parent_status(Component* comp, int port_number)
 bool			check_path(const char* path){
 	if (path == NULL || path[0] == '\0')
 	{
-		printf(MESS_ERROR"The file path is NULL !");
+		printf(MESS_ERROR"There's no file path !");
 		return false;
 	}
 
@@ -72,7 +72,7 @@ bool			check_path(const char* path){
 		return true;
 	}
 
-	printf(MESS_ERROR"The file path '%s' is invalid !", path);
+	printf(MESS_ERROR"The file path "TERMINAL_ORANGE"\"%s'"TERMINAL_DEFAULT" is invalid !", path);
 	return false;
 }
 
