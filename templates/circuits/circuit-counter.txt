@@ -1,53 +1,54 @@
 $Circuit$ "circuit counter"
 	$Components$ : 
+		//type:%s, label:\"%s\", (in:%d, out:%d) (x:%d, y:%d)
 		//TypeComponent, "label", nb_in_links, x, y
-		SOURCE, "S_1", 0, 0, 0
-		SOURCE, "S_2", 0, 0, 0
-		SOURCE, "S_4", 0, 0, 0
-		SOURCE, "S_8", 0, 0, 0
-		SOURCE, "S_16", 0, 0, 0
-		SOURCE, "S_32", 0, 0, 0
-		SOURCE, "S_64", 0, 0, 0
-		SOURCE, "S_128", 0, 0, 0
+		type:SOURCE, label:"S_1", (in:0, out:0) (x:0, y:0)
+		type:SOURCE, label:"S_2", (in:0, out:0) (x:0, y:0)
+		type:SOURCE, label:"S_4", (in:0, out:0) (x:0, y:0)
+		type:SOURCE, label:"S_8", (in:0, out:0) (x:0, y:0)
+		type:SOURCE, label:"S_16", (in:0, out:0) (x:0, y:0)
+		type:SOURCE, label:"S_32", (in:0, out:0) (x:0, y:0)
+		type:SOURCE, label:"S_64", (in:0, out:0) (x:0, y:0)
+		type:SOURCE, label:"S_128", (in:0, out:0) (x:0, y:0)
 
-		DISPLAY_DEC, "DISPLAY_DEC_1", 8, 0, 0
-		DISPLAY_HEX, "DISPLAY_HEX_1", 8, 0, 0
-		DISPLAY_CHAR, "DISPLAY_CHAR_1", 8, 0, 0
+		type:DISPLAY_DEC, label:"DISPLAY_DEC_1", (in:8, out:0) (x:0, y:0)
+		type:DISPLAY_HEX, label:"DISPLAY_HEX_1", (in:8, out:0) (x:0, y:0)
+		type:DISPLAY_CHAR, label:"DISPLAY_CHAR_1", (in:8, out:0) (x:0, y:0)
 
 	$Inversions$
-		"S_1"
-		"S_2"
-		"S_4"
-		//"S_8"
-		"S_16"
-		//"S_32"
-		"S_64"
-		//"S_128"
+		label:"S_1"
+		label:"S_2"
+		label:"S_4"
+		//label:"S_8"
+		label:"S_16"
+		//label:"S_32"
+		label:"S_64"
+		//label:"S_128"
 
 	$Links$
-		"S_1", 	 "DISPLAY_DEC_1", 1
-		"S_2", 	 "DISPLAY_DEC_1", 2
-		"S_4", 	 "DISPLAY_DEC_1", 3
-		"S_8", 	 "DISPLAY_DEC_1", 4
-		"S_16",  "DISPLAY_DEC_1", 5
-		"S_32",  "DISPLAY_DEC_1", 6
-		"S_64",  "DISPLAY_DEC_1", 7
-		"S_128", "DISPLAY_DEC_1", 8
+		src:"S_1", src_port:1, dest:"DISPLAY_DEC_1", dest_port:1
+		src:"S_2", src_port:1, dest:"DISPLAY_DEC_1", dest_port:2
+		src:"S_4", src_port:1, dest:"DISPLAY_DEC_1", dest_port:3
+		src:"S_8", src_port:1, dest:"DISPLAY_DEC_1", dest_port:4
+		src:"S_16", src_port:1, dest:"DISPLAY_DEC_1", dest_port:5
+		src:"S_32", src_port:1, dest:"DISPLAY_DEC_1", dest_port:6
+		src:"S_64", src_port:1, dest:"DISPLAY_DEC_1", dest_port:7
+		src:"S_128", src_port:1, dest:"DISPLAY_DEC_1", dest_port:8
 
-		"S_1", 	 "DISPLAY_HEX_1", 1
-		"S_2", 	 "DISPLAY_HEX_1", 2
-		"S_4", 	 "DISPLAY_HEX_1", 3
-		"S_8", 	 "DISPLAY_HEX_1", 4
-		"S_16",  "DISPLAY_HEX_1", 5
-		"S_32",  "DISPLAY_HEX_1", 6
-		"S_64",  "DISPLAY_HEX_1", 7
-		"S_128", "DISPLAY_HEX_1", 8
+		src:"S_1", src_port:1, dest:"DISPLAY_HEX_1", dest_port:1
+		src:"S_2", src_port:1, dest:"DISPLAY_HEX_1", dest_port:2
+		src:"S_4", src_port:1, dest:"DISPLAY_HEX_1", dest_port:3
+		src:"S_8", src_port:1, dest:"DISPLAY_HEX_1", dest_port:4
+		src:"S_16", src_port:1, dest:"DISPLAY_HEX_1", dest_port:5
+		src:"S_32", src_port:1, dest:"DISPLAY_HEX_1", dest_port:6
+		src:"S_64", src_port:1, dest:"DISPLAY_HEX_1", dest_port:7
+		src:"S_128", src_port:1, dest:"DISPLAY_HEX_1", dest_port:8
 
-		"S_1", 	 "DISPLAY_CHAR_1", 1
-		"S_2", 	 "DISPLAY_CHAR_1", 2
-		"S_4", 	 "DISPLAY_CHAR_1", 3
-		"S_8", 	 "DISPLAY_CHAR_1", 4
-		"S_16",  "DISPLAY_CHAR_1", 5
-		"S_32",  "DISPLAY_CHAR_1", 6
-		"S_64",  "DISPLAY_CHAR_1", 7
-		"S_128", "DISPLAY_CHAR_1", 8
+		src:"S_1", src_port:1, dest:"DISPLAY_CHAR_1", dest_port:1
+		src:"S_2", src_port:1, dest:"DISPLAY_CHAR_1", dest_port:2
+		src:"S_4", src_port:1, dest:"DISPLAY_CHAR_1", dest_port:3
+		src:"S_8", src_port:1, dest:"DISPLAY_CHAR_1", dest_port:4
+		src:"S_16", src_port:1, dest:"DISPLAY_CHAR_1", dest_port:5
+		src:"S_32", src_port:1, dest:"DISPLAY_CHAR_1", dest_port:6
+		src:"S_64", src_port:1, dest:"DISPLAY_CHAR_1", dest_port:7
+		src:"S_128", src_port:1, dest:"DISPLAY_CHAR_1", dest_port:8

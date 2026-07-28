@@ -14,11 +14,20 @@ static bool	op_xor(bool a, bool b)
 	return a ^ b;
 }
 
-static CompStatus	eval_gate(Component* comp, bool (*operation)(bool, bool), bool accumulator, bool invert_flag)
+static void	set_out_port_status(Component* comp, int port_number, CompStatus status)
+{
+	if ((comp) && (comp->out_ports) && (port_number < comp->nb_out_ports) && (comp->out_ports[port_number]))
+	{
+		comp->out_ports[port_number]->status = status;
+	}
+	return;
+}
+
+static void	eval_gate(Component* comp, bool (*operation)(bool, bool), bool accumulator, bool invert_flag)
 {
 	int counter;
 	counter = 0;
-	while (counter < comp->nb_in_links)
+	while (counter < comp->nb_in_ports)
 	{
 		// The logic evaluation only happen if the port is linked to a component (the status can be true or false, but not NULL)
 		if (comp->in_links[counter] != NULL)
@@ -33,37 +42,39 @@ static CompStatus	eval_gate(Component* comp, bool (*operation)(bool, bool), bool
 	{
 		accumulator = !(accumulator);
 	}
-	comp->out_status.out = accumulator;
-	return comp->out_status;
+	CompStatus result = (CompStatus){.binary = accumulator};
+	set_out_port_status(comp, 0, result);
+	return;
 }
 
-static CompStatus	eval_imply_gate(Component* comp, bool final_not)
+static void	eval_imply_gate(Component* comp, bool final_not)
 {
-	comp->out_status.out = !read_parent_status(comp, 0) || read_parent_status(comp, 1);
+	bool val = !read_parent_status(comp, 0) || read_parent_status(comp, 1);
 
 	if (final_not)
 	{
-		comp->out_status.out = !comp->out_status.out;
+		val = !val;
 	}
 
-	return comp->out_status;
+	CompStatus result = (CompStatus){ .binary = val};
+	set_out_port_status(comp, 0, result);
+	return;
 }
 
-static CompStatus	eval_rgb(Component* comp)
+static void	eval_rgb(Component* comp)
 {
-	comp->out_status.rgb.r = read_parent_status(comp, 0);
-	comp->out_status.rgb.g = read_parent_status(comp, 1);
-	comp->out_status.rgb.b = read_parent_status(comp, 2);
-	return comp->out_status;
+	comp->status.rgb.r = read_parent_status(comp, 0);
+	comp->status.rgb.g = read_parent_status(comp, 1);
+	comp->status.rgb.b = read_parent_status(comp, 2);
 }
 
-static CompStatus	eval_display(Component *comp)
+static void	eval_display(Component *comp)
 {
 	int counter = 0;
 	int value = 0;
-	comp->out_status.number = 0;
+	comp->status.number = 0;
 	
-	while (counter < comp->nb_in_links)
+	while (counter < comp->nb_in_ports)
 	{
 		if ((comp->in_links[counter] != NULL) && (read_parent_status(comp, counter)))
 		{
@@ -74,101 +85,197 @@ static CompStatus	eval_display(Component *comp)
 
 	if (comp->type == DISPLAY_CHAR)
 	{
-		comp->out_status.character = value;
+		comp->status.character = value;
 	}
 	else
 	{
-		comp->out_status.number = value;
+		comp->status.number = value;
 	}
-	return comp->out_status;
 }
 
-CompStatus	component_eval(Component* comp)
+static void eval_bus(Component* comp, bool final_not)
+{
+	CompStatus value;
+	int counter = 0;
+
+	while ((counter < comp->nb_in_ports) && (counter < comp->nb_out_ports))
+	{
+		if (comp->in_links != NULL && comp->in_links[counter] != NULL)
+		{
+			value = (CompStatus){ .binary = read_parent_status(comp, counter)};
+		}
+		else
+		{
+			value = (CompStatus){ .binary = false};
+		}
+
+		if (final_not)
+		{
+			value.binary = !value.binary;
+		}
+
+		set_out_port_status(comp, counter, value);
+		counter++;
+	}
+}
+
+void	component_eval(Component* comp)
 {
 	if (!comp)
 	{
-		return (CompStatus){0};
+		return;
 	}
 
 	switch (comp->type)
 	{
 		case SOURCE : case CONST_OFF : case CONST_ON : 
-			return comp->out_status;
+			set_out_port_status(comp, 0, comp->status);
+			break;
 
-		case DIODE : case BUFFER :
-			comp->out_status.out = read_parent_status(comp, 0);
-			return comp->out_status;
+		case DIODE :
+			comp->status = (CompStatus){.binary = read_parent_status(comp, 0)};
+			break;
 
 		case DIODE_RGB :
-			return eval_rgb(comp);
+			eval_rgb(comp);
+			break;
 
-		case GATE_NOT :
-			comp->out_status.out = !read_parent_status(comp, 0);
-			return comp->out_status;
+		case BUFFER : case BUS_BUFFER :
+			eval_bus(comp, false);
+			break;
+
+		case GATE_NOT : case BUS_NOT :
+			eval_bus(comp, true);
+			break;
 
 		case GATE_AND :
-			return eval_gate(comp, op_and, true, false);
+			eval_gate(comp, op_and, true, false);
+			break;
 
 		case GATE_NAND :
-			return eval_gate(comp, op_and, true, true);
+			eval_gate(comp, op_and, true, true);
+			break;
 
 		case GATE_OR :
-			return eval_gate(comp, op_or, false, false);
+			eval_gate(comp, op_or, false, false);
+			break;
 
 		case GATE_NOR :
-			return eval_gate(comp, op_or, false, true);
+			eval_gate(comp, op_or, false, true);
+			break;
 
 		case GATE_XOR :
-			return eval_gate(comp, op_xor, false, false);
+			eval_gate(comp, op_xor, false, false);
+			break;
 
 		case GATE_NXOR :
-			return eval_gate(comp, op_xor, false, true);
+			eval_gate(comp, op_xor, false, true);
+			break;
 
 		case GATE_IMPLY :
-			return eval_imply_gate(comp, false);
+			eval_imply_gate(comp, false);
+			break;
 
 		case GATE_NIMPLY :
-			return eval_imply_gate(comp, true);
+			eval_imply_gate(comp, true);
+			break;
 
 		case DISPLAY_DEC : case DISPLAY_HEX : case DISPLAY_CHAR :
-			return eval_display(comp);
+			eval_display(comp);
+			break;
 
 		default:
-			comp->out_status.out = false;
-			return comp->out_status;
+			comp->status = (CompStatus){.binary = false};
+			break;
 	}
 }
 
-// Recursive function to propagate the modification of a binary status (WIP - It will be implemented in a future update)
+
+static bool has_comp_status_changed(Component* comp, CompStatus old_status, CompStatus* old_ports_status)
+{
+	if (!comp)
+	{
+		return false;
+	}
+
+	if ((comp->out_ports == NULL) || (comp->nb_out_ports <= 0))
+	{
+		return old_status.raw_value != comp->status.raw_value;
+	}
+	else 
+	{
+		int counter = 0;
+		while (counter < comp->nb_out_ports)
+		{
+			if (comp->out_ports[counter] != NULL)
+			{
+				if (old_ports_status[counter].raw_value != comp->out_ports[counter]->status.raw_value)
+				{
+					return true;
+				}
+			}
+			counter++;
+		}
+		return false;
+	}	
+}
+
+
+// Recursive function to propagate the modification of the binary status to the next components
 void	propagate_eval_from_component(Component* comp)
 {
-	int counter;
+	int counter_ports;
+	int counter_links;
+	int counter_child_ports;
 
-	if (!comp)
+	// The evaluation is propagated to the next components only if the component have out_ports
+	if (!comp || !comp->out_ports)
 	{
 		return;
 	}
-	// The evaluation is propagated to the next components
-	counter = 0;
-	while  (counter < comp->nb_out_links)
+	
+	counter_ports = 0;
+	while  (counter_ports < comp->nb_out_ports)
 	{
-		Link* link = comp->out_links[counter];
-		if (link && link->dest)
+		counter_links = 0;
+		while  (counter_links < comp->out_ports[counter_ports]->nb_out_links)
 		{
-			Component* child_comp = link->dest;
-			CompStatus child_old_status = child_comp->out_status;
-
-			component_eval(child_comp);
-
-			// If the state of the child changed, the propagation will continue
-			if (child_old_status.raw_value != child_comp->out_status.raw_value)
+			Link* link = comp->out_ports[counter_ports]->out_links[counter_links];
+			if (link && link->dest)
 			{
-				propagate_eval_from_component(link->dest);
-				//printf(MESS_INFO"Evaluation propagated to %s\n", link->dest->label);
+				Component* child_comp = link->dest;
+				
+				CompStatus child_old_status = child_comp->status;
+				CompStatus child_old_ports_status[child_comp->nb_out_ports > 0 ? child_comp->nb_out_ports : 1];
 
+				if (child_comp->out_ports != NULL)
+				{
+					counter_child_ports = 0;
+
+					while(counter_child_ports < child_comp->nb_out_ports)
+					{
+						if (child_comp->out_ports[counter_child_ports] != NULL)
+						{
+							child_old_ports_status[counter_child_ports] = child_comp->out_ports[counter_child_ports]->status;
+						}
+						counter_child_ports++;
+					}
+				}
+
+				component_eval(child_comp);
+
+				// If the state of the child changed, the propagation will continue
+				if (has_comp_status_changed(child_comp, child_old_status, child_old_ports_status))
+				{
+					propagate_eval_from_component(child_comp);
+					printf(MESS_INFO"Evaluation propagated to %s\n", link->dest->label);
+
+				}
 			}
+			counter_links++;
 		}
-		counter++;
+		counter_ports++;
 	}
+	
 }
 

@@ -263,7 +263,7 @@ void			command_circuit_rearrange(char* args[MAX_COMMAND_ARGS], Model *model, int
 		counter = 0;
 		while (counter < model->circuits_count)
 		{
-			rearrange_circuit(model->circuits[counter]);
+			rearrange_circuit(model->circuits[counter], true);
 			counter++;
 		}
 		printf(MESS_INFO"All loaded circuits are rearranged !\n");
@@ -273,7 +273,7 @@ void			command_circuit_rearrange(char* args[MAX_COMMAND_ARGS], Model *model, int
 		Circuit* circ = get_circuit_by_label(model, args[2]);
 		if (circ != NULL)
 		{
-			rearrange_circuit(circ);
+			rearrange_circuit(circ, true);
 			printf(MESS_INFO"The circuit "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT" is rearranged !\n", circ->label);
 		}
 		return;

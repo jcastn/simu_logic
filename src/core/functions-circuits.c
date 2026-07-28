@@ -252,13 +252,13 @@ Circuit*	duplicate_circuit(Model* model, Circuit* src_circ, const char* new_labe
 	counter = 0;
 	while(counter < src_circ->component_count)
 	{
-		Component* comp = create_component(dest_circ, src_circ->components[counter]->type, src_circ->components[counter]->label, src_circ->components[counter]->nb_in_links);
+		Component* comp = create_component(dest_circ, src_circ->components[counter]->type, src_circ->components[counter]->label, src_circ->components[counter]->nb_in_ports, src_circ->components[counter]->nb_out_ports);
 		if (comp != NULL)
 		{
 			comp->coordinates->x = src_circ->components[counter]->coordinates->x;
 			comp->coordinates->y = src_circ->components[counter]->coordinates->y;
 
-			if ((src_circ->components[counter]->type == SOURCE) && (src_circ->components[counter]->out_status.out == true))
+			if ((src_circ->components[counter]->type == SOURCE) && (src_circ->components[counter]->status.binary == true))
 			{
 				invert_source_state(comp);
 			}
@@ -275,7 +275,7 @@ Circuit*	duplicate_circuit(Model* model, Circuit* src_circ, const char* new_labe
 
 		if ((comp_src != -1) && (comp_dest != -1))
 		{
-			create_link(dest_circ->components[comp_src], dest_circ->components[comp_dest], src_circ->links[counter]->port_number, dest_circ);
+			create_link(dest_circ, dest_circ->components[comp_src], src_circ->links[counter]->src_port_number, dest_circ->components[comp_dest], src_circ->links[counter]->dest_port_number);
 		}
 		counter++;
 	}

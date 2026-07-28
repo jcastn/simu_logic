@@ -41,8 +41,8 @@ static const SubCommandMap circuit_options[] = {
 // Component options
 
 static const SubCommandMap component_options[] = {
-	{"create",		command_component_create,		5,		false},
-	{"cre",			command_component_create,		5,		true},
+	{"create",		command_component_create,		3,		false},
+	{"cre",			command_component_create,		3,		true},
 	{"delete",		command_component_delete,		3,		false},
 	{"del",			command_component_delete,		3,		true},
 	{"rename",		command_component_rename,		4,		false},
@@ -60,8 +60,8 @@ static const SubCommandMap component_options[] = {
 // Link options 
 
 static const SubCommandMap link_options[] = {
-	{"create",		command_link_create,			4,		false},
-	{"cre",			command_link_create,			4,		true},
+	{"create",		command_link_create,			6,		false},
+	{"cre",			command_link_create,			6,		true},
 	{"delete",		command_link_delete,			3,		false},
 	{"del",			command_link_delete,			3,		true},
 };

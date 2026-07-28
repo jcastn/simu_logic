@@ -4,7 +4,7 @@
 
 
 #ifdef __APPLE__
-// Temporary fix for a known issue :
+// Temporary fix for a known issue:
 // nfd_file() don't really work on MacOS devices if the application is a binary file in terminal.
 // To temporary fix that, we can use apple scripts to directly interact with the OS, without using an external module.  
 static char* macos_file(FileMode mode)
@@ -44,7 +44,7 @@ static char* macos_file(FileMode mode)
 		return NULL;
 	}
 
-	printf(MESS_INFO"File found : %s\n", path);
+	printf(MESS_INFO"File found: %s\n", path);
 	return strdup(path);
 }
 #endif
@@ -62,7 +62,7 @@ static char* nfd_file(FileMode mode)
 
 
 	if (NFD_Init() != NFD_OKAY) {
-		printf(MESS_ERROR"Error with nfd_file() : %s\n", NFD_GetError());
+		printf(MESS_ERROR"Error with nfd_file(): %s\n", NFD_GetError());
 		return NULL;
 	}
 	
@@ -88,7 +88,7 @@ static char* nfd_file(FileMode mode)
 	
 	if (result == NFD_OKAY)
 	{
-		printf(MESS_INFO"File found with nfd_file() : %s\n", outPath);
+		printf(MESS_INFO"File found with nfd_file(): %s\n", outPath);
 		path = strdup(outPath);
 		NFD_FreePathU8(outPath);
 	}
@@ -114,17 +114,18 @@ static void	read_file_content(char* file_path, Model* model)
 	FILE *file = fopen(file_path, "r");
 	if (!file) 
 	{
-		printf(MESS_ERROR"ERROR : Impossible to open the file\n");
+		printf(MESS_ERROR"ERROR: Impossible to open the file\n");
 		return;
 	}
 
-	char line[100];
+	char line[128];
 	char type_str[LABEL_SIZE_NUM+1];
 	char comp_label[LABEL_SIZE_NUM+1];
 	char comp_label2[LABEL_SIZE_NUM+1];
-	int port = 0;
-
+	int src_port = 0;
+	int dest_port = 0;
 	int nb_in_links = 0;
+	int nb_out_links = 0;
 	int x = 0;
 	int y = 0;
 	TypeComponent comp_type = SOURCE;
@@ -155,19 +156,25 @@ static void	read_file_content(char* file_path, Model* model)
 		if (strstr(line, "$Components$"))
 		{
 			current_state = STATE_COMPONENTS;
-			printf("\nSTEP 1 : STATE_COMPONENTS\n");
+			printf("\nSTEP 1: STATE_COMPONENTS\n");
 			continue;
 		}
 		else if (strstr(line, "$Inversions$"))
 		{
 			current_state = STATE_INVERSIONS;
-			printf("\nSTEP 2 : STATE_INVERSIONS\n");
+			printf("\nSTEP 2: STATE_INVERSIONS\n");
 			continue;
 		}
 		else if (strstr(line, "$Links$"))
 		{
 			current_state = STATE_LINKS;
-			printf("\nSTEP 3 : STATE_LINKS\n");
+			printf("\n\nSTEP 3: STATE_LINKS\n");
+			continue;
+		}
+		else if (strstr(line, "$Commands$"))
+		{
+			current_state = STATE_COMMANDS;
+			printf("\n\nSTEP 4: STATE_COMMANDS\n");
 			continue;
 		}
 
@@ -180,14 +187,14 @@ static void	read_file_content(char* file_path, Model* model)
 		{
 			case STATE_COMPONENTS:
 			{
-				if (sscanf(line, " %"LABEL_SIZE"[^,], \"%"LABEL_SIZE"[^\"]\", %d, %d, %d", type_str, comp_label, &nb_in_links, &x, &y) >= 3)
+				if (sscanf(line, " type:%"LABEL_SIZE"[^,], label:\"%"LABEL_SIZE"[^\"]\", (in:%d, out:%d) (x:%d, y:%d)", type_str, comp_label, &nb_in_links, &nb_out_links, &x, &y) >= 3)
 				{
 					type_found = false;
 					comp_type = string_to_typecomponent(type_str, &type_found);
 
 					if (type_found)
 					{
-						Component* comp = create_component(current_circ, comp_type, comp_label, nb_in_links);
+						Component* comp = create_component(current_circ, comp_type, comp_label, nb_in_links, nb_out_links);
 						if (comp != NULL)
 						{
 							update_coordinates(comp, x, y);
@@ -195,14 +202,14 @@ static void	read_file_content(char* file_path, Model* model)
 					}
 					else
 					{
-						printf(MESS_ERROR"ERROR : Unknown component type '%s'. Component not created, please review the line in the import file. \n", type_str);
+						printf(MESS_ERROR"ERROR: Unknown component type '%s'. Component not created, please review the line in the import file. \n", type_str);
 					}
 				}
 				break;
 			}
 			case STATE_INVERSIONS:
 			{
-				if (sscanf(line, " \"%"LABEL_SIZE"[^\"]\"", comp_label) == 1)
+				if (sscanf(line, " label:\"%"LABEL_SIZE"[^\"]\"", comp_label) == 1)
 				{
 					Component* comp = get_component_by_label(comp_label, current_circ);
 					if (comp)
@@ -211,34 +218,42 @@ static void	read_file_content(char* file_path, Model* model)
 					}
 					else 
 					{
-						printf(MESS_ERROR"ERROR : Unknown component name '%s', no component inverted, please review the line in the import file. \n", comp_label);
+						printf(MESS_ERROR"ERROR: Unknown component name '%s', no component inverted, please review the line in the import file. \n", comp_label);
 					}
 				}
 				break;
 			}
 			case STATE_LINKS:
 			{
-				if (sscanf(line, " \"%"LABEL_SIZE"[^\"]\", \"%"LABEL_SIZE"[^\"]\", %d", comp_label, comp_label2, &port) == 3)
+				if (sscanf(line, " src:\"%"LABEL_SIZE"[^\"]\", src_port:%d, dest:\"%"LABEL_SIZE"[^\"]\", dest_port:%d", comp_label, &src_port, comp_label2, &dest_port) == 4)
 				{
 					Component* src = get_component_by_label(comp_label, current_circ);
 					Component* dest = get_component_by_label(comp_label2, current_circ);
-					if (src && dest && port >= 0)
+
+					if ((src) && (dest) && (src_port >= 0) && (dest_port >= 0))
 					{
-						create_link(src, dest, PORT_INPUT(port), current_circ);
+						create_link(current_circ, src, PORT_INPUT(src_port), dest, PORT_INPUT(dest_port));
 					}
 					else 
 					{
-						printf(MESS_ERROR"ERROR : Unknown component name source '%s', or dest '%s', or port '%d' : No link created, please review the line in the import file. \n", comp_label, comp_label2, port);
+						printf(MESS_ERROR"ERROR: Unknown component name source '%s', or dest '%s', or src port '%d' or dest port '%d': No link created, please review the line in the import file. \n", comp_label, comp_label2, src_port, dest_port);
 					}
 				}
 				break;
 			}
+			case STATE_COMMANDS:
+			{
+				printf(MESS_INFO"Not yet implemented !");
+				break;
+			}
+
 			default:
 			{
 				break;
 			}
 		}		
 	}
+	rearrange_circuit(current_circ, false);
 	printf(MESS_INFO"File '%s' fully imported !\n\n", file_path);
 	fclose(file);
 }
@@ -274,10 +289,11 @@ static void	write_file_content(char* file_path, Model *model, int circuit_index)
 		comp = 0;
 		while(comp < model->circuits[circ]->component_count)
 		{
-			fprintf(file, "\t\t%s, \"%s\", %d, %d, %d\n", 
+			fprintf(file, "\t\ttype:%s, label:\"%s\", (in:%d, out:%d) (x:%d, y:%d)\n", 
 				COMPONENT_MAP[model->circuits[circ]->components[comp]->type].name,
 				model->circuits[circ]->components[comp]->label,
-				model->circuits[circ]->components[comp]->nb_in_links,
+				model->circuits[circ]->components[comp]->nb_in_ports,
+				model->circuits[circ]->components[comp]->nb_out_ports,
 				model->circuits[circ]->components[comp]->coordinates->x,
 				model->circuits[circ]->components[comp]->coordinates->y);
 			comp++;
@@ -287,9 +303,9 @@ static void	write_file_content(char* file_path, Model *model, int circuit_index)
 		fprintf(file, "\n\t$Inversions$\n");
 		while(comp < model->circuits[circ]->component_count)
 		{
-			if((model->circuits[circ]->components[comp]->type == SOURCE) && (model->circuits[circ]->components[comp]->out_status.out == 1))
+			if((model->circuits[circ]->components[comp]->type == SOURCE) && (model->circuits[circ]->components[comp]->status.binary == 1))
 			{
-				fprintf(file, "\t\t\"%s\"\n",model->circuits[circ]->components[comp]->label);
+				fprintf(file, "\t\tlabel:\"%s\"\n",model->circuits[circ]->components[comp]->label);
 			}
 			
 			comp++;
@@ -299,10 +315,11 @@ static void	write_file_content(char* file_path, Model *model, int circuit_index)
 		fprintf(file, "\n\t$Links$\n");
 		while(comp < model->circuits[circ]->link_count)
 		{
-			fprintf(file, "\t\t\"%s\", \"%s\", %d\n", 
+			fprintf(file, "\t\tsrc:\"%s\", src_port:%d, dest:\"%s\", dest_port:%d\n", 
 				model->circuits[circ]->links[comp]->src->label,
+				PORT_DISPLAY(model->circuits[circ]->links[comp]->src_port_number),
 				model->circuits[circ]->links[comp]->dest->label,
-				model->circuits[circ]->links[comp]->port_number);
+				PORT_DISPLAY(model->circuits[circ]->links[comp]->dest_port_number));
 			comp++;
 		}
 		fprintf(file, "\n");
@@ -330,13 +347,13 @@ static void	write_file_content(char* file_path, Model *model, int circuit_index)
 }
 
 
-// Function to import/export a file with 3 arguments : 
-// - Argument 1 : File_path 
+// Function to import/export a file with 3 arguments: 
+// - Argument 1: File_path 
 // -> If it's a string, the function will use this string as a file_path
 // -> If it's NULL, the user will select the file from a NFD Popup. 
-// - Argument 2 : FileMode (IMPORT or EXPORT)
-// - Argument 3 : Model
-// - Argument 4 : Number of the circuit to process (only works with EXPORT), use -1 to select all circuits
+// - Argument 2: FileMode (IMPORT or EXPORT)
+// - Argument 3: Model
+// - Argument 4: Number of the circuit to process (only works with EXPORT), use -1 to select all circuits
 void		file_process(char* file_path, FileMode file_mode, Model* model, int circuit_index)
 {
 	bool needs_free = false;
@@ -360,12 +377,12 @@ void		file_process(char* file_path, FileMode file_mode, Model* model, int circui
 			if (!check_path(file_path)){
 				return; 
 			}
-			printf("\n(⬇︎) File open : %s\n", file_path);
+			printf("\n(⬇︎) File open: %s\n", file_path);
 			read_file_content(file_path, model);
 		}
 		else	//file_mode == EXPORT
 		{
-			printf("\n(+) File created : %s\n", file_path);
+			printf("\n(+) File created: %s\n", file_path);
 			write_file_content(file_path, model, circuit_index);
 		}
 

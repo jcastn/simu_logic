@@ -20,8 +20,8 @@
 
 #define TERMINAL_DEFAULT			"\e[0;0m"
 
-#define COMPONENTS_COUNT			13
-#define MAX_COMMAND_ARGS			5
+#define COMPONENTS_COUNT			20
+#define MAX_COMMAND_ARGS			6
 #define MAX_COMP_IN_PORTS			8
 #define LABEL_SIZE_NUM				20
 #define STATE_SIZE_NUM				14
@@ -30,11 +30,13 @@
 #define STATE_SIZE					TOSTRING(STATE_SIZE_NUM)
 #define COMPONENTS_IN_PORTS_STR		TOSTRING(COMPONENTS_IN_PORTS)
 
+#define ARRAY_SIZE(array)			(sizeof(array) / sizeof((array)[0]))
+
 #define PORT_DISPLAY(port)			((port) + 1)
 #define PORT_INPUT(port)			((port) - 1)
 
 #define APP_NAME					"simu-logic"
-#define APP_VERSION					"v0.15.5"
+#define APP_VERSION					"v0.16"
 
 #define MESS_ERROR					TERMINAL_RED		"\n/!\\ ERROR : "			TERMINAL_DEFAULT
 #define MESS_SYNTAX					TERMINAL_RED		"\n/!\\ WRONG SYNTAX : "	TERMINAL_DEFAULT

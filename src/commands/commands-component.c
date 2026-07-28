@@ -7,11 +7,14 @@ void			command_component_create(char* args[MAX_COMMAND_ARGS], Model *model, int 
 {
 	TypeComponent	type;
 	bool			type_found;
+	int				in_nbr;
+	int				out_nbr;
+	char			label[LABEL_SIZE_NUM];
 
 	if ((arg_count == 3) && (strcmp(args[2], "help") == 0))
 	{
 		printf( "\n• "OPTION(create)" :"
-				"\n  ▻ "COM_OPEN"component "OPTION(create) OPTION_STR(COMP_TYPE) OPTION_STR(comp name) OPTION_INT(InboundPorts) COM_CLOSE" : Create a component (need to specify the type, the name and the number of inbound ports).\n");
+				"\n  ▻ "COM_OPEN"component "OPTION(create) OPTION_STR(COMP_TYPE) OPTION_STR(comp name) OPTION_INT(InPorts) OPTION_INT(OutPorts)COM_CLOSE" : Create a component (need to specify the type, the name and the number of inbound ports).\n");
 		return;
 	}
 
@@ -23,9 +26,32 @@ void			command_component_create(char* args[MAX_COMMAND_ARGS], Model *model, int 
 		return;
 	}
 
-	int in_nbr = string_to_int(args[4]);
+	if (arg_count == 6)
+	{
+		in_nbr = string_to_int(args[4]);
+		out_nbr = string_to_int(args[5]);
+		strncpy(label, args[3], sizeof(label) - 1);
+	}
+	else if (arg_count == 5)
+	{
+		in_nbr = string_to_int(args[4]);
+		out_nbr = 0;
+		strncpy(label, args[3], sizeof(label) - 1);
+	}
+	else if (arg_count == 4)
+	{
+		in_nbr = 0;
+		out_nbr = 0;
+		strncpy(label, args[3], sizeof(label) - 1);
+	}
+	else 
+	{
+		in_nbr = 0;
+		out_nbr = 0;
+		strncpy(label, "default", sizeof(label) - 1);
+	}
 
-	create_component(model->active_circuit, type, args[3], in_nbr);
+	create_component(model->active_circuit, type, label, in_nbr, out_nbr);
 
 	return;
 }
@@ -159,11 +185,11 @@ void			command_component_set(char* args[MAX_COMMAND_ARGS], Model *model, int arg
 
 	if (strcmp(args[3], "ON") == 0)
 	{
-		comp->out_status.out = true;
+		comp->status.binary = true;
 	}
 	else if (strcmp(args[3], "OFF") == 0)
 	{
-		comp->out_status.out = false;		
+		comp->status.binary = false;		
 	}
 	else
 	{
@@ -171,8 +197,8 @@ void			command_component_set(char* args[MAX_COMMAND_ARGS], Model *model, int arg
 		return;
 	}
 
-	char* state_color = comp->out_status.out ? TERMINAL_GREEN : TERMINAL_RED;
-	char* state_text = comp->out_status.out ? "ON" : "OFF";
+	char* state_color = comp->status.binary ? TERMINAL_GREEN : TERMINAL_RED;
+	char* state_text = comp->status.binary ? "ON" : "OFF";
 
 	printf(MESS_COMP"Status of the component '%s%s"TERMINAL_DEFAULT"' is set to '%s%s'"TERMINAL_DEFAULT"\n", COMPONENT_MAP[comp->type].color, comp->label, state_color, state_text);
 	
@@ -202,7 +228,7 @@ void			command_component_toggle(char* args[MAX_COMMAND_ARGS], Model *model, int 
 	{
 		invert_source_state(comp);
 
-		if (comp->out_status.out == true)
+		if (comp->status.binary == true)
 		{
 			status_text = TERMINAL_GREEN"ON";
 		}

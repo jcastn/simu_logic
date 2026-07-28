@@ -27,6 +27,7 @@ add_executable(simu-logic-app
 )
 
 target_compile_options(simu-logic-app PRIVATE 
+	-g
 	-Wall
 	-Wextra
 	-Werror

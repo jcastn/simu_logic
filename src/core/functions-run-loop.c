@@ -2,6 +2,13 @@
 #include "../../third_party/linenoise/linenoise.h"
 #include "../../include/prototypes.h"
 
+#define debug_mode
+
+#ifdef debug_mode
+#include <unistd.h>
+#endif
+
+#ifndef debug_mode
 static void		auto_complete_entry(const char *user_entry, linenoiseCompletions *lc)
 {
 	int					commands_count = 0;
@@ -58,7 +65,7 @@ static void		auto_complete_entry(const char *user_entry, linenoiseCompletions *l
 		linenoiseAddCompletion(lc, completion);
 	}
 }
-
+#endif
 
 static void 		scan_user_entry(char* command_user, Model *model)
 {
@@ -125,18 +132,20 @@ static void 		scan_user_entry(char* command_user, Model *model)
 
 void			run_loop(Model *model)
 {
-	char*	user_entry;
 	char	prompt[256];
 
+#ifndef debug_mode
+	char*	user_entry;
 	linenoiseSetCompletionCallback(auto_complete_entry);
 	linenoiseHistorySetMaxLen(100);
-
+#endif
 	model->run_loop = true;
 
 	while(model->run_loop)
 	{
 		printf("\n");
 
+#ifndef debug_mode
 		if ((model->active_circuit != NULL) && (strlen(model->active_circuit->label) > 0))
 		{
 			snprintf(prompt, sizeof(prompt), TERMINAL_CYAN "[" APP_NAME " " APP_VERSION "] "TERMINAL_GREEN "\"%s\"" TERMINAL_CYAN" > "TERMINAL_DEFAULT, model->active_circuit->label);
@@ -147,7 +156,6 @@ void			run_loop(Model *model)
 		}
 
 		user_entry = linenoise(prompt);
-
 		if (user_entry == NULL) 
 		{
 			break;
@@ -159,6 +167,22 @@ void			run_loop(Model *model)
 			scan_user_entry(user_entry, model);
 		}
 		free(user_entry);
+#else
+		usleep(10000);
+
+		if ((model->active_circuit != NULL) && (strlen(model->active_circuit->label) > 0))		
+		{
+			printf("\n" TERMINAL_CYAN "[" APP_NAME " " APP_VERSION "] "TERMINAL_GREEN "\"%s\"" TERMINAL_CYAN" > "TERMINAL_DEFAULT, model->active_circuit->label);
+		}
+		else {
+			printf("\n" TERMINAL_CYAN "[" APP_NAME " " APP_VERSION "] > "TERMINAL_DEFAULT);
+		}
+
+		if (fgets(prompt, sizeof(prompt), stdin) != NULL)
+		{
+			scan_user_entry(prompt, model);
+		}
+#endif
 	}
 
 	return;

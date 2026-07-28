@@ -2,94 +2,39 @@
 #include "../../include/prototypes.h"
 
 
-const ComponentMap COMPONENT_MAP[] = {
-	// [comp_type]  = { "name",             color               },
-	[SOURCE]		= { "SOURCE",			TERMINAL_CYAN		},
-	[CONST_ON]		= { "CONST_ON",			TERMINAL_CYAN		},
-	[CONST_OFF]		= { "CONST_OFF",		TERMINAL_CYAN		},
-	[DIODE]			= { "DIODE",			TERMINAL_BLUE		},
-	[DIODE_RGB]		= { "DIODE_RGB",		TERMINAL_BLUE		},
-	[DISPLAY_HEX]	= { "DISPLAY_HEX",		TERMINAL_YELLOW		},
-	[DISPLAY_DEC]	= { "DISPLAY_DEC",		TERMINAL_YELLOW		},
-	[DISPLAY_CHAR]	= { "DISPLAY_CHAR",		TERMINAL_YELLOW		},
-	[BUFFER]		= { "BUFFER",			TERMINAL_PINK		},
-	[GATE_NOT]		= { "GATE_NOT",			TERMINAL_PINK		},
-	[GATE_AND]		= { "GATE_AND",			TERMINAL_MAGENTA	},
-	[GATE_OR]		= { "GATE_OR",			TERMINAL_MAGENTA	},
-	[GATE_XOR]		= { "GATE_XOR",			TERMINAL_MAGENTA	},
-	[GATE_NAND]		= { "GATE_NAND",		TERMINAL_PURPLE		},
-	[GATE_NOR]		= { "GATE_NOR",			TERMINAL_PURPLE		},
-	[GATE_NXOR]		= { "GATE_NXOR",		TERMINAL_PURPLE		},
-	[GATE_IMPLY]	= { "GATE_IMPLY",		TERMINAL_VIOLET		},
-	[GATE_NIMPLY]	= { "GATE_NIMPLY",		TERMINAL_VIOLET		}
+
+// 	comp->out_ports = calloc(1, sizeof(OutPort));
+
+const ComponentMap COMPONENT_MAP[COMPONENTS_COUNT] = {
+	// [comp_type]  = { "name",             color,       in_ports_min,       in_ports_max,  out_ports_min,      out_ports_max},
+	[SOURCE]		= { "SOURCE",			TERMINAL_CYAN,			0,					0,				1, 					1},
+	[CONST_ON]		= { "CONST_ON",			TERMINAL_CYAN,			0,					0,				1, 					1},
+	[CONST_OFF]		= { "CONST_OFF",		TERMINAL_CYAN,			0,					0,				1, 					1},
+	[DIODE]			= { "DIODE",			TERMINAL_BLUE,			1,					1,				0, 					0},
+	[DIODE_RGB]		= { "DIODE_RGB",		TERMINAL_BLUE,			3,					3,				0, 					0},
+	[DISPLAY_HEX]	= { "DISPLAY_HEX",		TERMINAL_YELLOW,		8,					8,				0, 					0},
+	[DISPLAY_DEC]	= { "DISPLAY_DEC",		TERMINAL_YELLOW,		8,					8,				0, 					0},
+	[DISPLAY_CHAR]	= { "DISPLAY_CHAR",		TERMINAL_YELLOW,		8,					8,				0, 					0},
+	[BUFFER]		= { "BUFFER",			TERMINAL_PINK,			1,					1,				1, 					1},
+	[GATE_NOT]		= { "GATE_NOT",			TERMINAL_PINK,			1,					1,				1, 					1},
+	[GATE_AND]		= { "GATE_AND",			TERMINAL_MAGENTA,		2, 	MAX_COMP_IN_PORTS,				1, 					1},
+	[GATE_OR]		= { "GATE_OR",			TERMINAL_MAGENTA,		2,	MAX_COMP_IN_PORTS,				1, 					1},
+	[GATE_XOR]		= { "GATE_XOR",			TERMINAL_MAGENTA,		2,	MAX_COMP_IN_PORTS,				1, 					1},
+	[GATE_NAND]		= { "GATE_NAND",		TERMINAL_PURPLE,		2,	MAX_COMP_IN_PORTS,				1, 					1},
+	[GATE_NOR]		= { "GATE_NOR",			TERMINAL_PURPLE,		2,	MAX_COMP_IN_PORTS,				1, 					1},
+	[GATE_NXOR]		= { "GATE_NXOR",		TERMINAL_PURPLE,		2,	MAX_COMP_IN_PORTS,				1, 					1},
+	[GATE_IMPLY]	= { "GATE_IMPLY",		TERMINAL_VIOLET,		2,					2,				1, 					1},
+	[GATE_NIMPLY]	= { "GATE_NIMPLY",		TERMINAL_VIOLET,		2,					2,				1, 					1},
+	[BUS_BUFFER]	= { "BUS_BUFFER",		TERMINAL_PINK,			1,	MAX_COMP_IN_PORTS,				1, 	MAX_COMP_IN_PORTS},
+	[BUS_NOT]		= { "BUS_NOT",			TERMINAL_PINK,			1,	MAX_COMP_IN_PORTS,				1, 	MAX_COMP_IN_PORTS}
 };
-
-static Component* component_init(Component* comp, int in_nbr)
-{
-	comp->nb_out_links = 0;
-	comp->out_links = NULL;
-	comp->nb_in_links = in_nbr;
-	comp->coordinates->level = 0;
-	comp->coordinates->alignment = 0;
-
-	switch (comp->type)
-	{
-		case DIODE_RGB : 
-			comp->nb_in_links = 3;
-			comp->out_status.rgb.r = 0;
-			comp->out_status.rgb.g = 0;
-			comp->out_status.rgb.b = 0;
-			break;
-
-		case DISPLAY_DEC : case DISPLAY_HEX : 
-			comp->nb_in_links = MAX_COMP_IN_PORTS;
-			comp->out_status.number = 0;
-			break;
-		
-		case DISPLAY_CHAR :
-			comp->nb_in_links = MAX_COMP_IN_PORTS;
-			comp->out_status.character = ' ';
-			break;
-
-		default : 
-			comp->out_status.out = false;
-			
-			if ((comp->type == SOURCE) || (comp->type == CONST_OFF))
-			{
-				comp->nb_in_links = 0;
-			}
-			else if (comp->type == CONST_ON)
-			{
-				comp->out_status.out = true;
-				comp->nb_in_links = 0;
-			}
-			else if ((comp->type == DIODE) || (comp->type == GATE_NOT) || (comp->type == BUFFER))
-			{
-				comp->nb_in_links = 1;
-			}
-			else if ((comp->type == GATE_IMPLY) || (comp->type == GATE_NIMPLY) || (in_nbr <= 2))
-			{
-				comp->nb_in_links = 2;
-			}
-			else if ((in_nbr < 0) || (in_nbr >= MAX_COMP_IN_PORTS))
-			{
-				comp->nb_in_links = MAX_COMP_IN_PORTS;
-			}
-			else
-			{
-				comp->nb_in_links = in_nbr;
-			}
-			break;
-	}
-	return comp;
-}
 
 // Function to create a component with : 
 // • its Type (SOURCE, DIODE, NOT / AND / OR / NAND / NOR / XOR / NXOR gates),
 // • its Label (set it to "default" to auto-generate a new label with the circuit type_counter)
 // • its number of inbound links 
 // • the circuit where the component is included
-Component*	create_component(Circuit* circ, TypeComponent type, const char* comp_label, int in_nbr)
+Component*	create_component(Circuit* circ, TypeComponent type, const char* comp_label, int in_nbr, int out_nbr)
 {
 	int	counter;
 	static int next_comp_id = 0;
@@ -103,30 +48,113 @@ Component*	create_component(Circuit* circ, TypeComponent type, const char* comp_
 		return NULL;
 	}
 
+	// Component values init
+	comp->id = next_comp_id += 1;
+	comp->type = type;
+
+	// Component out ports init
+	if (out_nbr < COMPONENT_MAP[comp->type].nb_out_ports_min)
+	{
+		comp->nb_out_ports = COMPONENT_MAP[comp->type].nb_out_ports_min;
+	}
+	else if (out_nbr > COMPONENT_MAP[comp->type].nb_out_ports_max)
+	{
+		comp->nb_out_ports = COMPONENT_MAP[comp->type].nb_out_ports_max;
+	}
+	else
+	{
+		comp->nb_out_ports = out_nbr;
+	}
+
+	if (comp->nb_out_ports > 0)
+	{
+		comp->out_ports = malloc(sizeof(OutPort*) * comp->nb_out_ports);
+		if (!comp->out_ports)
+		{
+			free(comp);
+			printf(MESS_ERROR"Allocation of comp->out_ports failed ! (Function create_component)\n");
+			return NULL;
+		}
+
+		counter = 0;
+		while (counter < comp->nb_out_ports)
+		{
+			comp->out_ports[counter] = calloc(1, sizeof(OutPort));
+			comp->out_ports[counter]->out_links = NULL;
+			comp->out_ports[counter]->nb_out_links = 0;
+			counter++;
+		}
+	}
+	else
+	{
+		comp->out_ports = NULL;
+	}
+	
+	// Component in ports init 
+	if (in_nbr < COMPONENT_MAP[comp->type].nb_in_ports_min)
+	{
+		comp->nb_in_ports = COMPONENT_MAP[comp->type].nb_in_ports_min;
+	}
+	else if (in_nbr > COMPONENT_MAP[comp->type].nb_in_ports_max)
+	{
+		comp->nb_in_ports = COMPONENT_MAP[comp->type].nb_in_ports_max;
+	}
+	else
+	{
+		comp->nb_in_ports = in_nbr;
+	}
+
+	// Component coordinates init
 	comp->coordinates = calloc(1, sizeof(Coordinates));
 	if (!comp->coordinates)
 	{
 		free(comp);
 		return NULL;
 	}
+	comp->coordinates->x = 0;
+	comp->coordinates->y = 0;
+	comp->coordinates->level = 0;
+	comp->coordinates->alignment = 0;
 
-	//Init of the component values
-	comp->id = next_comp_id += 1;
-	comp->type = type;
-	comp = component_init(comp, in_nbr);
-
-	//Allocation of the table of link pointers 
-	if (comp->nb_in_links > 0)
+	// Component status init 
+	switch (comp->type)
 	{
-		comp->in_links = malloc(sizeof(Link*) * comp->nb_in_links);
+		case DIODE_RGB : 
+			comp->nb_in_ports = 3;
+			comp->status.rgb.r = 0;
+			comp->status.rgb.g = 0;
+			comp->status.rgb.b = 0;
+			break;
+
+		case DISPLAY_DEC : case DISPLAY_HEX : 
+			comp->status.number = 0;
+			break;
+		
+		case DISPLAY_CHAR :
+			comp->status.character = ' ';
+			break;
+
+		case CONST_ON : 
+			comp->status.binary = true;
+			break;
+
+		default : 
+			comp->status.binary = false;
+	}
+
+	//In links pointers allocation 
+	if (comp->nb_in_ports > 0)
+	{
+		comp->in_links = malloc(sizeof(Link*) * comp->nb_in_ports);
 		if (comp->in_links == NULL)
 		{
 			free(comp->coordinates);
+			free(comp->out_ports);
 			free(comp);
 			return NULL;
 		}
 		counter = 0;
-		while (counter < comp->nb_in_links)
+		while (counter < comp->nb_in_ports)
 		{
 			comp->in_links[counter] = NULL;
 			counter++;
@@ -137,7 +165,7 @@ Component*	create_component(Circuit* circ, TypeComponent type, const char* comp_
 		comp->in_links = NULL;
 	}
 
-	// Dynamic enlargement of the array of link pointers
+	// Dynamic enlargement of the array containing the in links pointers
 	Component** tmp = realloc(circ->components, sizeof(Component*) * (circ->component_count + 1));
 	if (tmp == NULL)
 	{
@@ -153,6 +181,9 @@ Component*	create_component(Circuit* circ, TypeComponent type, const char* comp_
 	circ->component_count += 1;
 	circ->type_counter[type].count += 1;
 	
+
+	// Component Label init 
+
 	// By default, we generate a label for the component with the component id
 	snprintf(comp->label, sizeof(comp->label), "%s_%d", COMPONENT_MAP[type].name, circ->type_counter[type].count);
 
@@ -173,7 +204,10 @@ Component*	create_component(Circuit* circ, TypeComponent type, const char* comp_
 		snprintf(comp->label, sizeof(comp->label), "%s", comp_label);
 	}
 
-	printf(MESS_COMP"'%s%s%s' component created with label '%s%s%s', it contains %d inbound ports. \n", COMPONENT_MAP[comp->type].color, COMPONENT_MAP[type].name, TERMINAL_DEFAULT, COMPONENT_MAP[comp->type].color, comp->label, TERMINAL_DEFAULT, comp->nb_in_links);
+	printf(	MESS_COMP"Component '%s%s"TERMINAL_DEFAULT"' created as '%s%s"TERMINAL_DEFAULT"'. It contains %d inbound ports and %d outbound ports. \n", 
+			COMPONENT_MAP[comp->type].color, COMPONENT_MAP[type].name, 
+			COMPONENT_MAP[comp->type].color, comp->label, 
+			comp->nb_in_ports, comp->nb_out_ports);
 
 	return comp;
 }
@@ -304,23 +338,25 @@ Component*	invert_source_state(Component* comp)
 
 	if (comp->type == SOURCE)
 	{
-		comp->out_status.out = !comp->out_status.out;
+		comp->status.binary = !comp->status.binary;
 	}
 	component_eval(comp);
 	propagate_eval_from_component(comp);
 
+	printf(MESS_INFO"Component '%s' inverted !", comp->label);
 	return comp;
 }
 
 // Function to delete all inbound and outbound links with delete_link()
 void		delete_all_component_links(Circuit* circ, Component* comp, bool free_all)
 {
-	int counter; 
+	int counter;
+	int counter_bis;
 
 	if (comp->in_links) 
 	{
 		counter = 0;
-		while(counter < comp->nb_in_links) 
+		while(counter < comp->nb_in_ports) 
 		{
 			if (comp->in_links[counter]) 
 			{
@@ -334,23 +370,41 @@ void		delete_all_component_links(Circuit* circ, Component* comp, bool free_all)
 		}
 	}
 
-	if (comp->out_links) 
+	if (comp->out_ports) 
 	{
-		counter = comp->nb_out_links - 1;
-		while(counter >= 0) 
+		counter = 0;
+		while (counter < comp->nb_out_ports)
 		{
-			if (comp->out_links[counter])
+			if (comp->out_ports[counter])
 			{
-				delete_link(circ, comp->out_links[counter]);
+				counter_bis = comp->out_ports[counter]->nb_out_links - 1;
+				while(counter_bis >= 0) 
+				{
+					if (comp->out_ports[counter]->out_links && comp->out_ports[counter]->out_links[counter_bis])
+					{
+						delete_link(circ, comp->out_ports[counter]->out_links[counter_bis]);
+					}
+					counter_bis-=1;
+				}
+				if (free_all)
+				{
+					if (comp->out_ports[counter]->out_links)
+					{
+						free(comp->out_ports[counter]->out_links);
+						comp->out_ports[counter]->out_links = NULL;
+					}
+					free(comp->out_ports[counter]);
+					comp->out_ports[counter] = NULL;
+				}
 			}
-			counter-=1;
+			counter++;
 		}
 		if (free_all)
 		{
-			free(comp->out_links);
+			free(comp->out_ports);
+			comp->out_ports = NULL;
 		}
 	}
-
 }
 
 int		get_component_number_in_circuit(Circuit* circ, Component* comp)

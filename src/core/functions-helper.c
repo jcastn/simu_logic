@@ -1,5 +1,6 @@
 //functions-helper.c
 #include "../../include/prototypes.h"
+#include <assert.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -12,6 +13,9 @@ void			init_platform(void)
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleCP(CP_UTF8);
 #endif
+	static_assert(sizeof(COMPONENT_MAP) / sizeof(COMPONENT_MAP[0]) == COMPONENTS_COUNT, "/!\\ INIT ERROR : COMPONENTS_COUNT don't match COMPONENT_MAP !");
+
+
 }
 
 // Function used to shift the right part content of a pointer array to the left because a pointer was removed from the array (very specific)
@@ -45,15 +49,23 @@ TypeComponent	string_to_typecomponent(const char* type_str, bool* found)
 }
 
 
-bool			read_parent_status(Component* comp, int port_number)
+bool			read_parent_status(Component* comp, int src_port_number)
 {
-	if (!comp || port_number < 0 || port_number >= comp->nb_in_links)
+	if (!comp || src_port_number < 0 || src_port_number >= comp->nb_in_ports)
 	{
 		return false; 
 	}
-	if (comp->in_links[port_number] != NULL)
+	if (comp->in_links[src_port_number] != NULL)
 	{
-		return comp->in_links[port_number]->src->out_status.out;
+		Component* src = comp->in_links[src_port_number]->src;
+		int out_port = comp->in_links[src_port_number]->src_port_number;
+		
+		if (src->out_ports && src->nb_out_ports > out_port && src->out_ports[out_port])
+		{
+			return src->out_ports[out_port]->status.binary;
+		}
+		
+		return src->status.binary;
 	}
 	return false;
 }

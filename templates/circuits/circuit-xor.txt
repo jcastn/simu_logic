@@ -3,27 +3,26 @@
 
 
 $Circuit$ "circuit xor gate"
-	$Components$ : 
-		//TypeComponent, "label", nb_in_links, x, y
-		SOURCE, "SOURCE_1", 0, 0, 0
-		SOURCE, "SOURCE_2", 0, 0, 0
-		GATE_NOT, "GATE_NOT_1", 1, 0, 0
-		GATE_NOT, "GATE_NOT_2", 1, 0, 0
-		GATE_AND, "GATE_AND_1", 2, 0, 0
-		GATE_AND, "GATE_AND_2", 2, 0, 0
-		GATE_OR, "GATE_OR_1", 2, 0, 0
-		DIODE, "DIODE_1", 1, 0, 0
+    $Components$
+        type:SOURCE, label:"SOURCE_1", (in:0, out:1) (x:0, y:0)
+        type:SOURCE, label:"SOURCE_2", (in:0, out:1) (x:0, y:0)
+        type:GATE_NOT, label:"GATE_NOT_1", (in:1, out:1) (x:0, y:0)
+        type:GATE_NOT, label:"GATE_NOT_2", (in:1, out:1) (x:0, y:0)
+        type:GATE_AND, label:"GATE_AND_1", (in:2, out:1) (x:0, y:0)
+        type:GATE_AND, label:"GATE_AND_2", (in:2, out:1) (x:0, y:0)
+        type:GATE_OR, label:"GATE_OR_1", (in:2, out:1) (x:0, y:0)
+        type:DIODE, label:"DIODE_1", (in:1, out:0) (x:0, y:0)
 
-	$Inversions$
-		"SOURCE_1"
+    $Inversions$
+        label:"SOURCE_1"
 
-	$Links$
-		"SOURCE_1", "GATE_NOT_1", 1
-		"SOURCE_2", "GATE_NOT_2", 1
-		"SOURCE_1", "GATE_AND_2", 1
-		"SOURCE_2", "GATE_AND_1", 1
-		"GATE_NOT_1", "GATE_AND_1", 2
-		"GATE_NOT_2", "GATE_AND_2", 2
-		"GATE_AND_1", "GATE_OR_1", 1
-		"GATE_AND_2", "GATE_OR_1", 2
-		"GATE_OR_1", "DIODE_1", 1
+    $Links$
+        src:"SOURCE_1", src_port:1, dest:"GATE_NOT_1", dest_port:1
+        src:"SOURCE_2", src_port:1, dest:"GATE_NOT_2", dest_port:1
+        src:"SOURCE_1", src_port:1, dest:"GATE_AND_2", dest_port:1
+        src:"SOURCE_2", src_port:1, dest:"GATE_AND_1", dest_port:1
+        src:"GATE_NOT_1", src_port:1, dest:"GATE_AND_1", dest_port:2
+        src:"GATE_NOT_2", src_port:1, dest:"GATE_AND_2", dest_port:2
+        src:"GATE_AND_1", src_port:1, dest:"GATE_OR_1", dest_port:1
+        src:"GATE_AND_2", src_port:1, dest:"GATE_OR_1", dest_port:2
+        src:"GATE_OR_1", src_port:1, dest:"DIODE_1", dest_port:1

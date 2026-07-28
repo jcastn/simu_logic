@@ -1,58 +1,57 @@
 $Circuit$ "circuit rgb"
-	$Components$ : 
-		//TypeComponent, "label", nb_in_links, x, y
-		SOURCE, "SOURCE_1", 0, 0, 0
-		SOURCE, "SOURCE_2", 0, 0, 0
-		SOURCE, "SOURCE_3", 0, 0, 0
-		DIODE_RGB, "DIODE_RGB_1", 3, 0, 0
-		DISPLAY_DEC, "DISPLAY_DEC_1", 3, 0, 0
+    $Components$
+        type:SOURCE, label:"SOURCE_1", (in:0, out:1) (x:0, y:0)
+        type:SOURCE, label:"SOURCE_2", (in:0, out:1) (x:0, y:0)
+        type:SOURCE, label:"SOURCE_3", (in:0, out:1) (x:0, y:0)
+        type:DIODE_RGB, label:"DIODE_RGB_1", (in:3, out:0) (x:0, y:0)
+        type:DISPLAY_DEC, label:"DISPLAY_DEC_1", (in:3, out:0) (x:0, y:0)
 
-		SOURCE, "SOURCE_4", 0, 0, 0
-		SOURCE, "SOURCE_5", 0, 0, 0
-		SOURCE, "SOURCE_6", 0, 0, 0
-		DIODE_RGB, "DIODE_RGB_2", 3, 0, 0
-		DISPLAY_DEC, "DISPLAY_DEC_2", 3, 0, 0
+        type:SOURCE, label:"SOURCE_4", (in:0, out:1) (x:0, y:0)
+        type:SOURCE, label:"SOURCE_5", (in:0, out:1) (x:0, y:0)
+        type:SOURCE, label:"SOURCE_6", (in:0, out:1) (x:0, y:0)
+        type:DIODE_RGB, label:"DIODE_RGB_2", (in:3, out:0) (x:0, y:0)
+        type:DISPLAY_DEC, label:"DISPLAY_DEC_2", (in:3, out:0) (x:0, y:0)
 
-		SOURCE, "SOURCE_7", 0, 0, 0
-		SOURCE, "SOURCE_8", 0, 0, 0
-		SOURCE, "SOURCE_9", 0, 0, 0
-		DIODE_RGB, "DIODE_RGB_3", 3, 0, 0
-		DISPLAY_DEC, "DISPLAY_DEC_3", 3, 0, 0
+        type:SOURCE, label:"SOURCE_7", (in:0, out:1) (x:0, y:0)
+        type:SOURCE, label:"SOURCE_8", (in:0, out:1) (x:0, y:0)
+        type:SOURCE, label:"SOURCE_9", (in:0, out:1) (x:0, y:0)
+        type:DIODE_RGB, label:"DIODE_RGB_3", (in:3, out:0) (x:0, y:0)
+        type:DISPLAY_DEC, label:"DISPLAY_DEC_3", (in:3, out:0) (x:0, y:0)
 
-	$Inversions$
-		//"SOURCE_1"
-		"SOURCE_2"
-		"SOURCE_3"
+    $Inversions$
+        //label:"SOURCE_1"
+        label:"SOURCE_2"
+        label:"SOURCE_3"
 
-		"SOURCE_4"
-		//"SOURCE_5"
-		"SOURCE_6"
+        label:"SOURCE_4"
+        //label:"SOURCE_5"
+        label:"SOURCE_6"
 
-		//"SOURCE_7"
-		"SOURCE_8"
-		//"SOURCE_9"
+        //label:"SOURCE_7"
+        label:"SOURCE_8"
+        //label:"SOURCE_9"
 
-	$Links$
-		"SOURCE_1", "DIODE_RGB_1", 1
-		"SOURCE_2", "DIODE_RGB_1", 2
-		"SOURCE_3", "DIODE_RGB_1", 3
+    $Links$
+        src:"SOURCE_1", src_port:1, dest:"DIODE_RGB_1", dest_port:1
+        src:"SOURCE_2", src_port:1, dest:"DIODE_RGB_1", dest_port:2
+        src:"SOURCE_3", src_port:1, dest:"DIODE_RGB_1", dest_port:3
 
-		"SOURCE_1", "DISPLAY_DEC_1", 1
-		"SOURCE_2", "DISPLAY_DEC_1", 2
-		"SOURCE_3", "DISPLAY_DEC_1", 3
+        src:"SOURCE_1", src_port:1, dest:"DISPLAY_DEC_1", dest_port:1
+        src:"SOURCE_2", src_port:1, dest:"DISPLAY_DEC_1", dest_port:2
+        src:"SOURCE_3", src_port:1, dest:"DISPLAY_DEC_1", dest_port:3
 
-		"SOURCE_4", "DIODE_RGB_2", 1
-		"SOURCE_5", "DIODE_RGB_2", 2
-		"SOURCE_6", "DIODE_RGB_2", 3
+        src:"SOURCE_4", src_port:1, dest:"DIODE_RGB_2", dest_port:1
+        src:"SOURCE_5", src_port:1, dest:"DIODE_RGB_2", dest_port:2
+        src:"SOURCE_6", src_port:1, dest:"DIODE_RGB_2", dest_port:3
 
-		"SOURCE_4", "DISPLAY_DEC_2", 1
-		"SOURCE_5", "DISPLAY_DEC_2", 2
-		"SOURCE_6", "DISPLAY_DEC_2", 3
+        src:"SOURCE_4", src_port:1, dest:"DISPLAY_DEC_2", dest_port:1
+        src:"SOURCE_5", src_port:1, dest:"DISPLAY_DEC_2", dest_port:2
+        src:"SOURCE_6", src_port:1, dest:"DISPLAY_DEC_2", dest_port:3
 
-		"SOURCE_7", "DIODE_RGB_3", 1
-		"SOURCE_8", "DIODE_RGB_3", 2
-		"SOURCE_9", "DIODE_RGB_3", 3
+        src:"SOURCE_7", src_port:1, dest:"DIODE_RGB_3", dest_port:1
+        src:"SOURCE_8", src_port:1, dest:"DIODE_RGB_3", dest_port:2
+        src:"SOURCE_9", src_port:1, dest:"DIODE_RGB_3", dest_port:3
 
-		"SOURCE_7", "DISPLAY_DEC_3", 1
-		"SOURCE_8", "DISPLAY_DEC_3", 2
-		"SOURCE_9", "DISPLAY_DEC_3", 3
+        src:"SOURCE_7", src_port:1, dest:"DISPLAY_DEC_3", dest_port:1
+        src:"SOURCE_8", src_port:1, dest:"DISPLAY_DEC_3", dest_port:2
+        src:"SOURCE_9", src_port:1, dest:"DISPLAY_DEC_3", dest_port:3

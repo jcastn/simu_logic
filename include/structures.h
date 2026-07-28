@@ -10,6 +10,7 @@
 
 
 typedef struct	Coordinates		Coordinates;
+typedef	struct	OutPort			OutPort;
 typedef struct	Component		Component;
 typedef struct	Link			Link;
 typedef struct	TypeCounter		TypeCounter;
@@ -26,7 +27,7 @@ typedef union	CompStatus		CompStatus;
 
 
 // Types of components 
-// Please edit COMPONENTS_COUNT and ComponentsNames[] when adding or removing a component ! 
+// Please edit COMPONENTS_COUNT (macros.h) and COMPONENTS_MAP[] (functions-components.c) when adding or removing a component ! 
 typedef enum {
 	SOURCE,
 	CONST_ON,
@@ -45,7 +46,9 @@ typedef enum {
 	GATE_NOR,
 	GATE_NXOR,
 	GATE_IMPLY,
-	GATE_NIMPLY
+	GATE_NIMPLY,
+	BUS_BUFFER,
+	BUS_NOT,
 } TypeComponent;
 
 
@@ -54,7 +57,8 @@ typedef enum
 	STATE_NONE,
 	STATE_COMPONENTS,
 	STATE_INVERSIONS,
-	STATE_LINKS
+	STATE_LINKS,
+	STATE_COMMANDS
 } ParseState;
 
 typedef enum
@@ -62,6 +66,18 @@ typedef enum
 	IMPORT,
 	EXPORT
 } FileMode;
+
+struct ComponentMap
+{
+	const char*		name;
+	const char*		color;
+	int				nb_in_ports_min;
+	int				nb_in_ports_max;
+	int				nb_out_ports_min;
+	int				nb_out_ports_max;
+};
+
+extern const ComponentMap COMPONENT_MAP[COMPONENTS_COUNT];
 
 // Structures 
 struct	Coordinates 
@@ -75,9 +91,10 @@ struct	Coordinates
 
 struct	Link 
 {
-	Component*		src;	
+	Component*		src;
+	int				src_port_number;
 	Component*		dest;
-	int				port_number;
+	int				dest_port_number;
 };
 
 struct	ColorStatus
@@ -89,11 +106,18 @@ struct	ColorStatus
 
 union CompStatus
 {
-	bool 			out;
+	bool 			binary;
 	ColorStatus		rgb;
 	uint8_t			number;
 	uint8_t			raw_value;
 	unsigned char	character;
+};
+
+struct OutPort
+{
+	int				nb_out_links;
+	Link**			out_links;
+	CompStatus		status;	
 };
 
 struct	Component
@@ -102,11 +126,11 @@ struct	Component
 	int				id;
 	Coordinates*	coordinates;
 	Link**			in_links;
-	int				nb_in_links;
-	Link**			out_links;
-	int				nb_out_links;
+	int				nb_in_ports;
+	OutPort**		out_ports;
+	int				nb_out_ports;
+	CompStatus		status;	
 	char			label[LABEL_SIZE_NUM+1];
-	CompStatus		out_status;	
 };
 
 struct	TypeCounter
@@ -123,6 +147,7 @@ struct	Circuit
 	int				link_count;
 	int				max_level;
 	TypeCounter		type_counter[COMPONENTS_COUNT];
+	//TypeCounter		type_counter[ARRAY_SIZE(COMPONENT_MAP)];
 	char			label[LABEL_SIZE_NUM+1];
 };
 
@@ -145,7 +170,7 @@ struct CommandMap
 	Command						function;
 	int							needed_args;
 	bool						is_alias;
-	const struct SubCommandMap*	sub_commands;
+	const SubCommandMap*		sub_commands;
 	int							sub_commands_count;
 };
 
@@ -157,10 +182,3 @@ struct 	SubCommandMap
 	bool			is_alias;
 };
 
-struct ComponentMap
-{
-	const char*		name;
-	const char*		color;
-};
-
-extern const ComponentMap COMPONENT_MAP[];
