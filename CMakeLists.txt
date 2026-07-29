@@ -26,14 +26,20 @@ add_executable(simu-logic-app
 	src/commands/commands-list.c
 )
 
+option(DEBUG_MODE "Enable debug mode" OFF)
+
 target_compile_options(simu-logic-app PRIVATE 
-	-g
 	-Wall
 	-Wextra
 	-Werror
 	-finput-charset=UTF-8
 	-fexec-charset=UTF-8
 )
+
+if(DEBUG_MODE)
+	target_compile_definitions(simu-logic-app PRIVATE DEBUG_MODE)
+	target_compile_options(simu-logic-app PRIVATE -g)
+endif()
 
 if(WIN32)
 	target_compile_definitions(simu-logic-app PRIVATE _WIN32_WINNT=0x0600 WINVER=0x0600)

@@ -172,6 +172,19 @@ Toolchains :
 - *Mac/Linux : `cmake --build build && ./build/simu-logic-app`*
 - *Windows : `cmake --build build ; .\build\simu-logic-app.exe`*
 
+### DEBUG MODE 
+To build and run in debug mode :
+- `cmake -B build -DDEBUG_MODE=ON && cmake --build build && lldb ./build/simu-logic-app && run`
+
+To build the project in normal mode after having executed it in debug mode : 
+- `rm -rf build && cmake -B build && cmake --build build && ./build/simu-logic-app`
+
+A `simu_logic.sh` bash script is available to streamline building and debugging. Add it to your PATH (`~/.bashrc` or `~/.zshrc` file) to use the following commands from anywhere on your computer :
+- run `simu_logic debug` to build, compile and run it in **debug mode**.
+- run `simu_logic` to build, compile and run it in **default mode**. 
+- run `simu_logic clear` to clear the `build` folder. Run it when you switch from `debug` to `default` mode, to reset the CMake build cache or tne next time it will run again o, debug mode
+Once it's added, you'll be able to run `simu_logic debug` to build, compile and run the app in debug mode or `simu_logic` to build, compile and run it in default mode. 
+When you switch from `debug` to `default` mode, please run `simu_logic clear` or it will run again in debug mode ._. 
 ---
 
 # IV. Templates & File management

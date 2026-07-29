@@ -36,7 +36,8 @@
 #define PORT_INPUT(port)			((port) - 1)
 
 #define APP_NAME					"simu-logic"
-#define APP_VERSION					"v0.16"
+#define APP_VERSION					"v0.16.1"
+#define APP_DEBUG					"debug"
 
 #define MESS_ERROR					TERMINAL_RED		"\n/!\\ ERROR : "			TERMINAL_DEFAULT
 #define MESS_SYNTAX					TERMINAL_RED		"\n/!\\ WRONG SYNTAX : "	TERMINAL_DEFAULT
@@ -45,7 +46,6 @@
 #define	MESS_COMP					TERMINAL_ORANGE		"(▷) "						TERMINAL_DEFAULT
 #define	MESS_LINK					TERMINAL_ORANGE		"(→) "						TERMINAL_DEFAULT
 #define	MESS_CIRC					TERMINAL_ORANGE		"(◌) "						TERMINAL_DEFAULT
-
 
 #define COM_OPEN					TERMINAL_YELLOW		"'"
 #define COM_CLOSE					TERMINAL_YELLOW		"'"					TERMINAL_DEFAULT

@@ -268,7 +268,7 @@ void	propagate_eval_from_component(Component* comp)
 				if (has_comp_status_changed(child_comp, child_old_status, child_old_ports_status))
 				{
 					propagate_eval_from_component(child_comp);
-					printf(MESS_INFO"Evaluation propagated to %s\n", link->dest->label);
+					//printf(MESS_INFO"Evaluation propagated to %s\n", link->dest->label);
 
 				}
 			}
