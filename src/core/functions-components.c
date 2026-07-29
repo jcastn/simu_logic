@@ -44,7 +44,6 @@ Component*	create_component(Circuit* circ, TypeComponent type, const char* comp_
 	if (!circ || !comp)
 	{
 		free(comp);
-		printf(MESS_ERROR"Circuit or component are missing (Function create_component)\n");
 		return NULL;
 	}
 
@@ -72,7 +71,6 @@ Component*	create_component(Circuit* circ, TypeComponent type, const char* comp_
 		if (!comp->out_ports)
 		{
 			free(comp);
-			printf(MESS_ERROR"Allocation of comp->out_ports failed ! (Function create_component)\n");
 			return NULL;
 		}
 
@@ -162,7 +160,6 @@ Component*	create_component(Circuit* circ, TypeComponent type, const char* comp_
 	Component** tmp = realloc(circ->components, sizeof(Component*) * (circ->component_count + 1));
 	if (tmp == NULL)
 	{
-		printf(MESS_ERROR"Realloc of link pointers array failed (function create_component)\n");
 		free(comp->in_links);
 		free(comp);
 		return NULL;
@@ -179,27 +176,13 @@ Component*	create_component(Circuit* circ, TypeComponent type, const char* comp_
 	// By default, we generate a label for the component with the component id
 	snprintf(comp->label, sizeof(comp->label), "%s_%d", COMPONENT_MAP[type].name, circ->type_counter[type].count);
 
-	if ((comp_label == NULL) || (strlen(comp_label) == 0))
-	{
-		printf(MESS_ERROR"There's no value for the component label, so we'll keep the auto-generated label : '%s%s%s'\n", COMPONENT_MAP[comp->type].color, comp->label, TERMINAL_DEFAULT);
-	}
-	else if (strcmp(comp_label, "default") == 0)
-	{
-		printf(MESS_INFO"The component will use the auto-generated label : '%s%s%s'\n", COMPONENT_MAP[comp->type].color, comp->label, TERMINAL_DEFAULT);
-	}
-	else if (check_component_label(circ, comp, comp_label) == false)
-	{
-		printf(MESS_ERROR"The label '%s%s%s' is already used in this circuit. We'll keep the auto-generated label : '%s%s%s'\n", COMPONENT_MAP[comp->type].color, comp_label, TERMINAL_DEFAULT, COMPONENT_MAP[comp->type].color, comp->label, TERMINAL_DEFAULT);
-	}
-	else
+	if ((comp_label != NULL) &&
+		(strlen(comp_label) >= 1) &&
+		(strcmp(comp_label, "default") != 0) &&
+		(check_component_label(circ, comp, comp_label) == true))
 	{
 		snprintf(comp->label, sizeof(comp->label), "%s", comp_label);
 	}
-
-	printf(	MESS_COMP"Component '%s%s"TERMINAL_DEFAULT"' created as '%s%s"TERMINAL_DEFAULT"'. It contains %d inbound ports and %d outbound ports. \n", 
-			COMPONENT_MAP[comp->type].color, COMPONENT_MAP[type].name, 
-			COMPONENT_MAP[comp->type].color, comp->label, 
-			comp->nb_in_ports, comp->nb_out_ports);
 
 	return comp;
 }
@@ -211,7 +194,6 @@ bool	delete_component(Circuit* circ, Component* comp)
 
 	if (!circ || !comp)
 	{
-		printf(MESS_ERROR"Circuit or component not find (Function delete_component)\n");
 		return false;
 	}
 
@@ -229,7 +211,6 @@ bool	delete_component(Circuit* circ, Component* comp)
 	}
 	if (index == -1)
 	{
-		printf(MESS_ERROR"Component not find in the Circuit (Function delete_component)\n");
 		return false;
 	}	
 
@@ -250,23 +231,21 @@ bool	delete_component(Circuit* circ, Component* comp)
 	return true;
 }
 
-void rename_component(Circuit* circ, Component* comp, const char* new_label)
+bool rename_component(Circuit* circ, Component* comp, const char* new_label)
 {
 	if (!circ || !comp || !new_label)
 	{
-		return;
+		return false;
 	}
 
 	if (check_component_label(circ, comp, new_label) == false)
 	{
-		printf(MESS_ERROR"In the circuit "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT" (id:%d), a component is already named '%s%s%s'.\nRename operation of '%s%s%s' aborted.\n", circ->label, circ->id, COMPONENT_MAP[comp->type].color, new_label, TERMINAL_DEFAULT, COMPONENT_MAP[comp->type].color, comp->label, TERMINAL_DEFAULT);
-		return;
+		return false;
 	}
 
 	strncpy(comp->label, new_label, sizeof(comp->label) - 1);
 	comp->label[sizeof(comp->label) - 1] = '\0'; 
-
-	printf(MESS_COMP"Component renamed : '%s%s%s'\n", COMPONENT_MAP[comp->type].color, comp->label, TERMINAL_DEFAULT);
+	return true;
 }
 
 // Function to check if a component label already exist in a circuit
@@ -274,7 +253,6 @@ bool	check_component_label(Circuit* circ, Component* comp, const char* new_label
 {
 	if (!circ || !comp || !new_label)
 	{
-		printf(MESS_ERROR"Problem with the circuit, the component or the new_label. (function check_component_label()).\n ");
 		return false;
 	}
 
@@ -298,7 +276,6 @@ Component* get_component_by_label(const char* given_label, Circuit* circ)
 	int counter;
 	if (!circ || !given_label)
 	{
-		printf(MESS_ERROR"Circuit or label is missing.\n");
 		return NULL;
 	}
 
@@ -315,8 +292,6 @@ Component* get_component_by_label(const char* given_label, Circuit* circ)
 		}
 		counter++;
 	}
-
-	printf(MESS_ERROR"Component with label '%s' not found.\n", given_label);
 	return NULL;
 }
 

@@ -13,6 +13,7 @@ void			command_link_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_c
 		return;
 	}
 
+	// SRC component and ports 
 	Component* src = get_component_by_label(args[2], model->active_circuit);
 	if (src == NULL)
 	{
@@ -22,6 +23,13 @@ void			command_link_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_c
 	int src_input_port = string_to_int(args[3]);
 	int src_port_number = PORT_INPUT(src_input_port);
 
+	if (src_port_number < 0 || src_port_number >= src->nb_out_ports)
+	{
+		printf(MESS_ERROR "Invalid source port index '%d' for component '%s'.\n", PORT_DISPLAY(src_port_number), src->label);
+		return;
+	}
+
+	// DEST component and ports 
 	Component* dest = get_component_by_label(args[4], model->active_circuit);
 	if (dest == NULL)
 	{
@@ -31,12 +39,27 @@ void			command_link_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_c
 	int dest_input_port = string_to_int(args[5]);
 	int dest_port_number = PORT_INPUT(dest_input_port);
 
-	if ((dest_port_number < 0) || (dest_port_number >= dest->nb_in_ports)){
-		printf(MESS_ERROR"Link not created because the port number '"TERMINAL_MAGENTA"%d"TERMINAL_DEFAULT"' is invalid. It should be between 1 and %d\n", dest_input_port, dest->nb_in_ports);
+	if (dest_port_number < 0 || dest_port_number >= dest->nb_in_ports)
+	{
+		printf(MESS_ERROR "Invalid destination port index '%d' for component '%s'.\n", PORT_DISPLAY(dest_port_number), dest->label);
 		return;
 	}
 
-	create_link(model->active_circuit, src, src_port_number, dest, dest_port_number);
+	if (dest->in_links[dest_port_number] != NULL)
+	{
+		printf(MESS_ERROR"A link is already connected on the inbound port '%d' of the component '%s'. Link not created !\n", PORT_DISPLAY(dest_port_number), dest->label);
+		return;
+	}
+
+	// Link creation
+	Link* link = create_link(model->active_circuit, src, src_port_number, dest, dest_port_number);
+	if (!link)
+	{
+		printf(MESS_ERROR"Link not created.\n");
+		return;
+	}
+
+	printf(MESS_LINK"Link created : '%s%s (port %d)%s'  → '%s%s (port %d)%s' \n", COMPONENT_MAP[src->type].color, src->label, PORT_DISPLAY(src_port_number), TERMINAL_DEFAULT, COMPONENT_MAP[dest->type].color, dest->label, PORT_DISPLAY(dest_port_number), TERMINAL_DEFAULT);
 	return;
 }
 
@@ -98,6 +121,10 @@ void			command_link_delete(char* args[MAX_COMMAND_ARGS], Model *model, int arg_c
 	{
 		delete_link(model->active_circuit, link);
 		printf(MESS_LINK"Link deleted : '%s%s (port : %d)%s'  -> '%s%s (port : %d)%s'\n", COMPONENT_MAP[src->type].color, src->label, input_src_port, TERMINAL_DEFAULT, COMPONENT_MAP[dest->type].color, dest->label, input_dest_port, TERMINAL_DEFAULT);
+	}
+	else
+	{
+		printf(MESS_INFO"No link found ! (Maybe the port number is invalid ?) \n");
 	}
 	return;
 }

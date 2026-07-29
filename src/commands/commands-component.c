@@ -51,8 +51,23 @@ void			command_component_create(char* args[MAX_COMMAND_ARGS], Model *model, int 
 		strncpy(label, "default", sizeof(label) - 1);
 	}
 
-	create_component(model->active_circuit, type, label, in_nbr, out_nbr);
+	Component* comp = create_component(model->active_circuit, type, label, in_nbr, out_nbr);
+	if (!comp)
+	{
+		printf(MESS_ERROR"Failed to create component.\n");
+		return;
+	}
 
+	printf(	MESS_COMP"Component '%s%s"TERMINAL_DEFAULT"' created as '%s%s"TERMINAL_DEFAULT"'. It contains %d inbound ports and %d outbound ports.\n", 
+			COMPONENT_MAP[comp->type].color, COMPONENT_MAP[comp->type].name, 
+			COMPONENT_MAP[comp->type].color, comp->label, 
+			comp->nb_in_ports, comp->nb_out_ports);
+
+	// If the component label is not the same as the label passed as argument (and the label is not default)
+	if ((strcmp(comp->label, label) != 0) && (strcmp(label, "default") != 0))
+	{
+		printf(MESS_INFO"The component is using its default label because the label '%s' is invalid or alerady used in the circuit.\n", label);
+	}
 	return;
 }
 
@@ -69,13 +84,13 @@ void			command_component_delete(char* args[MAX_COMMAND_ARGS], Model *model, int 
 	Component* comp = get_component_by_label(args[2], model->active_circuit);
 	if (comp == NULL)
 	{
+		printf(MESS_SYNTAX"Component '%s' not found in the circuit.\n", args[2]);
 		return;
 	}
 
 	if (delete_component(model->active_circuit, comp))
 	{
 		printf("\n"MESS_CIRC"Component '%s' deleted\n", args[2]);
-
 	}
 
 	simulate_circuit(model->active_circuit);
@@ -96,10 +111,19 @@ void			command_component_rename(char* args[MAX_COMMAND_ARGS], Model *model, int 
 	Component* comp = get_component_by_label(args[2], model->active_circuit);
 	if (comp == NULL)
 	{
+		printf(MESS_SYNTAX"Component '%s' not found in the circuit.\n", args[2]);
 		return;
 	}
 
-	rename_component(model->active_circuit, comp, args[3]);
+	if (rename_component(model->active_circuit, comp, args[3]))
+	{
+		printf(MESS_COMP"Component renamed : '%s%s%s'\n", COMPONENT_MAP[comp->type].color, comp->label, TERMINAL_DEFAULT);
+	}
+	else 
+	{
+		printf(MESS_ERROR"A component is already named '%s%s%s'.\nRename operation of '%s%s%s' aborted.\n",COMPONENT_MAP[comp->type].color, args[3], TERMINAL_DEFAULT, COMPONENT_MAP[comp->type].color, args[2], TERMINAL_DEFAULT);
+	}
+
 
 	return;
 }

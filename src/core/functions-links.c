@@ -7,26 +7,13 @@ Link*	create_link(Circuit* circ, Component* src, int src_port_number, Component*
 {
 	if (!circ || !src || !src->out_ports || !dest)
 	{
-		printf(MESS_ERROR "Invalid paramters for the function 'create_link()'.\n");
-		return NULL;
-	}
-	
-	if (src_port_number < 0 || src_port_number >= src->nb_out_ports)
-	{
-		printf(MESS_ERROR "Invalid source port index '%d' for component '%s'.\n", PORT_DISPLAY(src_port_number), src->label);
 		return NULL;
 	}
 
-	if (dest_port_number < 0 || dest_port_number >= dest->nb_in_ports)
+	if ((src_port_number < 0) && (src_port_number >= src->nb_out_ports) && 
+		(dest_port_number < 0) && (dest_port_number >= dest->nb_in_ports) &&
+		(dest->in_links[dest_port_number] != NULL))
 	{
-		printf(MESS_ERROR "Invalid destination port index '%d' for component '%s'.\n", PORT_DISPLAY(dest_port_number), dest->label);
-		return NULL;
-	}
-
-	// If the user try to create or connect a link to a port where one link already exist, an error is generated 
-	if (dest->in_links[dest_port_number] != NULL)
-	{
-		printf(MESS_ERROR"A link is already connected on the inbound port '%d' of the component '%s'. Link not created !\n", PORT_DISPLAY(dest_port_number), dest->label);
 		return NULL;
 	}
 
@@ -41,12 +28,10 @@ Link*	create_link(Circuit* circ, Component* src, int src_port_number, Component*
 	link->dest = dest;
 	link->dest_port_number = dest_port_number;
 
-
 	// Enlargement of the link pointers array
 	Link** tmp_out = realloc(src->out_ports[src_port_number]->out_links, sizeof(Link*) * (src->out_ports[src_port_number]->nb_out_links + 1));
 	if (tmp_out == NULL)
 	{
-		printf(MESS_ERROR"Realloc of out_links failed (function create_link)");
 		free(link);
 		return NULL;
 	}
@@ -58,7 +43,6 @@ Link*	create_link(Circuit* circ, Component* src, int src_port_number, Component*
 	Link** tmp_circ = realloc(circ->links, sizeof(Link*) * (circ->link_count + 1));
 	if (tmp_circ == NULL)
 	{
-		printf(MESS_ERROR"Realloc of circ->links failed (function create_link)");
 		free(link);
 		return NULL;
 	}
@@ -69,14 +53,11 @@ Link*	create_link(Circuit* circ, Component* src, int src_port_number, Component*
 
 	dest->in_links[dest_port_number] = link;
 
-
-	printf(MESS_LINK"Link created : '%s%s (port %d)%s'  → '%s%s (port %d)%s' \n", COMPONENT_MAP[src->type].color, src->label, PORT_DISPLAY(src_port_number), TERMINAL_DEFAULT, COMPONENT_MAP[dest->type].color, dest->label, PORT_DISPLAY(dest_port_number), TERMINAL_DEFAULT);
-
 	// Propagate eval to linked component
 	component_eval(dest);
 	propagate_eval_from_component(dest);
 
-	return	link;
+	return link;
 }
 
 
@@ -87,7 +68,6 @@ void	delete_link(Circuit* circ, Link* link)
 
 	if (!circ || !link)
 	{
-		printf(MESS_ERROR"No circuit or link found when trying to delete a link.\n");
 		return;
 	}
 
@@ -159,15 +139,10 @@ Link*	get_link(Circuit* circ, Component* src, int src_port_number, Component* de
 		return NULL;
 	}
 	
-	if (src_port_number < 0 || src_port_number >= src->nb_out_ports)
+	if ((src_port_number < 0) && (src_port_number >= src->nb_out_ports) && 
+		(dest_port_number < 0) && (dest_port_number >= dest->nb_in_ports) &&
+		(dest->in_links[dest_port_number] != NULL))
 	{
-		printf(MESS_ERROR "Invalid source port index '%d' for component '%s'.\n", PORT_DISPLAY(src_port_number), src->label);
-		return NULL;
-	}
-
-	if (dest_port_number < 0 || dest_port_number >= dest->nb_in_ports)
-	{
-		printf(MESS_ERROR "Invalid destination port index '%d' for component '%s'.\n", PORT_DISPLAY(dest_port_number), dest->label);
 		return NULL;
 	}
 
@@ -181,6 +156,5 @@ Link*	get_link(Circuit* circ, Component* src, int src_port_number, Component* de
 		}
 		counter++;
 	}
-	printf(MESS_INFO"No link found ! (Maybe the port number is invalid ?) \n");
 	return NULL;
 }

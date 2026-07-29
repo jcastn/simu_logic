@@ -12,7 +12,7 @@ void			simulate_model					(Model* model);
 //Functions-circuits
 Circuit*		create_circuit					(Model* model,		const char* label);
 bool			delete_circuit					(Model* model,		Circuit *circ,			bool flag_free_circuit);
-void			rename_circuit					(Model* model,		Circuit* circ,			const char* new_label);
+bool			rename_circuit					(Model* model,		Circuit* circ,			const char* new_label);
 Circuit*		get_circuit_by_label			(Model* model,		const char* label);
 void			simulate_circuit				(Circuit* circ);
 bool			check_circuit_label				(Model* model,		const char* new_label);
@@ -23,7 +23,7 @@ Circuit*		duplicate_circuit				(Model* model,		Circuit* src_circ, 		const char* 
 //Functions-components
 Component*		create_component				(Circuit* circ,		TypeComponent type, 	const char* label,		int in_nbr,			int out_nbr);
 bool			delete_component				(Circuit* circ,		Component* comp);
-void			rename_component				(Circuit* circ,		Component* comp,		const char* new_label);
+bool			rename_component				(Circuit* circ,		Component* comp,		const char* new_label);
 Component*		get_component_by_label			(const char* label,	Circuit* circ);
 Component*		invert_source_state				(Component* comp);
 bool			check_component_label			(Circuit* circ,		Component* comp,		const char* new_label);

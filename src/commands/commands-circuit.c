@@ -15,16 +15,14 @@ void	command_circuit_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_
 		return;
 	}
 
-	// 2nd option "circuit create"
-	if (strcmp(args[2], "default") == 0)
+	Circuit* circ = create_circuit(model, args[2]);
+	if (!circ)
 	{
-		create_circuit(model, "default");
-	}
-	else
-	{
-		create_circuit(model, args[2]);
+		printf(MESS_ERROR"Circuit not created.");
+		return;
 	}
 	
+	printf(MESS_CIRC"Circuit created : "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT"\n", circ->label);
 	return;
 }
 
@@ -57,11 +55,12 @@ void	command_circuit_delete(char* args[MAX_COMMAND_ARGS], Model *model, int arg_
 	Circuit* circ = get_circuit_by_label(model, args[2]);
 	if (circ == NULL)
 	{
+		printf("\n"MESS_CIRC"Circuit not find.\n");
 		return;
 	}
 	if (delete_circuit(model, circ, true))
 	{
-		printf("\n"MESS_CIRC"Circuit deleted\n");
+		printf("\n"MESS_CIRC"Circuit '%s' deleted\n", args[2]);
 	}
 	return;
 }
@@ -125,7 +124,26 @@ void	command_circuit_rename(char* args[MAX_COMMAND_ARGS], Model *model, int arg_
 	{
 		return;
 	}
-	rename_circuit(model, circ, args[3]);
+	
+	if (rename_circuit(model, circ, args[3]))
+	{
+		printf(MESS_CIRC"Circuit renamed : "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT"\n", circ->label);
+	}
+	else
+	{
+		if (strcmp(circ->label, args[3]) == 0)
+		{
+			printf(MESS_ERROR"The circuit is already named "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT". Rename operation is aborted.\n", args[3]);
+		}
+		else if (check_circuit_label(model, args[3]) == false)
+		{
+			printf(MESS_ERROR"A circuit is already named "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT". Rename operation of circuit "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT" (id:%d) is aborted.\n", args[3], circ->label, circ->id);
+		}
+		else
+		{
+			printf(MESS_ERROR "Model, circuit or new label not found.\n");
+		}
+	}
 	return;
 }
 

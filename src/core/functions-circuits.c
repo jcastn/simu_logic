@@ -24,18 +24,9 @@ Circuit*	create_circuit(Model* model, const char* label)
 
 	snprintf(circ->label, sizeof(circ->label), "Circuit_%d", circ->id);
 
-	// If the comp_label is not default or if the comp_label is aleready attribuate to another component, 
 
-	
-	if (check_circuit_label(model, label) == false)
-	{
-		printf(MESS_ERROR"A circuit is already named "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT", the created circuit will keep its default label '%s'.\n\n", label, circ->label);
-	}
-	else if (strcmp(label, "default") == 0)
-	{
-		printf(MESS_INFO"The circuit will use its default name : "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT"\n", circ->label);
-	}
-	else
+	// If the comp_label is available and not default, the circuit is created, 
+	if ((check_circuit_label(model, label) == true) && (strcmp(label, "default") != 0))
 	{
 		snprintf(circ->label, sizeof(circ->label), "%s", label);
 	}
@@ -43,7 +34,6 @@ Circuit*	create_circuit(Model* model, const char* label)
 	Circuit** tmp = realloc(model->circuits, sizeof(Circuit*) * (model->circuits_count + 1));
 	if (tmp == NULL)
 	{
-		printf(MESS_ERROR"Realloc of circuits array failed (Function create_circuit)\n");
 		free(circ);
 		return NULL;
 	}
@@ -52,35 +42,24 @@ Circuit*	create_circuit(Model* model, const char* label)
 	model->circuits[model->circuits_count] = circ;
 	model->circuits_count += 1; 
 
-	printf(MESS_CIRC"Circuit created : "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT"\n", circ->label);
 	return circ;
 }
 
-void rename_circuit(Model *model, Circuit* circ, const char* new_label)
+bool rename_circuit(Model *model, Circuit* circ, const char* new_label)
 {
 	if (!model || !circ || !new_label)
 	{
-		printf(MESS_ERROR "No model, no circuit or no new name find (Function rename_circuit)\n");
-		return;
+		return false;
 	}
 
-	if (strcmp(circ->label, new_label) == 0)
+	if ((strcmp(circ->label, new_label) != 0) && (check_circuit_label(model, new_label) == true))
 	{
-		printf(MESS_ERROR"The circuit is already named "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT". Rename operation is aborted.\n", new_label);
-		return; 
+		strncpy(circ->label, new_label, sizeof(circ->label) - 1);
+		circ->label[sizeof(circ->label) - 1] = '\0';
+		
+		return true;
 	}
-
-	if (check_circuit_label(model, new_label) == false)
-	{
-		printf(MESS_ERROR"A circuit is already named "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT". Rename operation of circuit "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT" (id:%d) is aborted.\n", new_label, circ->label, circ->id);
-		return;
-	}
-
-	strncpy(circ->label, new_label, sizeof(circ->label) - 1);
-	circ->label[sizeof(circ->label) - 1] = '\0';
-
-	printf(MESS_CIRC"Circuit renamed : "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT"\n", circ->label);
-
+	return false;
 }
 
 
@@ -90,7 +69,6 @@ bool	check_circuit_label(Model* model, const char* new_label)
 {
 	if (!model || !new_label)
 	{
-		printf(MESS_ERROR"Problem with the model, the circuit or the new_label. (function check_circuit_label()).\n ");
 		return false;
 	}
 
@@ -114,7 +92,6 @@ Circuit* get_circuit_by_label(Model* model, const char* given_label)
 
 	if (!given_label || !model || !model->circuits)
 	{
-		printf(MESS_SYNTAX"Circuit with label "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT" not found\n", given_label);
 		return NULL;
 	}
 
@@ -131,37 +108,19 @@ Circuit* get_circuit_by_label(Model* model, const char* given_label)
 		}
 		counter++;
 	}
-
-	printf(MESS_SYNTAX"Circuit with label "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT" not found, check circuit names with "OPTION_COM(list circuits)".\n", given_label);
 	return NULL;
 }
 
 bool	delete_circuit(Model *model, Circuit *circ, bool flag_free_circuit)
 {
-	int counter;
-	int index; 
-
 	if (!model || !circ)
 	{
-		printf(MESS_ERROR"Model or circuit not found (Function delete_circuit)\n");
 		return false;
 	}
 
-	// Get the index of the circuit in the model
-	index = -1;
-	counter = 0;
-	while(counter < model->circuits_count) 
-	{
-		if (model->circuits[counter] == circ)
-		{
-			index = counter;
-			break;
-		}
-		counter++;
-	}
+	int index = get_circuit_number_in_model(model, circ);
 	if (index == -1)
 	{
-		printf(MESS_ERROR"Circuit not found in the Model (Function delete_circuit)\n");
 		return false;
 	}
 
@@ -184,7 +143,6 @@ bool	delete_circuit(Model *model, Circuit *circ, bool flag_free_circuit)
 			model->circuits = NULL;
 		}
 	}
-
 	return true;
 }
 
