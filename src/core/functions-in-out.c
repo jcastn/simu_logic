@@ -201,8 +201,8 @@ static void	write_file_content(char* file_path, Model *model, int circuit_index)
 				model->circuits[circ]->components[comp]->label,
 				model->circuits[circ]->components[comp]->nb_in_ports,
 				model->circuits[circ]->components[comp]->nb_out_ports,
-				model->circuits[circ]->components[comp]->coordinates->x,
-				model->circuits[circ]->components[comp]->coordinates->y);
+				model->circuits[circ]->components[comp]->coordinates.x,
+				model->circuits[circ]->components[comp]->coordinates.y);
 			comp++;
 		}
 

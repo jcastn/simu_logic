@@ -129,10 +129,10 @@ void			command_component_move(char* args[MAX_COMMAND_ARGS], Model *model, int ar
 		return;
 	}
 
-	comp->coordinates->x = x;
-	comp->coordinates->y = y;
+	comp->coordinates.x = x;
+	comp->coordinates.y = y;
 
-	printf(MESS_COMP"Component '%s' moved to x:%d y:%d\n", comp->label, comp->coordinates->x, comp->coordinates->y);
+	printf(MESS_COMP"Component '%s' moved to x:%d y:%d\n", comp->label, comp->coordinates.x, comp->coordinates.y);
 	return;
 }
 

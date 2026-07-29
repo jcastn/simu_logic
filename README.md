@@ -3,7 +3,7 @@
 > A lightweight app to create, manage and simulate logic circuits from the terminal. Fully written in C, from scratch.
 
 ![License](https://img.shields.io/badge/license-GPL--3.0-blue)
-![Version](https://img.shields.io/badge/version-v0.16.2-green)
+![Version](https://img.shields.io/badge/version-v0.16.4-green)
 ![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)
 
 ---
@@ -12,16 +12,16 @@
 
 - [Quick Start](#quick-start)
 - [I. Major Features](#i-major-features)
-  - [1. Components](#1-components)
-  - [2. Circuit Engine & Simulation](#2-circuit-engine--real-time-simulation)
-  - [3. Topological Sorting](#3-topological-sorting--circuit-structure)
-  - [4. Interactive CLI](#4-interactive-cli--user-experience)
+	- [1. Components](#1-components)
+	- [2. Circuit Engine & Simulation](#2-circuit-engine--real-time-simulation)
+	- [3. Topological Sorting](#3-topological-sorting--circuit-structure)
+	- [4. Interactive CLI](#4-interactive-cli--user-experience)
 - [II. Commands](#ii-app-commands)
 - [III. Compilation](#iii-compilation)
-  - [1. Prerequisites](#1-prerequisites)
-  - [2. Compilation steps](#2-compilation-steps)
-  - [3. Debug mode](#3-debug-mode)
-  - [4. Helper script](#4-helper-script-simu_logicsh)
+	- [1. Prerequisites](#1-prerequisites)
+	- [2. Compilation steps](#2-compilation-steps)
+	- [3. Debug mode](#3-debug-mode)
+	- [4. Helper script](#4-helper-script-simu_logicsh)
 - [IV. Templates](#iv-templates--file-management)
 	- [1. Circuits templates](#1-circuits-templates)
 	- [2. Scripts templates](#2-scripts-templates)
@@ -204,7 +204,7 @@ For detailed syntax, subcommands, and available arguments, type `help commands` 
 ### Supported platforms
 
 
-- MacOS (17/Tahoe)
+- MacOS (Sequoia/Tahoe)
 - Windows (10/11)
 - Linux (Arch, Debian)
 

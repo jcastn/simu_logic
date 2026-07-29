@@ -161,10 +161,10 @@ void	show_components_from_circuit(Circuit* circ)
 			component_color, COMPONENT_MAP[comp->type].name,
 			state_color, state_text,
 			comp->id, 
-			comp->coordinates->level, 
-			comp->coordinates->alignment, 
-			comp->coordinates->x, 
-			comp->coordinates->y,
+			comp->coordinates.level, 
+			comp->coordinates.alignment, 
+			comp->coordinates.x, 
+			comp->coordinates.y,
 			comp->nb_in_ports,
 			comp->nb_out_ports);
 		counter++;
@@ -259,8 +259,8 @@ void	show_component(Component* comp)
 			component_color, comp->label, 
 			component_color, COMPONENT_MAP[comp->type].name, 
 			comp->id,
-			comp->coordinates->x, comp->coordinates->y,
-			comp->coordinates->level, comp->coordinates->alignment,
+			comp->coordinates.x, comp->coordinates.y,
+			comp->coordinates.level, comp->coordinates.alignment,
 			state_color, state_text);
 
 	printf(	"•-------------------------------•-------------------------------•\n"

@@ -201,7 +201,7 @@ void	simulate_circuit(Circuit* circ)
 	while (counter < circ->component_count)
 	{
 		Component* comp = circ->components[counter];
-		if (comp->coordinates->level == 0)
+		if (comp->coordinates.level == 0)
 		{
 			component_eval(comp);
 			propagate_eval_from_component(comp);
@@ -255,8 +255,8 @@ Circuit*	duplicate_circuit(Model* model, Circuit* src_circ, const char* new_labe
 		Component* comp = create_component(dest_circ, src_circ->components[counter]->type, src_circ->components[counter]->label, src_circ->components[counter]->nb_in_ports, src_circ->components[counter]->nb_out_ports);
 		if (comp != NULL)
 		{
-			comp->coordinates->x = src_circ->components[counter]->coordinates->x;
-			comp->coordinates->y = src_circ->components[counter]->coordinates->y;
+			comp->coordinates.x = src_circ->components[counter]->coordinates.x;
+			comp->coordinates.y = src_circ->components[counter]->coordinates.y;
 
 			if ((src_circ->components[counter]->type == SOURCE) && (src_circ->components[counter]->status.binary == true))
 			{

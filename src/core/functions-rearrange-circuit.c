@@ -3,8 +3,8 @@
 
 Component*	update_coordinates(Component* comp, int x, int y)
 {
-	comp->coordinates->x = x;
-	comp->coordinates->y = y;
+	comp->coordinates.x = x;
+	comp->coordinates.y = y;
 	return comp;
 }
 
@@ -17,7 +17,7 @@ static void	reset_circuit_levels(Circuit *circ)
 
 	while(counter < circ->component_count)
 	{
-		circ->components[counter]->coordinates->level = 0;
+		circ->components[counter]->coordinates.level = 0;
 		counter++;
 	}
 	
@@ -58,20 +58,20 @@ static void	propagate_level(Component* comp, int* max_level, bool flag_rearrange
 			if (link && link->dest)
 			{
 				Component* dest = link->dest;
-				next_level = comp->coordinates->level + 1;
+				next_level = comp->coordinates.level + 1;
 
-				if (next_level > dest->coordinates->level)
+				if (next_level > dest->coordinates.level)
 				{
-					dest->coordinates->level = next_level;
+					dest->coordinates.level = next_level;
 					if (flag_rearrange_components)
 					{
-						update_coordinates(dest, dest->coordinates->level*100, dest->coordinates->alignment*100);
+						update_coordinates(dest, dest->coordinates.level*100, dest->coordinates.alignment*100);
 					}
 
 					// Verification and update of the max_level of the circuit
-					if (dest->coordinates->level > *max_level)
+					if (dest->coordinates.level > *max_level)
 					{
-						*max_level = dest->coordinates->level;
+						*max_level = dest->coordinates.level;
 					}
 
 					propagate_level(dest, max_level, flag_rearrange_components);
@@ -97,7 +97,7 @@ void	topological_sort(Circuit* circ, bool flag_rearrange_components)
 	counter = 0;
 	while (counter < circ->component_count)
 	{
-		if (circ->components[counter]->coordinates->level == 0)
+		if (circ->components[counter]->coordinates.level == 0)
 		{
 			propagate_level(circ->components[counter], &(circ->max_level), flag_rearrange_components);
 		}

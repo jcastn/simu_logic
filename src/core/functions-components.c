@@ -105,16 +105,10 @@ Component*	create_component(Circuit* circ, TypeComponent type, const char* comp_
 	}
 
 	// Component coordinates init
-	comp->coordinates = calloc(1, sizeof(Coordinates));
-	if (!comp->coordinates)
-	{
-		free(comp);
-		return NULL;
-	}
-	comp->coordinates->x = 0;
-	comp->coordinates->y = 0;
-	comp->coordinates->level = 0;
-	comp->coordinates->alignment = 0;
+	comp->coordinates.x = 0;
+	comp->coordinates.y = 0;
+	comp->coordinates.level = 0;
+	comp->coordinates.alignment = 0;
 
 	// Component status init 
 	switch (comp->type)
@@ -148,7 +142,6 @@ Component*	create_component(Circuit* circ, TypeComponent type, const char* comp_
 		comp->in_links = malloc(sizeof(Link*) * comp->nb_in_ports);
 		if (comp->in_links == NULL)
 		{
-			free(comp->coordinates);
 			free(comp->out_ports);
 			free(comp);
 			return NULL;
@@ -170,7 +163,6 @@ Component*	create_component(Circuit* circ, TypeComponent type, const char* comp_
 	if (tmp == NULL)
 	{
 		printf(MESS_ERROR"Realloc of link pointers array failed (function create_component)\n");
-		free(comp->coordinates);
 		free(comp->in_links);
 		free(comp);
 		return NULL;
@@ -244,7 +236,6 @@ bool	delete_component(Circuit* circ, Component* comp)
 	// Delete all inbound and outbound links of the component
 	delete_all_component_links(circ, comp, true);
 
-	free(comp->coordinates);
 	free(comp);
 
 	// Shift of the pointer array to the left

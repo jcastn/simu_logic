@@ -8,7 +8,6 @@
 
 #include "macros.h"
 
-
 typedef struct	Coordinates		Coordinates;
 typedef	struct	OutPort			OutPort;
 typedef struct	Component		Component;
@@ -22,9 +21,7 @@ typedef struct	ColorStatus		ColorStatus;
 typedef	struct	ComponentMap	ComponentMap;
 typedef union	CompStatus		CompStatus;
 
-
 // Enumerations 
-
 
 // Types of components 
 // Please edit COMPONENTS_COUNT (macros.h) and COMPONENTS_MAP[] (functions-components.c) when adding or removing a component ! 
@@ -51,7 +48,6 @@ typedef enum {
 	BUS_NOT,
 } TypeComponent;
 
-
 typedef enum
 {
 	STATE_NONE,
@@ -67,18 +63,6 @@ typedef enum
 	COMMANDS
 } FileMode;
 
-struct ComponentMap
-{
-	const char*		name;
-	const char*		color;
-	int				nb_in_ports_min;
-	int				nb_in_ports_max;
-	int				nb_out_ports_min;
-	int				nb_out_ports_max;
-};
-
-extern const ComponentMap COMPONENT_MAP[COMPONENTS_COUNT];
-
 // Structures 
 struct	Coordinates 
 {
@@ -87,7 +71,6 @@ struct	Coordinates
 	int				level;
 	int				alignment;
 };
-
 
 struct	Link 
 {
@@ -124,7 +107,7 @@ struct	Component
 {
 	TypeComponent	type;
 	int				id;
-	Coordinates*	coordinates;
+	Coordinates		coordinates;
 	Link**			in_links;
 	int				nb_in_ports;
 	OutPort**		out_ports;
@@ -161,6 +144,18 @@ struct	Model
 
 };
 
+struct ComponentMap
+{
+	const char*		name;
+	const char*		color;
+	int				nb_in_ports_min;
+	int				nb_in_ports_max;
+	int				nb_out_ports_min;
+	int				nb_out_ports_max;
+};
+
+extern const ComponentMap COMPONENT_MAP[COMPONENTS_COUNT];
+
 typedef void (*Command)(char* args[MAX_COMMAND_ARGS], Model* model, int word_count);
 
 struct CommandMap
@@ -181,4 +176,3 @@ struct 	SubCommandMap
 	int				needed_args;
 	bool			is_alias;
 };
-
