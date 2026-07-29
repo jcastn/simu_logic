@@ -23,7 +23,33 @@ void	command_reset(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 	return;
 }
 
-// Command quit 
+// Command 'run'
+
+void	command_run(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+{
+	char* 	file_path = "";
+
+	if (arg_count == 1)
+	{
+		file_path = NULL;
+	}
+	else if (arg_count == 2)
+	{
+		if (strcmp(args[1], "IDK") == 0)
+		{
+			file_path = NULL;
+		}
+		else
+		{
+			file_path = args[1];
+		}
+	}
+
+	file_process(file_path, COMMANDS, model, -1);
+	return;
+}
+
+// Command 'quit' 
 void	command_quit(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {
 	(void)args;

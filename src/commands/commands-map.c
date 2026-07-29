@@ -97,6 +97,7 @@ static const CommandMap commands[] = {
 	{"link",		"manage the links of a circuit",				command_link,			2,		false,		link_options,			sizeof(link_options) / sizeof(SubCommandMap)},
 	{"list",		"display information about loaded circuits",	command_list,			2,		false,		list_options,			sizeof(list_options) / sizeof(SubCommandMap)},
 	{"ls",			"display information about loaded circuits",	command_list,			2,		true,		list_options,			sizeof(list_options) / sizeof(SubCommandMap)},
+	{"run",		"run each command of a file",					command_run,			1,		false,		NULL,					0},
 	{"quit",		"leave the app",								command_quit,			1,		false,		NULL,					0},
 	{"exit",		"leave the app",								command_quit,			1,		true,		NULL,					0},
 	{"close",		"leave the app",								command_quit,			1,		true,		NULL,					0},

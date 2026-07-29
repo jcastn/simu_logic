@@ -57,14 +57,14 @@ typedef enum
 	STATE_NONE,
 	STATE_COMPONENTS,
 	STATE_INVERSIONS,
-	STATE_LINKS,
-	STATE_COMMANDS
+	STATE_LINKS
 } ParseState;
 
 typedef enum
 {
 	IMPORT,
-	EXPORT
+	EXPORT,
+	COMMANDS
 } FileMode;
 
 struct ComponentMap

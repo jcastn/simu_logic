@@ -1,0 +1,10 @@
+// Bonjour ! This is a simple script that you can run using the command 'run "templates/scripts/bonjour.txt"' or 'run' and select the file. 
+
+circuit create "tamer"
+circuit sel "tamer"
+comp cre "SOURCE"
+comp cre "DIODE"
+link create "SOURCE_1" 1 "DIODE_1" 1
+list comp active
+comp toggle "SOURCE_1"
+list comp active

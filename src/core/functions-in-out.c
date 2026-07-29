@@ -1,115 +1,34 @@
 //functions-in-out.c
-#include <nfd.h>
 #include "../../include/prototypes.h"
+#include "../../third_party/tinyfiledialogs/tinyfiledialogs.h"
 
-
-#ifdef __APPLE__
-// Temporary fix for a known issue:
-// nfd_file() don't really work on MacOS devices if the application is a binary file in terminal.
-// To temporary fix that, we can use apple scripts to directly interact with the OS, without using an external module.  
-static char* macos_file(FileMode mode)
-{
-	char path[256] = {0};
-	char command[128];
-
-	// Apple scripts for IMPORT files and EXPORT files popups
+static char* tfd_file(FileMode mode) {
+	char const *file_path = NULL;
+	char const *filters[1] = {"*.txt"};
+	
 	if (mode == IMPORT)
 	{
-		strcpy(command, "osascript -e 'POSIX path of (choose file with prompt \"Select a circuit file:\" of type {\"txt\", \"json\"})'");
+	  	file_path = tinyfd_openFileDialog("Select a circuit file", "", 1, filters, "Circuit files (.txt)", 0);
 	}
-	else
+	else if (mode == EXPORT)
 	{
-		strcpy(command, "osascript -e 'POSIX path of (choose file name with prompt \"Export circuit as:\" default name \"modele_simu_logic.txt\")'");
+	  	file_path = tinyfd_saveFileDialog("Export circuit as", "modele_simu_logic.txt", 1, filters, "Circuit files (.txt)");
 	}
-
-	// Exec apple script
-	FILE* fp = popen(command, "r");
-	if (fp == NULL) {
-		printf(MESS_ERROR"Failed to run apple script\n");
-		return NULL;
-	}
-
-	// Remove the end of the received path
-	if (fgets(path, sizeof(path), fp) != NULL) {
-		
-		path[strcspn(path, "\n")] = '\0';
-		path[strcspn(path, "\r")] = '\0';
-	}
-
-	int status = pclose(fp);
-
-	// If user pressed Cancel
-	if (status != 0 || strlen(path) == 0) {
-		printf(MESS_INFO"User pressed cancel\n");
-		return NULL;
-	}
-
-	printf(MESS_INFO"File found: %s\n", path);
-	return strdup(path);
-}
-#endif
-
-
-
-static char* nfd_file(FileMode mode)
-{
-	char* path = NULL;
-
-	#ifdef __APPLE__
-	path = macos_file(mode);
-	return path;
-	#endif
-
-
-	if (NFD_Init() != NFD_OKAY) {
-		printf(MESS_ERROR"Error with nfd_file(): %s\n", NFD_GetError());
-		return NULL;
-	}
-	
-	nfdu8char_t *outPath = NULL;
-	nfdu8filteritem_t filters[1] = { {"Text file", "txt,json"} };
-	nfdresult_t result;
-
-	if (mode == IMPORT)
+	else if (mode == COMMANDS)
 	{
-		nfdopendialogu8args_t open_args = {0};
-		open_args.filterList = filters;
-		open_args.filterCount = 1;
-		result = NFD_OpenDialogU8_With(&outPath, &open_args);
-	}
-	else
-	{
-		nfdsavedialogu8args_t save_args = {0};
-		save_args.filterList = filters;
-		save_args.filterCount = 1;
-		save_args.defaultName = "modele_simu_logic.txt";
-		result = NFD_SaveDialogU8_With(&outPath, &save_args);
-	}
-	
-	if (result == NFD_OKAY)
-	{
-		printf(MESS_INFO"File found with nfd_file(): %s\n", outPath);
-		path = strdup(outPath);
-		NFD_FreePathU8(outPath);
-	}
-	else if (result == NFD_CANCEL)
-	{
-		printf(MESS_INFO"User pressed cancel from file explorer popup.");
-	}
-	else 
-	{
-		printf(MESS_ERROR"Error: %s\n", NFD_GetError());
+	  	file_path = tinyfd_openFileDialog("Select a commands file", "", 1, filters, "Commands files (.txt)", 0);
 	}
 
-	NFD_Quit();
-	fflush(stdout);
-	fflush(stdin);
 
-	return path;
+	if (file_path == NULL) {
+	  printf(MESS_INFO "User pressed cancel\n");
+	  return NULL;
+	}
+
+	return strdup(file_path);
 }
 
-
-static void	read_file_content(char* file_path, Model* model)
+static void	import_file_content(char* file_path, Model* model)
 {
 	FILE *file = fopen(file_path, "r");
 	if (!file) 
@@ -169,12 +88,6 @@ static void	read_file_content(char* file_path, Model* model)
 		{
 			current_state = STATE_LINKS;
 			printf("\n\nSTEP 3: STATE_LINKS\n");
-			continue;
-		}
-		else if (strstr(line, "$Commands$"))
-		{
-			current_state = STATE_COMMANDS;
-			printf("\n\nSTEP 4: STATE_COMMANDS\n");
 			continue;
 		}
 
@@ -241,12 +154,6 @@ static void	read_file_content(char* file_path, Model* model)
 				}
 				break;
 			}
-			case STATE_COMMANDS:
-			{
-				printf(MESS_INFO"Not yet implemented !");
-				break;
-			}
-
 			default:
 			{
 				break;
@@ -346,21 +253,76 @@ static void	write_file_content(char* file_path, Model *model, int circuit_index)
 	}
 }
 
+static void run_file_content(char* file_path, Model* model)
+{
+	const char* file_name = strrchr(file_path, '/');
+	file_name++;
+
+	FILE *file = fopen(file_path, "r");
+	if (!file) 
+	{
+		printf(MESS_ERROR"ERROR: Impossible to open the file\n");
+		return;
+	}
+
+	char 	line[200];
+
+	// First pass: count total commands
+	int total = 0;
+	while(fgets(line, sizeof(line), file))
+	{
+		if (line[0] != '\n' && line[0] != '\r' && strstr(line, "//") != line)
+		{
+			total++;
+		}
+	}
+	rewind(file);
+
+	// Second pass: execute commands
+	int counter = 1;
+	while(fgets(line, sizeof(line), file))
+	{
+		if (line[0] == '\n' || line[0] == '\r' || strstr(line, "//") == line) 
+		{
+			continue;
+		}
+
+		// Remove trailing newline/carriage return
+		line[strcspn(line, "\r\n")] = '\0';
+
+		if ((model->active_circuit != NULL) && (strlen(model->active_circuit->label) > 0))
+		{
+			printf("\n"TERMINAL_MAGENTA"[running \"%s\" (%d/%d)] " TERMINAL_GREEN "\"%s\"" TERMINAL_MAGENTA" > "TERMINAL_DEFAULT"%s\n", file_name, counter, total, model->active_circuit->label, line);
+		}
+		else
+		{
+			printf("\n"TERMINAL_MAGENTA"[running \"%s\" (%d/%d)] > "TERMINAL_DEFAULT"%s\n", file_name, counter, total, line);
+		}
+
+		scan_user_entry(model, line);
+		getchar();
+		counter++;
+	}
+	printf(MESS_INFO"File '%s' fully runned !\n", file_path);
+	fclose(file);
+	return;
+}
+
 
 // Function to import/export a file with 3 arguments: 
 // - Argument 1: File_path 
 // -> If it's a string, the function will use this string as a file_path
-// -> If it's NULL, the user will select the file from a NFD Popup. 
+// -> If it's NULL, the user will select the file from a TFD Popup. 
 // - Argument 2: FileMode (IMPORT or EXPORT)
 // - Argument 3: Model
 // - Argument 4: Number of the circuit to process (only works with EXPORT), use -1 to select all circuits
 void		file_process(char* file_path, FileMode file_mode, Model* model, int circuit_index)
 {
 	bool needs_free = false;
-	// If the function file_process is called with a NULL value, the nfd_file_process() function is used to allow the user to choose a file from the File Explorer
+	// If the function file_process is called with a NULL value, the tfd_file() function is used to allow the user to choose a file from the File Explorer
 	if (file_path == NULL)
 	{
-		file_path = nfd_file(file_mode);
+		file_path = tfd_file(file_mode);
 
 		if (file_path == NULL)
 		{
@@ -370,7 +332,6 @@ void		file_process(char* file_path, FileMode file_mode, Model* model, int circui
 		needs_free = true;
 	}
 
-
 	if (file_path != NULL) {
 		if (file_mode == IMPORT)
 		{
@@ -378,12 +339,20 @@ void		file_process(char* file_path, FileMode file_mode, Model* model, int circui
 				return; 
 			}
 			printf("\n(⬇︎) File open: %s\n", file_path);
-			read_file_content(file_path, model);
+			import_file_content(file_path, model);
 		}
-		else	//file_mode == EXPORT
+		else if (file_mode == EXPORT)
 		{
 			printf("\n(+) File created: %s\n", file_path);
 			write_file_content(file_path, model, circuit_index);
+		}
+		else if (file_mode == COMMANDS)
+		{
+			if (!check_path(file_path)){
+				return; 
+			}
+			printf("\n(>) File runned: %s\n", file_path);
+			run_file_content(file_path, model);
 		}
 
 		if (needs_free)

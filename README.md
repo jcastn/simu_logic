@@ -18,7 +18,13 @@
   - [4. Interactive CLI](#4-interactive-cli--user-experience)
 - [II. Commands](#ii-app-commands)
 - [III. Compilation](#iii-compilation)
+  - [1. Prerequisites](#1-prerequisites)
+  - [2. Compilation steps](#2-compilation-steps)
+  - [3. Debug mode](#3-debug-mode)
+  - [4. Helper script](#4-helper-script-simu_logicsh)
 - [IV. Templates](#iv-templates--file-management)
+	- [1. Circuits templates](#1-circuits-templates)
+	- [2. Scripts templates](#2-scripts-templates)
 - [V. Dependencies](#v-dependencies)
 - [VI. License](#vi-license)
 
@@ -49,12 +55,12 @@ cmake -B build && cmake --build build
 
 ### B. Diodes & Displays
 
-| Component      | Inputs | Description                                                                              |
-|----------------|--------|------------------------------------------------------------------------------------------|
-| `DIODE`        | 1      | Indicator that displays the received binary state (ON or OFF).                           |
-| `DIODE_RGB`    | 3      | Indicator that displays a color based on the binary combination of its 3 inputs.         |
-| `DISPLAY_DEC`  | 8      | Displays a decimal number based on 8 inbound binary signals. (max: 127)                  |
-| `DISPLAY_HEX`  | 8      | Displays a hexadecimal number based on 8 inbound binary signals. (max: FF)               |
+| Component      | Inputs | Description                                                                                          |
+|----------------|--------|------------------------------------------------------------------------------------------------------|
+| `DIODE`        | 1      | Indicator that displays the received binary state (ON or OFF).                                       |
+| `DIODE_RGB`    | 3      | Indicator that displays a color based on the binary combination of its 3 inputs.                     |
+| `DISPLAY_DEC`  | 8      | Displays a decimal number based on 8 inbound binary signals. (max: 127)                              |
+| `DISPLAY_HEX`  | 8      | Displays a hexadecimal number based on 8 inbound binary signals. (max: FF)                           |
 | `DISPLAY_CHAR` | 8      | Displays an ASCII character based on 8 inbound binary signals. (values between 32 and 126 only)      |
 
 ### C. Single-Input Gates (1 input)
@@ -124,13 +130,13 @@ cmake -B build && cmake --build build
 	- Inline line editing with <kbd>←</kbd> / <kbd>→</kbd>
 	- Short command aliases (`circ`, `comp`, etc.)
 
-- **Native File Dialogs ([NFD](https://github.com/btzy/nativefiledialog-extended) integration):**
-	- Use the `IDK` keyword in place of a file path in any `import` or `export` command to open a native file picker dialog (macOS, Windows, Linux).
-	- Example: `circuit import all IDK` opens the OS file explorer to select a circuit file.
+- **Native File Dialogs ([TFD](https://sourceforge.net/projects/tinyfiledialogs) integration):**
+	- Use the `IDK` keyword in place of a file path in any `import`, `export` or `run` command to open a file picker dialog (macOS, Windows, Linux).
+	- Example: `circuit import all IDK` opens the OS file explorer and the user can select a circuit file to import.
 
-- **Script-Based File Format & Templates:**
-	- Import and export circuits as plain text files for easy sharing and version control.
-
+- **Circuits and Scripts Templates :**
+	- Import and export circuits as plain text files.
+	- Automatically run multiple commands from plain text scripts files. 
 
 ---
 
@@ -184,6 +190,8 @@ For detailed syntax, subcommands, and available arguments, type `help commands` 
 - `quit`: Properly exit the application.
 
 - `reset`: Reset the app to its loading state.
+
+- `run`: Reset the app to its loading state.
 
 - `hello`: Display a "Hello World" message.
 
@@ -240,7 +248,7 @@ For detailed syntax, subcommands, and available arguments, type `help commands` 
 > ```
 
 
-## 3. Debug mode (MacOS / Linux)
+## 3. Debug mode
 
 Build and run with the debugger:
 ```bash
@@ -252,8 +260,8 @@ To switch back to normal mode, clean the build folder first:
 ```bash
 rm -rf build && cmake -B build && cmake --build build
 ```
-
-### Helper script
+ 
+## 4. Helper script (simu_logic.sh)
 
 A `simu_logic.sh` script is available to automate the build process. Add it to your `PATH` (`~/.bashrc` or `~/.zshrc`) to use these commands from anywhere on your computer:
 
@@ -265,21 +273,32 @@ Commands :
 
 ---
 
-# IV. Templates & File management
+# IV. Templates (circuits and scripts)
 
+## 1. Circuits templates 
 The repository includes a `templates/circuits/` folder with example circuits ready to import:
-
 - `circuit-xor.txt`     : XOR gate built with AND, OR and NOT gates.
 - `circuit-rgb.txt`     : RGB diode demo circuit. 
 - `circuit-counter.txt` : 8bits binary counter circuit.
 
-You can import templates using:
+You can import circuits using:
 ```
 circuit import "templates/circuits/circuit-xor.txt"
 ```
 
-Or use `circuit import IDK` to browse for a file using the native file picker.
+Or use `circuit import IDK` to browse for a file using the file picker.
 
+
+## 2. Scripts templates 
+The repository includes a `templates/scripts/` folder with example scripts ready to run : 
+- `script-bonjour.txt` : A little demo of how the scripts works. 
+
+You can import scripts using : 
+```
+run "templates/scripts/script-bonjour.txt"
+```
+
+Or use `run` to browse for a file using the file picker. 
 
 ---
 
@@ -290,10 +309,9 @@ Or use `circuit import IDK` to browse for a file using the native file picker.
 | Library | Description | Integration | License |
 |---------------------------------------------------|-------------|-------------|---------|
 | [linenoise](https://github.com/antirez/linenoise) | CLI line editing, history, and auto-completion | Single `.c` / `.h` file compiled directly | BSD-2-Clause |
-| [Native File Dialog Extended](https://github.com/btzy/nativefiledialog-extended) | Cross-platform native file picker dialogs | CMake subdirectory | Zlib |
+| [Tiny File Dialog](https://sourceforge.net/projects/tinyfiledialogs) | Cross-platform file picker dialogs | Single `.c` / `.h` file compiled directly | No license |
 
 Everything else relies on the **C standard library**.
-
 
 ---
 

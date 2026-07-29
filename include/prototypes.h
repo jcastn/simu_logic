@@ -54,6 +54,7 @@ void			show_component					(Component* comp);
 void			list_loaded_circuits			(Model* model);
 
 // Run-loop
+void 			scan_user_entry					(Model* model, char* command_user);
 void			run_loop						(Model* model);
 
 // Commands

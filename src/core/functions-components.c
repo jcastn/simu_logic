@@ -343,7 +343,6 @@ Component*	invert_source_state(Component* comp)
 	component_eval(comp);
 	propagate_eval_from_component(comp);
 
-	printf(MESS_INFO"Component '%s' inverted !", comp->label);
 	return comp;
 }
 

@@ -54,4 +54,5 @@ void					command_list_links			(char* args[MAX_COMMAND_ARGS], Model *model, int a
 void					command_help	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 void					command_hello	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 void					command_reset	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+void					command_run		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 void					command_quit	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);

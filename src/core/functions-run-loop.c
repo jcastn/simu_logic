@@ -65,7 +65,7 @@ static void		auto_complete_entry(const char *user_entry, linenoiseCompletions *l
 }
 #endif
 
-static void 		scan_user_entry(char* command_user, Model *model)
+void 			scan_user_entry(Model* model, char* command_user)
 {
 	char* args[MAX_COMMAND_ARGS] = {NULL};
 	int arg_count = 0;
@@ -162,7 +162,7 @@ void			run_loop(Model *model)
 		if (user_entry[0] != '\0')
 		{
 			linenoiseHistoryAdd(user_entry);
-			scan_user_entry(user_entry, model);
+			scan_user_entry(model, user_entry);
 		}
 		free(user_entry);
 	}
@@ -194,7 +194,7 @@ void			run_loop(Model *model)
 
 		if (fgets(prompt, sizeof(prompt), stdin) != NULL)
 		{
-			scan_user_entry(prompt, model);
+			scan_user_entry(model, prompt);
 		}
 	}
 
