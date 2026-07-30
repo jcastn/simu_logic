@@ -30,7 +30,7 @@ Link*	create_link(Circuit* circ, Component* src, int src_port_number, Component*
 
 	// Enlargement of the link pointers array
 	Link** tmp_out = realloc(src->out_ports[src_port_number]->out_links, sizeof(Link*) * (src->out_ports[src_port_number]->nb_out_links + 1));
-	if (tmp_out == NULL)
+	if (!tmp_out)
 	{
 		free(link);
 		return NULL;
@@ -41,7 +41,7 @@ Link*	create_link(Circuit* circ, Component* src, int src_port_number, Component*
 	src->out_ports[src_port_number]->nb_out_links++;
 
 	Link** tmp_circ = realloc(circ->links, sizeof(Link*) * (circ->link_count + 1));
-	if (tmp_circ == NULL)
+	if (!tmp_circ)
 	{
 		free(link);
 		return NULL;

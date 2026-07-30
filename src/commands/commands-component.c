@@ -22,7 +22,7 @@ void			command_component_create(char* args[MAX_COMMAND_ARGS], Model *model, int 
 	type = string_to_typecomponent(args[2], &type_found);
 	if (type_found == false)
 	{
-		printf(	MESS_TIP"Type" OPTION_COM(help component) " to get a list of all components types.\n");
+		printf(	MESS_TIP"Type" OPTION_COM(help component) " to get a list of all components types.");
 		return;
 	}
 
@@ -54,11 +54,11 @@ void			command_component_create(char* args[MAX_COMMAND_ARGS], Model *model, int 
 	Component* comp = create_component(model->active_circuit, type, label, in_nbr, out_nbr);
 	if (!comp)
 	{
-		printf(MESS_ERROR"Failed to create component.\n");
+		printf(MESS_ERROR"Failed to create component.");
 		return;
 	}
 
-	printf(	MESS_COMP"Component '%s%s"TERMINAL_DEFAULT"' created as '%s%s"TERMINAL_DEFAULT"'. It contains %d inbound ports and %d outbound ports.\n", 
+	printf(	MESS_COMP"Component '%s%s"TERMINAL_DEFAULT"' created as '%s%s"TERMINAL_DEFAULT"'. It contains %d inbound ports and %d outbound ports.", 
 			COMPONENT_MAP[comp->type].color, COMPONENT_MAP[comp->type].name, 
 			COMPONENT_MAP[comp->type].color, comp->label, 
 			comp->nb_in_ports, comp->nb_out_ports);
@@ -66,7 +66,7 @@ void			command_component_create(char* args[MAX_COMMAND_ARGS], Model *model, int 
 	// If the component label is not the same as the label passed as argument (and the label is not default)
 	if ((strcmp(comp->label, label) != 0) && (strcmp(label, "default") != 0))
 	{
-		printf(MESS_INFO"The component is using its default label because the label '%s' is invalid or alerady used in the circuit.\n", label);
+		printf(MESS_INFO"The component is using its default label because the label '%s' is invalid or alerady used in the circuit.", label);
 	}
 	return;
 }
@@ -82,15 +82,15 @@ void			command_component_delete(char* args[MAX_COMMAND_ARGS], Model *model, int 
 	}
 
 	Component* comp = get_component_by_label(args[2], model->active_circuit);
-	if (comp == NULL)
+	if (!comp)
 	{
-		printf(MESS_SYNTAX"Component '%s' not found in the circuit.\n", args[2]);
+		printf(MESS_SYNTAX"Component '%s' not found in the circuit.", args[2]);
 		return;
 	}
 
 	if (delete_component(model->active_circuit, comp))
 	{
-		printf("\n"MESS_CIRC"Component '%s' deleted\n", args[2]);
+		printf(""MESS_CIRC"Component '%s' deleted", args[2]);
 	}
 
 	simulate_circuit(model->active_circuit);
@@ -109,19 +109,19 @@ void			command_component_rename(char* args[MAX_COMMAND_ARGS], Model *model, int 
 	}
 
 	Component* comp = get_component_by_label(args[2], model->active_circuit);
-	if (comp == NULL)
+	if (!comp)
 	{
-		printf(MESS_SYNTAX"Component '%s' not found in the circuit.\n", args[2]);
+		printf(MESS_SYNTAX"Component '%s' not found in the circuit.", args[2]);
 		return;
 	}
 
 	if (rename_component(model->active_circuit, comp, args[3]))
 	{
-		printf(MESS_COMP"Component renamed : '%s%s%s'\n", COMPONENT_MAP[comp->type].color, comp->label, TERMINAL_DEFAULT);
+		printf(MESS_COMP"Component renamed : '%s%s%s'", COMPONENT_MAP[comp->type].color, comp->label, TERMINAL_DEFAULT);
 	}
 	else 
 	{
-		printf(MESS_ERROR"A component is already named '%s%s%s'.\nRename operation of '%s%s%s' aborted.\n",COMPONENT_MAP[comp->type].color, args[3], TERMINAL_DEFAULT, COMPONENT_MAP[comp->type].color, args[2], TERMINAL_DEFAULT);
+		printf(MESS_ERROR"A component is already named '%s%s%s'. Rename operation of '%s%s%s' aborted.",COMPONENT_MAP[comp->type].color, args[3], TERMINAL_DEFAULT, COMPONENT_MAP[comp->type].color, args[2], TERMINAL_DEFAULT);
 	}
 
 
@@ -139,7 +139,7 @@ void			command_component_move(char* args[MAX_COMMAND_ARGS], Model *model, int ar
 	}
 
 	Component* comp = get_component_by_label(args[2], model->active_circuit);
-	if (comp == NULL)
+	if (!comp)
 	{
 		return;
 	}
@@ -149,14 +149,14 @@ void			command_component_move(char* args[MAX_COMMAND_ARGS], Model *model, int ar
 
 
 	if ((x < 0) || (x > 10000) || (y < 0) || (y > 10000) ){
-		printf(MESS_SYNTAX"x and y values need to be between 0 and 10000 !\n");
+		printf(MESS_SYNTAX"x and y values need to be between 0 and 10000 !");
 		return;
 	}
 
 	comp->coordinates.x = x;
 	comp->coordinates.y = y;
 
-	printf(MESS_COMP"Component '%s' moved to x:%d y:%d\n", comp->label, comp->coordinates.x, comp->coordinates.y);
+	printf(MESS_COMP"Component '%s' moved to x:%d y:%d", comp->label, comp->coordinates.x, comp->coordinates.y);
 	return;
 }
 
@@ -203,7 +203,7 @@ void			command_component_set(char* args[MAX_COMMAND_ARGS], Model *model, int arg
 
 	if (comp->type != SOURCE)
 	{
-		printf(MESS_SYNTAX "You cannot change the status of a component that is not a SOURCE, it can't be a '%s' !\n", COMPONENT_MAP[comp->type].name);
+		printf(MESS_SYNTAX "You cannot change the status of a component that is not a SOURCE, it can't be a '%s' !", COMPONENT_MAP[comp->type].name);
 		return;
 	}
 
@@ -217,14 +217,14 @@ void			command_component_set(char* args[MAX_COMMAND_ARGS], Model *model, int arg
 	}
 	else
 	{
-		printf(MESS_SYNTAX" Value '%s' not recognized, it should be "OPTION_INT(ON)" or "OPTION_INT(OFF)"\n", args[3]);
+		printf(MESS_SYNTAX" Value '%s' not recognized, it should be "OPTION_INT(ON)" or "OPTION_INT(OFF)"", args[3]);
 		return;
 	}
 
 	char* state_color = comp->status.binary ? TERMINAL_GREEN : TERMINAL_RED;
 	char* state_text = comp->status.binary ? "ON" : "OFF";
 
-	printf(MESS_COMP"Status of the component '%s%s"TERMINAL_DEFAULT"' is set to '%s%s'"TERMINAL_DEFAULT"\n", COMPONENT_MAP[comp->type].color, comp->label, state_color, state_text);
+	printf(MESS_COMP"Status of the component '%s%s"TERMINAL_DEFAULT"' is set to '%s%s'"TERMINAL_DEFAULT"", COMPONENT_MAP[comp->type].color, comp->label, state_color, state_text);
 	
 	propagate_eval_from_component(comp);
 }
@@ -261,14 +261,14 @@ void			command_component_toggle(char* args[MAX_COMMAND_ARGS], Model *model, int 
 			status_text = TERMINAL_RED"OFF";
 		}
 
-		printf(MESS_COMP"Status of the component '"TERMINAL_CYAN"%s"TERMINAL_DEFAULT"' is inverted to '%s'"TERMINAL_DEFAULT"\n", comp->label, status_text);
+		printf(MESS_COMP"Status of the component '"TERMINAL_CYAN"%s"TERMINAL_DEFAULT"' is inverted to '%s'"TERMINAL_DEFAULT"", comp->label, status_text);
 		propagate_eval_from_component(comp);
 	}
 	else
 	{
-		printf(MESS_SYNTAX "You cannot change the status of a component that is not a SOURCE, it can't be a '%s' !\n", COMPONENT_MAP[comp->type].name);
+		printf(MESS_SYNTAX "You cannot change the status of a component that is not a SOURCE, it can't be a '%s' !", COMPONENT_MAP[comp->type].name);
 	}
-
+	return;
 }
 
 // 'component'
@@ -284,16 +284,16 @@ void			command_component(char* args[MAX_COMMAND_ARGS], Model *model, int arg_cou
 	// If there's no options after component 
 	if (arg_count < 2)
 	{
-		printf(MESS_SYNTAX"Please type "OPTION_COM(component help)" to learn how to use this command.\n");
+		printf(MESS_SYNTAX"Please type "OPTION_COM(component help)" to learn how to use this command.");
 		return;
 	}
 	
 	is_not_help = !((strcmp("help", args[1]) == 0) || ((arg_count >= 3) && (strcmp("help", args[2]) == 0)));
 	
-	if ((is_not_help) && (model->active_circuit == NULL))
+	if ((is_not_help) && (!model->active_circuit))
 	{
-		printf(	MESS_INFO"There's no active circuits.\n"
-				MESS_TIP"Before trying to interact with components, please use"OPTION_COM(circuit select)" command to set an active circuit.\n");
+		printf(	MESS_INFO"There's no active circuits."
+				MESS_TIP"Before trying to interact with components, please use"OPTION_COM(circuit select)" command to set an active circuit.");
 		return;
 	}
 
@@ -304,7 +304,7 @@ void			command_component(char* args[MAX_COMMAND_ARGS], Model *model, int arg_cou
 			//If it's not an help command and there is not enough args : display an error
 			if ((is_not_help) && (arg_count < component_options[counter].needed_args))
 			{
-				printf(MESS_SYNTAX"The command you wrote is invalid, please check the available formats for this command with : "COM_OPEN "component %s help" COM_CLOSE "\n", component_options[counter].command);
+				printf(MESS_SYNTAX"The command you wrote is invalid, please check the available formats for this command with : "COM_OPEN "component %s help" COM_CLOSE "", component_options[counter].command);
 				return;
 			}
 			component_options[counter].function(args, model, arg_count);
@@ -313,6 +313,6 @@ void			command_component(char* args[MAX_COMMAND_ARGS], Model *model, int arg_cou
 		counter++;
 	}
 
-	printf(MESS_ERROR"Unknown "OPTION_COM(help)" command option : '%s'. Type "OPTION_COM(component help)" to see available options with "OPTION_COM(component)" command.\n", args[1]);
+	printf(MESS_ERROR"Unknown "OPTION_COM(help)" command option : '%s'. Type "OPTION_COM(component help)" to see available options with "OPTION_COM(component)" command.", args[1]);
 	return;
 }

@@ -4,7 +4,7 @@
 Model*		create_model()
 {
 	Model* model = malloc(sizeof(Model));
-	if (model == NULL)
+	if (!model)
 	{
 		return NULL;
 	}

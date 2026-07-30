@@ -1,6 +1,5 @@
 //functions-helper.c
 #include "../../include/prototypes.h"
-#include <assert.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -13,9 +12,6 @@ void			init_platform(void)
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleCP(CP_UTF8);
 #endif
-	static_assert(sizeof(COMPONENT_MAP) / sizeof(COMPONENT_MAP[0]) == COMPONENTS_COUNT, "/!\\ INIT ERROR : COMPONENTS_COUNT don't match COMPONENT_MAP !");
-
-
 }
 
 // Function used to shift the right part content of a pointer array to the left because a pointer was removed from the array (very specific)
@@ -71,7 +67,7 @@ bool			read_parent_status(Component* comp, int src_port_number)
 }
 
 bool			check_path(const char* path){
-	if (path == NULL || path[0] == '\0')
+	if (!path || path[0] == '\0')
 	{
 		printf(MESS_ERROR"There's no file path !");
 		return false;

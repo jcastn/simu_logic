@@ -94,7 +94,7 @@ static void		get_component_out_status(Component* comp, const char** state_color,
 {
 	static char state_text_buffer[STATE_SIZE_NUM];
 
-	if ((comp->nb_out_ports == 0) || (comp->out_ports == NULL))
+	if ((comp->nb_out_ports == 0) || (!comp->out_ports))
 	{
 		if (comp->type == DIODE_RGB)
 		{
@@ -175,10 +175,7 @@ void	show_components_from_circuit(Circuit* circ)
 
 void	show_links_from_circuit(Circuit* circ)
 {
-	(void)circ;
-
-	printf(MESS_INFO"Sorry, the function show_links_from_circuit() is unavailable for now, it will be back soon !\n");
-
+	(void)circ;	
 	int counter_comps;
 	int counter_ports;
 	int counter_links;
@@ -203,11 +200,11 @@ void	show_links_from_circuit(Circuit* circ)
 			if (comp->out_ports[counter_ports]->nb_out_links != 0)
 			{
 				counter_links = 0;
-				printf("\n%s%s"TERMINAL_DEFAULT"\n", component_color, comp->label);
+				printf("\n'%s%s"TERMINAL_DEFAULT"' is linked to :\n", component_color, comp->label);
 				while(counter_links < comp->out_ports[counter_ports]->nb_out_links)
 				{
 					component_color = COMPONENT_MAP[comp->out_ports[counter_ports]->out_links[counter_links]->dest->type].color;
-					printf(" ⤷ %s%s"TERMINAL_DEFAULT" (Port : %d)\n", component_color, comp->out_ports[counter_ports]->out_links[counter_links]->dest->label, PORT_DISPLAY(comp->out_ports[counter_ports]->out_links[counter_links]->dest_port_number));
+					printf(" ⤷ '%s%s"TERMINAL_DEFAULT"' on port %d\n", component_color, comp->out_ports[counter_ports]->out_links[counter_links]->dest->label, PORT_DISPLAY(comp->out_ports[counter_ports]->out_links[counter_links]->dest_port_number));
 					counter_links++;
 				}
 			}
@@ -302,9 +299,9 @@ void	show_component(Component* comp)
 		// Right column (Outbound)
 
 		// If there's no outbound ports
-		if (comp->out_ports == NULL || counter_out_ports >= comp->nb_out_ports)
+		if (!comp->out_ports || counter_out_ports >= comp->nb_out_ports)
 		{
-			if (counter == 0 && comp->out_ports == NULL)
+			if (counter == 0 && !comp->out_ports)
 			{
 				snprintf(outbound, sizeof(outbound), TERMINAL_GRAY"(empty - no outbound ports)  "TERMINAL_DEFAULT);
 			}

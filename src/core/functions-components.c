@@ -138,7 +138,7 @@ Component*	create_component(Circuit* circ, TypeComponent type, const char* comp_
 	if (comp->nb_in_ports > 0)
 	{
 		comp->in_links = malloc(sizeof(Link*) * comp->nb_in_ports);
-		if (comp->in_links == NULL)
+		if (!comp->in_links)
 		{
 			free(comp->out_ports);
 			free(comp);
@@ -158,7 +158,7 @@ Component*	create_component(Circuit* circ, TypeComponent type, const char* comp_
 
 	// Dynamic enlargement of the array containing the in links pointers
 	Component** tmp = realloc(circ->components, sizeof(Component*) * (circ->component_count + 1));
-	if (tmp == NULL)
+	if (!tmp)
 	{
 		free(comp->in_links);
 		free(comp);

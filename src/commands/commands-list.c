@@ -95,7 +95,7 @@ void			command_list(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 	// If there's no options after list 
 	if (arg_count < 2)
 	{
-		printf(MESS_SYNTAX"Please type "OPTION_COM(list help)" to learn how to use this command.\n");
+		printf(MESS_SYNTAX"Please type "OPTION_COM(list help)" to learn how to use this command.");
 		return;
 	}
 	
@@ -115,7 +115,7 @@ void			command_list(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 			//If it's not an help command and there is not enough args : display an error
 			if ((is_not_help) && (arg_count < list_options[counter].needed_args))
 			{
-				printf(MESS_SYNTAX"The command you wrote is invalid, please check the available formats for this command with : "COM_OPEN "list %s help" COM_CLOSE "\n", list_options[counter].command);
+				printf(MESS_SYNTAX"The command you wrote is invalid, please check the available formats for this command with : "COM_OPEN "list %s help" COM_CLOSE, list_options[counter].command);
 				return;
 			}
 			list_options[counter].function(args, model, arg_count);
@@ -124,6 +124,6 @@ void			command_list(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 		counter++;
 	}
 
-	printf(MESS_ERROR"Unknown "OPTION_COM(help)" command option : '%s'. Type "OPTION_COM(list help)" to see available options with "OPTION_COM(list)" command.\n", args[1]);
+	printf(MESS_ERROR"Unknown "OPTION_COM(help)" command option : '%s'. Type "OPTION_COM(list help)" to see available options with "OPTION_COM(list)" command.", args[1]);
 	return;
 }

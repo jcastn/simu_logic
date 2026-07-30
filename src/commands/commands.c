@@ -88,6 +88,6 @@ void exec_command(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 	}
 
 	// If the command don't exit
-	printf(MESS_SYNTAX"The command you wrote doesn't exist. Please use 'help' command to know the available commands.\n");
+	printf(MESS_SYNTAX"The command you wrote doesn't exist. Please use 'help' command to know the available commands.");
 	return;
 }

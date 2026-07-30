@@ -10,7 +10,7 @@ Circuit*	create_circuit(Model* model, const char* label)
 	}
 
 	Circuit* circ = calloc(1, sizeof(Circuit));
-	if (circ == NULL)
+	if (!circ)
 	{
 		return NULL;
 	}
@@ -32,7 +32,7 @@ Circuit*	create_circuit(Model* model, const char* label)
 	}
 
 	Circuit** tmp = realloc(model->circuits, sizeof(Circuit*) * (model->circuits_count + 1));
-	if (tmp == NULL)
+	if (!tmp)
 	{
 		free(circ);
 		return NULL;
@@ -199,7 +199,7 @@ Circuit*	duplicate_circuit(Model* model, Circuit* src_circ, const char* new_labe
 	}
 
 	Circuit* dest_circ = create_circuit(model, new_label);
-	if (dest_circ == NULL)
+	if (!dest_circ)
 	{
 		return NULL;
 	}

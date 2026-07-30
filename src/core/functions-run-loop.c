@@ -16,7 +16,7 @@ static void		auto_complete_entry(const char *user_entry, linenoiseCompletions *l
 	const char*	space = strchr(user_entry, ' ');
 
 	// If there's no space in the entry, it means that we're on the first word 
-	if (space == NULL)
+	if (!space)
 	{
 		// If we're on the first word, the auto-completion will work on it
 		while(counter < commands_count)
@@ -120,7 +120,7 @@ void 			scan_user_entry(Model* model, char* command_user)
 		arg_count++;
 	}
 
-	if (args[0] == NULL)
+	if (!args[0])
 	{
 		return;
 	}
@@ -142,7 +142,7 @@ void			run_loop(Model *model)
 
 	while(model->run_loop)
 	{
-		printf("\n");
+		printf("\n\n");
 
 		if ((model->active_circuit != NULL) && (strlen(model->active_circuit->label) > 0))
 		{
@@ -154,7 +154,7 @@ void			run_loop(Model *model)
 		}
 
 		user_entry = linenoise(prompt);
-		if (user_entry == NULL) 
+		if (!user_entry) 
 		{
 			break;
 		}
@@ -181,7 +181,7 @@ void			run_loop(Model *model)
 
 	while(model->run_loop)
 	{
-		printf("\n");
+		printf("\n\n");
 		usleep(10000);
 
 		if ((model->active_circuit != NULL) && (strlen(model->active_circuit->label) > 0))		

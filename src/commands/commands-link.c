@@ -15,8 +15,9 @@ void			command_link_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_c
 
 	// SRC component and ports 
 	Component* src = get_component_by_label(args[2], model->active_circuit);
-	if (src == NULL)
+	if (!src)
 	{
+		printf(MESS_ERROR"Component '%s' not found in the circuit \"%s\"", args[2], model->active_circuit->label);
 		return;
 	}
 
@@ -25,14 +26,15 @@ void			command_link_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_c
 
 	if (src_port_number < 0 || src_port_number >= src->nb_out_ports)
 	{
-		printf(MESS_ERROR "Invalid source port index '%d' for component '%s'.\n", PORT_DISPLAY(src_port_number), src->label);
+		printf(MESS_ERROR "Invalid source port index '%d' for component '%s'.", PORT_DISPLAY(src_port_number), src->label);
 		return;
 	}
 
 	// DEST component and ports 
 	Component* dest = get_component_by_label(args[4], model->active_circuit);
-	if (dest == NULL)
+	if (!dest)
 	{
+		printf(MESS_ERROR"Component '%s' not found in the circuit \"%s\"", args[4], model->active_circuit->label);
 		return;
 	}
 
@@ -41,13 +43,13 @@ void			command_link_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_c
 
 	if (dest_port_number < 0 || dest_port_number >= dest->nb_in_ports)
 	{
-		printf(MESS_ERROR "Invalid destination port index '%d' for component '%s'.\n", PORT_DISPLAY(dest_port_number), dest->label);
+		printf(MESS_ERROR "Invalid destination port index '%d' for component '%s'.", PORT_DISPLAY(dest_port_number), dest->label);
 		return;
 	}
 
 	if (dest->in_links[dest_port_number] != NULL)
 	{
-		printf(MESS_ERROR"A link is already connected on the inbound port '%d' of the component '%s'. Link not created !\n", PORT_DISPLAY(dest_port_number), dest->label);
+		printf(MESS_ERROR"A link is already connected on the inbound port '%d' of the component '%s'. Link not created !", PORT_DISPLAY(dest_port_number), dest->label);
 		return;
 	}
 
@@ -55,11 +57,11 @@ void			command_link_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_c
 	Link* link = create_link(model->active_circuit, src, src_port_number, dest, dest_port_number);
 	if (!link)
 	{
-		printf(MESS_ERROR"Link not created.\n");
+		printf(MESS_ERROR"Link not created.");
 		return;
 	}
 
-	printf(MESS_LINK"Link created : '%s%s (port %d)%s'  → '%s%s (port %d)%s' \n", COMPONENT_MAP[src->type].color, src->label, PORT_DISPLAY(src_port_number), TERMINAL_DEFAULT, COMPONENT_MAP[dest->type].color, dest->label, PORT_DISPLAY(dest_port_number), TERMINAL_DEFAULT);
+	printf(MESS_LINK"Link created : '%s%s (port %d)%s'  → '%s%s (port %d)%s'.", COMPONENT_MAP[src->type].color, src->label, PORT_DISPLAY(src_port_number), TERMINAL_DEFAULT, COMPONENT_MAP[dest->type].color, dest->label, PORT_DISPLAY(dest_port_number), TERMINAL_DEFAULT);
 	return;
 }
 
@@ -77,25 +79,27 @@ void			command_link_delete(char* args[MAX_COMMAND_ARGS], Model *model, int arg_c
 	if ((arg_count == 4) && (strcmp(args[2], "all") == 0))
 	{
 		Component* comp = get_component_by_label(args[3], model->active_circuit);
-		if (comp == NULL)
+		if (!comp)
 		{
+			printf(MESS_ERROR"Component '%s' not found in the circuit \"%s\"", args[3], model->active_circuit->label);
 			return;
 		}
 
 		delete_all_component_links(model->active_circuit, comp, false);
-		printf(MESS_INFO"All inbound and outbound links of '%s%s%s' are deleted.\n", COMPONENT_MAP[comp->type].color, comp->label, TERMINAL_DEFAULT);
+		printf(MESS_INFO"All inbound and outbound links of '%s%s%s' are deleted.", COMPONENT_MAP[comp->type].color, comp->label, TERMINAL_DEFAULT);
 		return;
 	}
 	
 	if (arg_count != 6)
 	{
-		printf(MESS_ERROR"Unknown arguments for "OPTION_COM(link delete)" command. Please type "OPTION_COM(link help)" to see available options with "OPTION_COM(link)" command.\n");
+		printf(MESS_ERROR"Unknown arguments for "OPTION_COM(link delete)" command. Please type "OPTION_COM(link help)" to see available options with "OPTION_COM(link)" command.");
 		return;
 	}
 
 	Component* src = get_component_by_label(args[2], model->active_circuit);
-	if (src == NULL)
+	if (!src)
 	{
+		printf(MESS_ERROR"Component '%s' not found in the circuit \"%s\"", args[2], model->active_circuit->label);
 		return;
 	}
 
@@ -103,8 +107,9 @@ void			command_link_delete(char* args[MAX_COMMAND_ARGS], Model *model, int arg_c
 	int src_port_number = PORT_INPUT(input_src_port);
 	
 	Component* dest = get_component_by_label(args[4], model->active_circuit);
-	if (dest == NULL)
+	if (!dest)
 	{
+		printf(MESS_ERROR"Component '%s' not found in the circuit \"%s\"", args[4], model->active_circuit->label);
 		return;
 	}
 
@@ -112,7 +117,7 @@ void			command_link_delete(char* args[MAX_COMMAND_ARGS], Model *model, int arg_c
 	int dest_port_number = PORT_INPUT(input_dest_port);
 
 	if ((dest_port_number < 0) || (dest_port_number >= dest->nb_in_ports)){
-		printf(MESS_ERROR"Link not deleted because the port number '%d' is invalid !\n", input_dest_port);
+		printf(MESS_ERROR"Link not deleted because the port number '%d' is invalid !", input_dest_port);
 		return;
 	}
 
@@ -120,11 +125,11 @@ void			command_link_delete(char* args[MAX_COMMAND_ARGS], Model *model, int arg_c
 	if (link != NULL)
 	{
 		delete_link(model->active_circuit, link);
-		printf(MESS_LINK"Link deleted : '%s%s (port : %d)%s'  -> '%s%s (port : %d)%s'\n", COMPONENT_MAP[src->type].color, src->label, input_src_port, TERMINAL_DEFAULT, COMPONENT_MAP[dest->type].color, dest->label, input_dest_port, TERMINAL_DEFAULT);
+		printf(MESS_LINK"Link deleted : '%s%s (port : %d)%s'  -> '%s%s (port : %d)%s'", COMPONENT_MAP[src->type].color, src->label, input_src_port, TERMINAL_DEFAULT, COMPONENT_MAP[dest->type].color, dest->label, input_dest_port, TERMINAL_DEFAULT);
 	}
 	else
 	{
-		printf(MESS_INFO"No link found ! (Maybe the port number is invalid ?) \n");
+		printf(MESS_INFO"No link found ! (Maybe the port number is invalid ?)");
 	}
 	return;
 }
@@ -139,16 +144,16 @@ void			command_link(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 	// If there's no options after link 
 	if (arg_count < 2)
 	{
-		printf(MESS_SYNTAX"Please type "OPTION_COM(link help)" to learn how to use this command.\n");
+		printf(MESS_SYNTAX"Please type "OPTION_COM(link help)" to learn how to use this command.");
 		return;
 	}
 	
 	is_not_help = !((strcmp("help", args[1]) == 0) || ((arg_count >= 3) && (strcmp("help", args[2]) == 0)));
 	
-	if ((is_not_help) && (model->active_circuit == NULL))
+	if ((is_not_help) && (!model->active_circuit))
 	{
-		printf(	MESS_INFO"There's no active circuits.\n"
-				MESS_TIP"Before trying to interact with links, please use"OPTION_COM(circuit select)" command to set an active circuit.\n");
+		printf(	MESS_INFO"There's no active circuits."
+				MESS_TIP"Before trying to interact with links, please use"OPTION_COM(circuit select)" command to set an active circuit.");
 		return;
 	}
 
@@ -164,7 +169,7 @@ void			command_link(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 			//If it's not an help command and there is not enough args : display an error
 			if ((is_not_help) && (arg_count < link_options[counter].needed_args))
 			{
-				printf(MESS_SYNTAX"The command you wrote is invalid, please check the available formats for this command with : "COM_OPEN "link %s help" COM_CLOSE "\n", link_options[counter].command);
+				printf(MESS_SYNTAX"The command you wrote is invalid, please check the available formats for this command with : "COM_OPEN "link %s help" COM_CLOSE, link_options[counter].command);
 				return;
 			}
 			link_options[counter].function(args, model, arg_count);
@@ -173,6 +178,6 @@ void			command_link(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 		counter++;
 	}
 
-	printf(MESS_ERROR"Unknown"OPTION_COM(link)" command option : '%s'. Type"OPTION_COM(link help)" to see available options with"OPTION_COM(link)" command.\n", args[1]);
+	printf(MESS_ERROR"Unknown"OPTION_COM(link)" command option : '%s'. Type"OPTION_COM(link help)" to see available options with"OPTION_COM(link)" command.", args[1]);
 	return;
 }

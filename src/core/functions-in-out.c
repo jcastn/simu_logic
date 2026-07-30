@@ -20,7 +20,7 @@ static char* tfd_file(FileMode mode) {
 	}
 
 
-	if (file_path == NULL) {
+	if (!file_path) {
 	  printf(MESS_INFO "User pressed cancel\n");
 	  return NULL;
 	}
@@ -75,19 +75,19 @@ static void	import_file_content(char* file_path, Model* model)
 		if (strstr(line, "$Components$"))
 		{
 			current_state = STATE_COMPONENTS;
-			printf("\nSTEP 1: STATE_COMPONENTS\n");
+			printf("\n\n"TERMINAL_PURPLE"(↓) Step 1 :"TERMINAL_DEFAULT" Creating components");
 			continue;
 		}
 		else if (strstr(line, "$Inversions$"))
 		{
 			current_state = STATE_INVERSIONS;
-			printf("\nSTEP 2: STATE_INVERSIONS\n");
+			printf("\n\n"TERMINAL_PURPLE"(↓) Step 2 :"TERMINAL_DEFAULT" Inverting sources :");
 			continue;
 		}
 		else if (strstr(line, "$Links$"))
 		{
 			current_state = STATE_LINKS;
-			printf("\n\nSTEP 3: STATE_LINKS\n");
+			printf("\n\n"TERMINAL_PURPLE"(↓) Step 3 :"TERMINAL_DEFAULT" Creating links :");
 			continue;
 		}
 
@@ -108,14 +108,24 @@ static void	import_file_content(char* file_path, Model* model)
 					if (type_found)
 					{
 						Component* comp = create_component(current_circ, comp_type, comp_label, nb_in_links, nb_out_links);
-						if (comp != NULL)
+						if (!comp)
+						{
+							printf(MESS_ERROR"Component '%s' not created.", comp_label);
+							return;
+						}
+						else 
 						{
 							update_coordinates(comp, x, y);
-						}						
+							printf(	MESS_COMP"Component '%s%s"TERMINAL_DEFAULT"' created as '%s%s"TERMINAL_DEFAULT"', with %d inbound ports and %d outbound ports, on coordinates (x:%d;y:%d).", 
+									COMPONENT_MAP[comp->type].color, COMPONENT_MAP[comp->type].name, 
+									COMPONENT_MAP[comp->type].color, comp->label, 
+									comp->nb_in_ports, comp->nb_out_ports,
+									comp->coordinates.x, comp->coordinates.y);
+						}
 					}
 					else
 					{
-						printf(MESS_ERROR"ERROR: Unknown component type '%s'. Component not created, please review the line in the import file. \n", type_str);
+						printf(MESS_ERROR"Component '%s' not created because its type '%s' is missing or is invalid.", comp_label, type_str);
 					}
 				}
 				break;
@@ -125,13 +135,14 @@ static void	import_file_content(char* file_path, Model* model)
 				if (sscanf(line, " label:\"%"LABEL_SIZE"[^\"]\"", comp_label) == 1)
 				{
 					Component* comp = get_component_by_label(comp_label, current_circ);
-					if (comp)
+					if (!comp)
 					{
-						invert_source_state(comp);
+						printf(MESS_ERROR"Unknown component name '%s', no component inverted.", comp_label);	
 					}
 					else 
 					{
-						printf(MESS_ERROR"ERROR: Unknown component name '%s', no component inverted, please review the line in the import file. \n", comp_label);
+						invert_source_state(comp);
+						printf(MESS_COMP"Status of the component '"TERMINAL_CYAN"%s"TERMINAL_DEFAULT"' is inverted.", comp->label);
 					}
 				}
 				break;
@@ -146,10 +157,11 @@ static void	import_file_content(char* file_path, Model* model)
 					if ((src) && (dest) && (src_port >= 0) && (dest_port >= 0))
 					{
 						create_link(current_circ, src, PORT_INPUT(src_port), dest, PORT_INPUT(dest_port));
+						printf(MESS_LINK"Link created : '%s%s (out port %d)%s' → '%s%s (in port %d)%s'", COMPONENT_MAP[src->type].color, src->label, src_port, TERMINAL_DEFAULT, COMPONENT_MAP[dest->type].color, dest->label, dest_port, TERMINAL_DEFAULT);
 					}
 					else 
 					{
-						printf(MESS_ERROR"ERROR: Unknown component name source '%s', or dest '%s', or src port '%d' or dest port '%d': No link created, please review the line in the import file. \n", comp_label, comp_label2, src_port, dest_port);
+						printf(MESS_ERROR"ERROR: Unknown component name source '%s', or dest '%s', or src port '%d' or dest port '%d': No link created, please review the line in the import file.", comp_label, comp_label2, src_port, dest_port);
 					}
 				}
 				break;
@@ -161,7 +173,7 @@ static void	import_file_content(char* file_path, Model* model)
 		}		
 	}
 	rearrange_circuit(current_circ, false);
-	printf(MESS_INFO"File '%s' fully imported !\n\n", file_path);
+	printf("\n"MESS_INFO"File '%s' fully imported !", file_path);
 	fclose(file);
 }
 
@@ -178,7 +190,7 @@ static void	write_file_content(char* file_path, Model *model, int circuit_index)
 	FILE *file = fopen(file_path, "w");
 	
 
-	if (file == NULL) {
+	if (!file) {
 		printf(MESS_ERROR"Error ! File is NULL (function write_file_content()) ! \n");
 		return;
 	}
@@ -320,11 +332,11 @@ void		file_process(char* file_path, FileMode file_mode, Model* model, int circui
 {
 	bool needs_free = false;
 	// If the function file_process is called with a NULL value, the tfd_file() function is used to allow the user to choose a file from the File Explorer
-	if (file_path == NULL)
+	if (!file_path)
 	{
 		file_path = tfd_file(file_mode);
 
-		if (file_path == NULL)
+		if (!file_path)
 		{
 			printf(MESS_ERROR"No file find ! \n");
 			return;
@@ -338,12 +350,12 @@ void		file_process(char* file_path, FileMode file_mode, Model* model, int circui
 			if (!check_path(file_path)){
 				return; 
 			}
-			printf("\n(⬇︎) File open: %s\n", file_path);
+			printf("\n"TERMINAL_PURPLE"(↓) File open :"TERMINAL_DEFAULT" \"%s\"", file_path);
 			import_file_content(file_path, model);
 		}
 		else if (file_mode == EXPORT)
 		{
-			printf("\n(+) File created: %s\n", file_path);
+			printf("\n"TERMINAL_PURPLE"(+) File created:"TERMINAL_DEFAULT" \"%s\"\n", file_path);
 			write_file_content(file_path, model, circuit_index);
 		}
 		else if (file_mode == COMMANDS)
@@ -351,7 +363,7 @@ void		file_process(char* file_path, FileMode file_mode, Model* model, int circui
 			if (!check_path(file_path)){
 				return; 
 			}
-			printf("\n(>) File runned: %s\n", file_path);
+			printf("\n"TERMINAL_PURPLE"(>) File runned :"TERMINAL_DEFAULT" \"%s\"\n", file_path);
 			run_file_content(file_path, model);
 		}
 

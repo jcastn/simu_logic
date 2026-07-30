@@ -198,7 +198,7 @@ static bool has_comp_status_changed(Component* comp, CompStatus old_status, Comp
 		return false;
 	}
 
-	if ((comp->out_ports == NULL) || (comp->nb_out_ports <= 0))
+	if ((!comp->out_ports) || (comp->nb_out_ports <= 0))
 	{
 		return old_status.raw_value != comp->status.raw_value;
 	}
