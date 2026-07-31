@@ -1,12 +1,12 @@
-//structures.h
+// include/structures.h
 #pragma once
+#include "macros.h"
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "macros.h"
 
 typedef struct	Coordinates		Coordinates;
 typedef	struct	OutPort			OutPort;

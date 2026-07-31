@@ -1,5 +1,5 @@
-//functions-rearrange-circuit.c
-#include "../../include/prototypes.h"
+// src/core/rearrange-circuit.c
+#include "../../include/prototypes-core.h"
 
 Component*	update_coordinates(Component* comp, int x, int y)
 {

@@ -1,11 +1,12 @@
-//prototypes.h
+// include/prototypes.h
 #pragma once
 #include "structures.h"
 
 
+
 //Functions-models 
 Model*			create_model					();
-void			delete_model					(Model* model,		bool flag_free_model);
+bool			delete_model					(Model* model,		bool flag_free_model);
 void			simulate_model					(Model* model);
 
 
@@ -42,26 +43,8 @@ void			component_eval					(Component* comp);
 void			propagate_eval_from_component	(Component* comp);
 
 
-// In / Out 
-void			file_process					(char* file_path, 	FileMode file_mode, 	Model* model, 			int circuit_index);
-
-
-// Console-output
-void			show_components_from_circuit	(Circuit* circ);
-void			show_components_from_model		(Model* model);
-void			show_links_from_circuit			(Circuit* circ);
-void			show_component					(Component* comp);
-void			list_loaded_circuits			(Model* model);
-
-// Run-loop
-void 			scan_user_entry					(Model* model, char* command_user);
-void			run_loop						(Model* model);
-
-// Commands
-void					exec_command			(char* args[MAX_COMMAND_ARGS], Model* model, int word_count);
-const	CommandMap*		get_command_map			(int* count);
-const	SubCommandMap*	get_sub_command_map		(const char* command_name, int* count);
-
+// In / Out
+void			file_process					(char* file_path, 	FileMode file_mode, 	Model* model, 	int circuit_index, 	void (*process_line)(Model* , char*));
 
 // Helper 
 void			init_platform					(void);

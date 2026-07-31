@@ -1,6 +1,5 @@
-//functions-circuits.c
-#include "../../include/prototypes.h"
-#include <stdbool.h>
+// src/core/circuits.c
+#include "../../include/prototypes-core.h"
 
 Circuit*	create_circuit(Model* model, const char* label)
 {

@@ -1,5 +1,5 @@
-//functions-helper.c
-#include "../../include/prototypes.h"
+// src/core/helper.c
+#include "../../include/prototypes-core.h"
 
 #ifdef _WIN32
 #include <windows.h>

@@ -1,5 +1,5 @@
-//command-map.c
-#include "../../include/prototypes-commands.h"
+// src/cli/commands-map.c
+#include "../../include/prototypes-cli.h"
 
 // Mapping of each commands names with : 
 // - the command function,

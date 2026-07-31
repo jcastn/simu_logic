@@ -1,6 +1,6 @@
-//commands-link.c
-#include "../../include/prototypes.h"
-#include "../../include/prototypes-commands.h"
+// src/cli/commands-link.c
+#include "../../include/prototypes-core.h"
+#include "../../include/prototypes-cli.h"
 
 // 'link create' 
 void			command_link_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)

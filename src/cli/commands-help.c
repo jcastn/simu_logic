@@ -1,6 +1,5 @@
-//commands-help.c
-#include "../../include/prototypes.h"
-#include "../../include/prototypes-commands.h"
+// src/cli/commands-help.c
+#include "../../include/prototypes-cli.h"
 
 void	display_help	(char* command_name, char* command_description)
 {

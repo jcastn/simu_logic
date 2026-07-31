@@ -1,5 +1,5 @@
-//functions-in-out.c
-#include "../../include/prototypes.h"
+// src/core/in-out.c
+#include "../../include/prototypes-core.h"
 #include "../../third_party/tinyfiledialogs/tinyfiledialogs.h"
 
 static char* tfd_file(FileMode mode) {
@@ -65,8 +65,6 @@ static void	import_file_content(char* file_path, Model* model)
 		if (sscanf(line, "$Circuit$ \"%"LABEL_SIZE"[^\"]\"", circ_label))
 		{
 			current_circ = create_circuit(model, circ_label);
-			//rename_circuit(model, current_circ, );
-
 			current_state = STATE_NONE;
 			continue;
 		}
@@ -265,7 +263,7 @@ static void	write_file_content(char* file_path, Model *model, int circuit_index)
 	}
 }
 
-static void run_file_content(char* file_path, Model* model)
+static void run_file_content(char* file_path, Model* model, void (*process_line)(Model*, char*))
 {
 	const char* file_name = strrchr(file_path, '/');
 	file_name++;
@@ -311,7 +309,8 @@ static void run_file_content(char* file_path, Model* model)
 			printf("\n"TERMINAL_MAGENTA"[running \"%s\" (%d/%d)] > "TERMINAL_DEFAULT"%s\n", file_name, counter, total, line);
 		}
 
-		scan_user_entry(model, line);
+		process_line(model, line);
+		//scan_user_entry(model, line);
 		getchar();
 		counter++;
 	}
@@ -328,7 +327,7 @@ static void run_file_content(char* file_path, Model* model)
 // - Argument 2: FileMode (IMPORT or EXPORT)
 // - Argument 3: Model
 // - Argument 4: Number of the circuit to process (only works with EXPORT), use -1 to select all circuits
-void		file_process(char* file_path, FileMode file_mode, Model* model, int circuit_index)
+void		file_process(char* file_path, FileMode file_mode, Model* model, int circuit_index, void (*process_line)(Model*, char*))
 {
 	bool needs_free = false;
 	// If the function file_process is called with a NULL value, the tfd_file() function is used to allow the user to choose a file from the File Explorer
@@ -364,7 +363,7 @@ void		file_process(char* file_path, FileMode file_mode, Model* model, int circui
 				return; 
 			}
 			printf("\n"TERMINAL_PURPLE"(>) File runned :"TERMINAL_DEFAULT" \"%s\"\n", file_path);
-			run_file_content(file_path, model);
+			run_file_content(file_path, model, process_line);
 		}
 
 		if (needs_free)

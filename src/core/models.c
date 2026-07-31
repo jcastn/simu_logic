@@ -1,5 +1,5 @@
-//functions-models.c
-#include "../../include/prototypes.h"
+// src/core/models.c
+#include "../../include/prototypes-core.h"
 
 Model*		create_model()
 {
@@ -15,11 +15,11 @@ Model*		create_model()
 	return model;
 }
 
-void		delete_model(Model* model, bool flag_free_model)
+bool		delete_model(Model* model, bool flag_free_model)
 {
 	if (!model)
 	{
-		return;
+		return false;
 	}
 
 	if (model->active_circuit != NULL)
@@ -33,17 +33,16 @@ void		delete_model(Model* model, bool flag_free_model)
 		{
 			if (model->circuits[0])
 			{
-				printf("\n"MESS_CIRC"Circuit deleted : \"%s\"\n", model->circuits[0]->label);
 				delete_circuit(model, model->circuits[0], true);
 			}
 		}
 	}
-	printf("\n"MESS_CIRC"All loaded circuits are deleted.\n");
 
 	if (flag_free_model)
 	{
 		free(model);
 	}
+	return true;
 }
 
 void	simulate_model(Model *model)

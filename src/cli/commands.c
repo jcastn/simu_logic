@@ -1,6 +1,6 @@
-//commands.c
-#include "../../include/prototypes.h"
-#include "../../include/prototypes-commands.h"
+// src/cli/commands.c
+#include "../../include/prototypes-core.h"
+#include "../../include/prototypes-cli.h"
 
 // Command hello 
 void	command_hello(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
@@ -45,7 +45,7 @@ void	command_run(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 		}
 	}
 
-	file_process(file_path, COMMANDS, model, -1);
+	file_process(file_path, COMMANDS, model, -1, scan_user_entry);
 	return;
 }
 

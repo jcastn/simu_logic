@@ -5,24 +5,28 @@ project(simu-logic C)
 add_executable(simu-logic-app
 	third_party/linenoise/linenoise.c
 	third_party/tinyfiledialogs/tinyfiledialogs.c
-	src/core/main.c
-	src/core/functions-models.c
-	src/core/functions-circuits.c 
-	src/core/functions-components.c 
-	src/core/functions-console-output.c 
-	src/core/functions-links.c 
-	src/core/functions-eval.c 
-	src/core/functions-helper.c 
-	src/core/functions-in-out.c 
-	src/core/functions-rearrange-circuit.c
-	src/core/functions-run-loop.c
-	src/commands/commands.c
-	src/commands/commands-map.c
-	src/commands/commands-help.c
-	src/commands/commands-circuit.c
-	src/commands/commands-component.c
-	src/commands/commands-link.c
-	src/commands/commands-list.c
+
+	src/main.c
+
+	src/core/models.c
+	src/core/circuits.c 
+	src/core/components.c 
+	src/core/links.c 
+	src/core/eval.c 
+	src/core/helper.c 
+	src/core/in-out.c 
+	src/core/rearrange-circuit.c
+
+	src/cli/console-output.c 
+	src/cli/run-loop.c
+	src/cli/user-entry.c
+	src/cli/commands.c
+	src/cli/commands-map.c
+	src/cli/commands-help.c
+	src/cli/commands-circuit.c
+	src/cli/commands-component.c
+	src/cli/commands-link.c
+	src/cli/commands-list.c
 )
 
 option(DEBUG_MODE "Enable debug mode" OFF)

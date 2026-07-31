@@ -1,6 +1,6 @@
-//commands-circuit.c
-#include "../../include/prototypes.h"
-#include "../../include/prototypes-commands.h"
+// src/cli/commands-circuit.c
+#include "../../include/prototypes-core.h"
+#include "../../include/prototypes-cli.h"
 
 // "circuit create"
 void	command_circuit_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
@@ -203,11 +203,11 @@ void	command_circuit_import(char* args[MAX_COMMAND_ARGS], Model *model, int arg_
 
 	if (strcmp(args[3], "IDK") == 0)
 	{
-		file_process(NULL, IMPORT, model, -1);
+		file_process(NULL, IMPORT, model, -1, NULL);
 	}
 	else 
 	{
-		file_process(args[3], IMPORT, model, -1);
+		file_process(args[3], IMPORT, model, -1, NULL);
 	}
 
 	return;
@@ -255,11 +255,11 @@ void	command_circuit_export(char* args[MAX_COMMAND_ARGS], Model *model, int arg_
 	// if filepath is IDK 
 	if (strcmp(args[3], "IDK") == 0)
 	{
-		file_process(NULL, EXPORT, model, circ_number);
+		file_process(NULL, EXPORT, model, circ_number, NULL);
 	}
 	else 
 	{
-		file_process(args[3], EXPORT, model, circ_number);
+		file_process(args[3], EXPORT, model, circ_number, NULL);
 	}
 	
 	return;

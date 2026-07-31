@@ -1,4 +1,4 @@
-//macros.h
+// include/macros.h
 #pragma once
 
 #define STRINGIFY(x)				#x
@@ -36,7 +36,7 @@
 #define PORT_INPUT(port)			((port) - 1)
 
 #define APP_NAME					"simu-logic"
-#define APP_VERSION					"v0.16.6"
+#define APP_VERSION					"v0.17"
 #define APP_DEBUG					"debug"
 
 #define MESS_ERROR					TERMINAL_RED		"\n/!\\ ERROR : "			TERMINAL_DEFAULT

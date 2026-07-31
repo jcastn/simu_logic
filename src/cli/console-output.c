@@ -1,5 +1,5 @@
-// functions-console-output.c
-#include "../../include/prototypes.h"
+// src/cli/console-output.c
+#include "../../include/prototypes-cli.h"
 
 static void		compute_color(ColorStatus color, const char** state_color, const char** state_text)
 {

@@ -1,6 +1,6 @@
-//commands-component.c
-#include "../../include/prototypes.h"
-#include "../../include/prototypes-commands.h"
+// src/cli/commands-component.c
+#include "../../include/prototypes-core.h"
+#include "../../include/prototypes-cli.h"
 
 // 'component create' 
 void			command_component_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)

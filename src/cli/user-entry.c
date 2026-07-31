@@ -1,13 +1,10 @@
-//functions-run-loop.c
-#include "../../third_party/linenoise/linenoise.h"
-#include "../../include/prototypes.h"
-
-#ifdef DEBUG_MODE
-#include <unistd.h>
-#endif
+// src/cli/user-entry.c
+#include "../../include/prototypes-cli.h"
 
 #ifndef DEBUG_MODE
-static void		auto_complete_entry(const char *user_entry, linenoiseCompletions *lc)
+#include "../../third_party/linenoise/linenoise.h"
+
+void		auto_complete_entry(const char *user_entry, linenoiseCompletions *lc)
 {
 	int					commands_count = 0;
 	const CommandMap*	commands = get_command_map(&commands_count);
@@ -127,77 +124,3 @@ void 			scan_user_entry(Model* model, char* command_user)
 
 	exec_command(args, model, arg_count);
 }
-
-
-#ifndef DEBUG_MODE
-void			run_loop(Model *model)
-{
-	char	prompt[256];
-
-	char*	user_entry;
-	linenoiseSetCompletionCallback(auto_complete_entry);
-	linenoiseHistorySetMaxLen(100);
-
-	model->run_loop = true;
-
-	while(model->run_loop)
-	{
-		printf("\n\n");
-
-		if ((model->active_circuit != NULL) && (strlen(model->active_circuit->label) > 0))
-		{
-			snprintf(prompt, sizeof(prompt), TERMINAL_CYAN "[" APP_NAME " " APP_VERSION"] "TERMINAL_GREEN "\"%s\"" TERMINAL_CYAN" > "TERMINAL_DEFAULT, model->active_circuit->label);
-		}
-		else
-		{
-			snprintf(prompt, sizeof(prompt), TERMINAL_CYAN "[" APP_NAME " " APP_VERSION"] > "TERMINAL_DEFAULT);
-		}
-
-		user_entry = linenoise(prompt);
-		if (!user_entry) 
-		{
-			break;
-		}
-
-		if (user_entry[0] != '\0')
-		{
-			linenoiseHistoryAdd(user_entry);
-			scan_user_entry(model, user_entry);
-		}
-		free(user_entry);
-	}
-
-	return;
-}
-#endif
-
-#ifdef DEBUG_MODE
-void			run_loop(Model *model)
-{
-	char	prompt[256];
-
-
-	model->run_loop = true;
-
-	while(model->run_loop)
-	{
-		printf("\n\n");
-		usleep(10000);
-
-		if ((model->active_circuit != NULL) && (strlen(model->active_circuit->label) > 0))		
-		{
-			printf("\n" TERMINAL_CYAN "[" APP_NAME " " APP_VERSION"-"APP_DEBUG"] "TERMINAL_GREEN "\"%s\"" TERMINAL_CYAN" > "TERMINAL_DEFAULT, model->active_circuit->label);
-		}
-		else {
-			printf("\n" TERMINAL_CYAN "[" APP_NAME " " APP_VERSION"-"APP_DEBUG"] > "TERMINAL_DEFAULT);
-		}
-
-		if (fgets(prompt, sizeof(prompt), stdin) != NULL)
-		{
-			scan_user_entry(model, prompt);
-		}
-	}
-
-	return;
-}
-#endif
