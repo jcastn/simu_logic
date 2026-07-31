@@ -100,7 +100,11 @@ void			command_list(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 	}
 	
 	is_not_help = !((strcmp("help", args[1]) == 0) || ((arg_count >= 3) && (strcmp("help", args[2]) == 0)));
-	replace_active_keyword(model, args, arg_count);
+	if (!replace_active_keyword(model, args, arg_count))
+	{
+		printf(	MESS_INFO"There's no active circuits to replace the '"KEYWORD_ACTIVE"' keyword in the command."
+				MESS_TIP"You can use "OPTION_COM(circuit select)" command to set an "KEYWORD_ACTIVE" circuit.\n");
+	}
 
 	counter = 0;
 	options_count = 0;

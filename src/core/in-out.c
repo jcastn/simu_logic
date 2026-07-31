@@ -2,9 +2,10 @@
 #include "../../include/prototypes-core.h"
 #include "../../third_party/tinyfiledialogs/tinyfiledialogs.h"
 
-static char* tfd_file(FileMode mode) {
+static char* tfd_file(FileMode mode, void (*logger)(const char*)) {
 	char const *file_path = NULL;
 	char const *filters[1] = {"*.txt"};
+	char message[128];
 	
 	if (mode == IMPORT)
 	{
@@ -21,19 +22,22 @@ static char* tfd_file(FileMode mode) {
 
 
 	if (!file_path) {
-	  printf(MESS_INFO "User pressed cancel\n");
+	  snprintf(message, sizeof(message), MESS_INFO "User pressed cancel\n");
+	  logger(message);
 	  return NULL;
 	}
 
 	return strdup(file_path);
 }
 
-static void	import_file_content(char* file_path, Model* model)
+static void	import_file_content(char* file_path, Model* model, void (*logger)(const char*))
 {
+	char message[128];
 	FILE *file = fopen(file_path, "r");
 	if (!file) 
 	{
-		printf(MESS_ERROR"ERROR: Impossible to open the file\n");
+		snprintf(message, sizeof(message), MESS_ERROR"ERROR: Impossible to open the file\n");
+		logger(message);
 		return;
 	}
 
@@ -73,19 +77,22 @@ static void	import_file_content(char* file_path, Model* model)
 		if (strstr(line, "$Components$"))
 		{
 			current_state = STATE_COMPONENTS;
-			printf("\n\n"TERMINAL_PURPLE"(↓) Step 1 :"TERMINAL_DEFAULT" Creating components");
+			snprintf(message, sizeof(message), "\n\n"TERMINAL_PURPLE"(↓) Step 1 :"TERMINAL_DEFAULT" Creating components");
+			logger(message);
 			continue;
 		}
 		else if (strstr(line, "$Inversions$"))
 		{
 			current_state = STATE_INVERSIONS;
-			printf("\n\n"TERMINAL_PURPLE"(↓) Step 2 :"TERMINAL_DEFAULT" Inverting sources :");
+			snprintf(message, sizeof(message), "\n\n"TERMINAL_PURPLE"(↓) Step 2 :"TERMINAL_DEFAULT" Inverting sources :");
+			logger(message);
 			continue;
 		}
 		else if (strstr(line, "$Links$"))
 		{
 			current_state = STATE_LINKS;
-			printf("\n\n"TERMINAL_PURPLE"(↓) Step 3 :"TERMINAL_DEFAULT" Creating links :");
+			snprintf(message, sizeof(message), "\n\n"TERMINAL_PURPLE"(↓) Step 3 :"TERMINAL_DEFAULT" Creating links :");
+			logger(message);
 			continue;
 		}
 
@@ -108,22 +115,25 @@ static void	import_file_content(char* file_path, Model* model)
 						Component* comp = create_component(current_circ, comp_type, comp_label, nb_in_links, nb_out_links);
 						if (!comp)
 						{
-							printf(MESS_ERROR"Component '%s' not created.", comp_label);
+							snprintf(message, sizeof(message), MESS_ERROR"Component '%s' not created.", comp_label);
+							logger(message);
 							return;
 						}
 						else 
 						{
 							update_coordinates(comp, x, y);
-							printf(	MESS_COMP"Component '%s%s"TERMINAL_DEFAULT"' created as '%s%s"TERMINAL_DEFAULT"', with %d inbound ports and %d outbound ports, on coordinates (x:%d;y:%d).", 
+							snprintf(message, sizeof(message), 	MESS_COMP"Component '%s%s"TERMINAL_DEFAULT"' created as '%s%s"TERMINAL_DEFAULT"', with %d inbound ports and %d outbound ports, on coordinates (x:%d;y:%d).", 
 									COMPONENT_MAP[comp->type].color, COMPONENT_MAP[comp->type].name, 
 									COMPONENT_MAP[comp->type].color, comp->label, 
 									comp->nb_in_ports, comp->nb_out_ports,
 									comp->coordinates.x, comp->coordinates.y);
+							logger(message);
 						}
 					}
 					else
 					{
-						printf(MESS_ERROR"Component '%s' not created because its type '%s' is missing or is invalid.", comp_label, type_str);
+						snprintf(message, sizeof(message), MESS_ERROR"Component '%s' not created because its type '%s' is missing or is invalid.", comp_label, type_str);
+						logger(message);
 					}
 				}
 				break;
@@ -135,12 +145,14 @@ static void	import_file_content(char* file_path, Model* model)
 					Component* comp = get_component_by_label(comp_label, current_circ);
 					if (!comp)
 					{
-						printf(MESS_ERROR"Unknown component name '%s', no component inverted.", comp_label);	
+						snprintf(message, sizeof(message), MESS_ERROR"Unknown component name '%s', no component inverted.", comp_label);
+						logger(message);	
 					}
 					else 
 					{
 						invert_source_state(comp);
-						printf(MESS_COMP"Status of the component '"TERMINAL_CYAN"%s"TERMINAL_DEFAULT"' is inverted.", comp->label);
+						snprintf(message, sizeof(message), MESS_COMP"Status of the component '"TERMINAL_CYAN"%s"TERMINAL_DEFAULT"' is inverted.", comp->label);
+						logger(message);
 					}
 				}
 				break;
@@ -155,11 +167,13 @@ static void	import_file_content(char* file_path, Model* model)
 					if ((src) && (dest) && (src_port >= 0) && (dest_port >= 0))
 					{
 						create_link(current_circ, src, PORT_INPUT(src_port), dest, PORT_INPUT(dest_port));
-						printf(MESS_LINK"Link created : '%s%s (out port %d)%s' → '%s%s (in port %d)%s'", COMPONENT_MAP[src->type].color, src->label, src_port, TERMINAL_DEFAULT, COMPONENT_MAP[dest->type].color, dest->label, dest_port, TERMINAL_DEFAULT);
+						snprintf(message, sizeof(message), MESS_LINK"Link created : '%s%s (out port %d)%s' → '%s%s (in port %d)%s'", COMPONENT_MAP[src->type].color, src->label, src_port, TERMINAL_DEFAULT, COMPONENT_MAP[dest->type].color, dest->label, dest_port, TERMINAL_DEFAULT);
+						logger(message);
 					}
 					else 
 					{
-						printf(MESS_ERROR"ERROR: Unknown component name source '%s', or dest '%s', or src port '%d' or dest port '%d': No link created, please review the line in the import file.", comp_label, comp_label2, src_port, dest_port);
+						snprintf(message, sizeof(message), MESS_ERROR"ERROR: Unknown component name source '%s', or dest '%s', or src port '%d' or dest port '%d': No link created, please review the line in the import file.", comp_label, comp_label2, src_port, dest_port);
+						logger(message);
 					}
 				}
 				break;
@@ -171,25 +185,31 @@ static void	import_file_content(char* file_path, Model* model)
 		}		
 	}
 	rearrange_circuit(current_circ, false);
-	printf("\n"MESS_INFO"File '%s' fully imported !", file_path);
+	snprintf(message, sizeof(message), "\n"MESS_INFO"File '%s' fully imported !", file_path);
+	logger(message);
 	fclose(file);
 }
 
-static void	write_file_content(char* file_path, Model *model, int circuit_index)
+static void	write_file_content(char* file_path, Model *model, int circuit_index, void (*logger)(const char*))
 {
-	if(model->circuits_count == 0){
-		printf(MESS_ERROR"Error ! The selected model contains no circuits, so there's nothing to export.");
-		return;
-	}
 	int circ;
 	int comp;
+	char message[128];
+
+	if(model->circuits_count == 0){
+		snprintf(message, sizeof(message), MESS_ERROR"Error ! The selected model contains no circuits, so there's nothing to export.");
+		logger(message);
+		return;
+	}
+
 
 	circ = 0;
 	FILE *file = fopen(file_path, "w");
 	
 
 	if (!file) {
-		printf(MESS_ERROR"Error ! File is NULL (function write_file_content()) ! \n");
+		snprintf(message, sizeof(message), MESS_ERROR"Error ! File is NULL (function write_file_content()) ! \n");
+		logger(message);
 		return;
 	}
 
@@ -253,25 +273,28 @@ static void	write_file_content(char* file_path, Model *model, int circuit_index)
 	
 	if (circuit_index == -1)
 	{
-		printf(MESS_INFO"File '%s' is generated with success. It contains %d circuits.\n", file_path, circ);
+		snprintf(message, sizeof(message), MESS_INFO"File '%s' is generated with success. It contains %d circuits.\n", file_path, circ);
+		logger(message);
 		return;
 	}
 	else
 	{
-		printf(MESS_INFO"File '%s' is generated with success. It contains 1 circuit.\n", file_path);
+		snprintf(message, sizeof(message), MESS_INFO"File '%s' is generated with success. It contains 1 circuit.\n", file_path);
+		logger(message);
 		return;
 	}
 }
 
-static void run_file_content(char* file_path, Model* model, void (*process_line)(Model*, char*))
+static void run_file_content(char* file_path, Model* model, void (*logger)(const char*), void (*process_line)(Model*, char*))
 {
 	const char* file_name = strrchr(file_path, '/');
 	file_name++;
+	char message[128];
 
 	FILE *file = fopen(file_path, "r");
 	if (!file) 
 	{
-		printf(MESS_ERROR"ERROR: Impossible to open the file\n");
+		snprintf(message, sizeof(message), MESS_ERROR"ERROR: Impossible to open the file\n");
 		return;
 	}
 
@@ -302,11 +325,13 @@ static void run_file_content(char* file_path, Model* model, void (*process_line)
 
 		if ((model->active_circuit != NULL) && (strlen(model->active_circuit->label) > 0))
 		{
-			printf("\n"TERMINAL_MAGENTA"[running \"%s\" (%d/%d)] " TERMINAL_GREEN "\"%s\"" TERMINAL_MAGENTA" > "TERMINAL_DEFAULT"%s\n", file_name, counter, total, model->active_circuit->label, line);
+			snprintf(message, sizeof(message), "\n"TERMINAL_MAGENTA"[running \"%s\" (%d/%d)] " TERMINAL_GREEN "\"%s\"" TERMINAL_MAGENTA" > "TERMINAL_DEFAULT"%s\n", file_name, counter, total, model->active_circuit->label, line);
+			logger(message);
 		}
 		else
 		{
-			printf("\n"TERMINAL_MAGENTA"[running \"%s\" (%d/%d)] > "TERMINAL_DEFAULT"%s\n", file_name, counter, total, line);
+			snprintf(message, sizeof(message), "\n"TERMINAL_MAGENTA"[running \"%s\" (%d/%d)] > "TERMINAL_DEFAULT"%s\n", file_name, counter, total, line);
+			logger(message);
 		}
 
 		process_line(model, line);
@@ -314,7 +339,8 @@ static void run_file_content(char* file_path, Model* model, void (*process_line)
 		getchar();
 		counter++;
 	}
-	printf(MESS_INFO"File '%s' fully runned !\n", file_path);
+	snprintf(message, sizeof(message), MESS_INFO"File '%s' fully runned !\n", file_path);
+	logger(message);
 	fclose(file);
 	return;
 }
@@ -327,43 +353,60 @@ static void run_file_content(char* file_path, Model* model, void (*process_line)
 // - Argument 2: FileMode (IMPORT or EXPORT)
 // - Argument 3: Model
 // - Argument 4: Number of the circuit to process (only works with EXPORT), use -1 to select all circuits
-void		file_process(char* file_path, FileMode file_mode, Model* model, int circuit_index, void (*process_line)(Model*, char*))
+void		file_process(char* file_path, FileMode file_mode, Model* model, int circuit_index, void (*logger)(const char*),	void (*process_line)(Model*, char*))
 {
+	char message[128];
 	bool needs_free = false;
 	// If the function file_process is called with a NULL value, the tfd_file() function is used to allow the user to choose a file from the File Explorer
 	if (!file_path)
 	{
-		file_path = tfd_file(file_mode);
+		file_path = tfd_file(file_mode, logger);
 
 		if (!file_path)
 		{
-			printf(MESS_ERROR"No file find ! \n");
+			snprintf(message, sizeof(message), MESS_ERROR"No file find ! \n");
+			logger(message);
 			return;
 		}
 		needs_free = true;
 	}
 
-	if (file_path != NULL) {
+	if (!file_path)
+	{
+		snprintf(message, sizeof(message), MESS_ERROR"There's no file path ! No file were imported.\n");
+		logger(message);
+	}
+	else 
+	{
 		if (file_mode == IMPORT)
 		{
 			if (!check_path(file_path)){
+				snprintf(message, sizeof(message), MESS_ERROR"The file path "TERMINAL_ORANGE"\"%s'"TERMINAL_DEFAULT" is invalid !", file_path);
+				logger(message);
 				return; 
 			}
-			printf("\n"TERMINAL_PURPLE"(↓) File open :"TERMINAL_DEFAULT" \"%s\"", file_path);
-			import_file_content(file_path, model);
+
+			snprintf(message, sizeof(message), "\n"TERMINAL_PURPLE"(↓) File open :"TERMINAL_DEFAULT" \"%s\"", file_path);
+			logger(message);
+			import_file_content(file_path, model, logger);
 		}
 		else if (file_mode == EXPORT)
 		{
-			printf("\n"TERMINAL_PURPLE"(+) File created:"TERMINAL_DEFAULT" \"%s\"\n", file_path);
-			write_file_content(file_path, model, circuit_index);
+			snprintf(message, sizeof(message), "\n"TERMINAL_PURPLE"(+) File created:"TERMINAL_DEFAULT" \"%s\"\n", file_path);
+			logger(message);
+			write_file_content(file_path, model, circuit_index, logger);
 		}
 		else if (file_mode == COMMANDS)
 		{
 			if (!check_path(file_path)){
+				snprintf(message, sizeof(message), MESS_ERROR"The file path "TERMINAL_ORANGE"\"%s'"TERMINAL_DEFAULT" is invalid !", file_path);
+				logger(message);
 				return; 
 			}
-			printf("\n"TERMINAL_PURPLE"(>) File runned :"TERMINAL_DEFAULT" \"%s\"\n", file_path);
-			run_file_content(file_path, model, process_line);
+
+			snprintf(message, sizeof(message), "\n"TERMINAL_PURPLE"(>) File runned :"TERMINAL_DEFAULT" \"%s\"\n", file_path);
+			logger(message);
+			run_file_content(file_path, model, logger, process_line);
 		}
 
 		if (needs_free)
@@ -371,9 +414,5 @@ void		file_process(char* file_path, FileMode file_mode, Model* model, int circui
 			free(file_path);
 		}
 	}
-	else {
-		printf(MESS_ERROR"No file were imported.\n");
-	}
-
 	return;
 }

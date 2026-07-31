@@ -399,3 +399,8 @@ void list_loaded_circuits(Model *model)
 	}
 	printf("•----------------•----------------------•------------•------------•\n");
 }
+
+void		cli_logger(const char* message)
+{
+	printf("%s", message);
+}

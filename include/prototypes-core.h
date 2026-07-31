@@ -44,7 +44,7 @@ void			propagate_eval_from_component	(Component* comp);
 
 
 // In / Out
-void			file_process					(char* file_path, 	FileMode file_mode, 	Model* model, 	int circuit_index, 	void (*process_line)(Model* , char*));
+void			file_process					(char* file_path, 	FileMode file_mode, 	Model* model, 	int circuit_index,	void (*logger)(const char*),	void (*process_line)(Model* , char*));
 
 // Helper 
 void			init_platform					(void);
@@ -53,7 +53,7 @@ TypeComponent	string_to_typecomponent			(const char* type_str,	bool* found);
 bool			read_parent_status				(Component* comp,		int src_port_number);
 bool			check_path						(const char* path);
 int				string_to_int					(const char* string);
-void			replace_active_keyword			(Model* model, char** args, int arg_count);
+bool			replace_active_keyword			(Model* model, char** args, int arg_count);
 
 
 // Rearrange circuit

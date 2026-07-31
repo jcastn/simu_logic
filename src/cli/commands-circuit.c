@@ -203,11 +203,11 @@ void	command_circuit_import(char* args[MAX_COMMAND_ARGS], Model *model, int arg_
 
 	if (strcmp(args[3], "IDK") == 0)
 	{
-		file_process(NULL, IMPORT, model, -1, NULL);
+		file_process(NULL, IMPORT, model, -1, cli_logger, NULL);
 	}
 	else 
 	{
-		file_process(args[3], IMPORT, model, -1, NULL);
+		file_process(args[3], IMPORT, model, -1, cli_logger, NULL);
 	}
 
 	return;
@@ -255,11 +255,11 @@ void	command_circuit_export(char* args[MAX_COMMAND_ARGS], Model *model, int arg_
 	// if filepath is IDK 
 	if (strcmp(args[3], "IDK") == 0)
 	{
-		file_process(NULL, EXPORT, model, circ_number, NULL);
+		file_process(NULL, EXPORT, model, circ_number, cli_logger, NULL);
 	}
 	else 
 	{
-		file_process(args[3], EXPORT, model, circ_number, NULL);
+		file_process(args[3], EXPORT, model, circ_number, cli_logger, NULL);
 	}
 	
 	return;
@@ -395,10 +395,13 @@ void	command_circuit(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 	int		counter = 0;
 	int		options_count = 0;
 	
-	
 	// If there's the "active" keyword in the command and there's an active cirucit
 	// it will edit the args[2] value to the circuit name of the active circuit
-	replace_active_keyword(model, args, arg_count);
+	if (!replace_active_keyword(model, args, arg_count))
+	{
+		printf(	MESS_INFO"There's no active circuits to replace the '"KEYWORD_ACTIVE"' keyword in the command."
+				MESS_TIP"You can use "OPTION_COM(circuit select)" command to set an "KEYWORD_ACTIVE" circuit.\n");
+	}
 
 	const SubCommandMap* circuit_options = get_sub_command_map("circuit", &options_count);
 	

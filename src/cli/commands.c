@@ -45,7 +45,7 @@ void	command_run(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 		}
 	}
 
-	file_process(file_path, COMMANDS, model, -1, scan_user_entry);
+	file_process(file_path, COMMANDS, model, -1, cli_logger, scan_user_entry);
 	return;
 }
 

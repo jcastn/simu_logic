@@ -10,12 +10,12 @@ void 					scan_user_entry					(Model* model, char* command_user);
 void					run_loop						();
 
 // User entry
-void 					scan_user_entry(Model* model, char* command_user);
+void 					scan_user_entry					(Model* model, char* command_user);
 
 #ifndef DEBUG_MODE
 #include "../third_party/linenoise/linenoise.h"
 
-void					auto_complete_entry(const char *user_entry, linenoiseCompletions *lc);
+void					auto_complete_entry				(const char *user_entry, linenoiseCompletions *lc);
 #endif
 
 // console-output
@@ -24,11 +24,13 @@ void					show_components_from_model		(Model* model);
 void					show_links_from_circuit			(Circuit* circ);
 void					show_component					(Component* comp);
 void					list_loaded_circuits			(Model* model);
+void					cli_logger						(const char* message);
+
 
 // Commands
-void					exec_command			(char* args[MAX_COMMAND_ARGS], Model* model, int word_count);
-const	CommandMap*		get_command_map			(int* count);
-const	SubCommandMap*	get_sub_command_map		(const char* command_name, int* count);
+void					exec_command					(char* args[MAX_COMMAND_ARGS], Model* model, int word_count);
+const	CommandMap*		get_command_map					(int* count);
+const	SubCommandMap*	get_sub_command_map				(const char* command_name, int* count);
 
 
 

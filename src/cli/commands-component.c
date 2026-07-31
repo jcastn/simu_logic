@@ -20,9 +20,10 @@ void			command_component_create(char* args[MAX_COMMAND_ARGS], Model *model, int 
 
 	type_found = false;
 	type = string_to_typecomponent(args[2], &type_found);
-	if (type_found == false)
+	if (!type_found)
 	{
-		printf(	MESS_TIP"Type" OPTION_COM(help component) " to get a list of all components types.");
+		printf(	MESS_SYNTAX"Component type '%s' not found !"
+				MESS_TIP"You can type" OPTION_COM(help component) " to get a list of all components types.", args[2]);
 		return;
 	}
 

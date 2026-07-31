@@ -40,8 +40,8 @@ TypeComponent	string_to_typecomponent(const char* type_str, bool* found)
 		}
 		counter++;
 	}
-	printf(MESS_SYNTAX"Component type not found !\n");
-	return SOURCE;
+	// If the TypeComponent is not found, by default we return a NULL TypeComponent and the *found bool is keeped flase
+	return NULL;
 }
 
 
@@ -69,7 +69,6 @@ bool			read_parent_status(Component* comp, int src_port_number)
 bool			check_path(const char* path){
 	if (!path || path[0] == '\0')
 	{
-		printf(MESS_ERROR"There's no file path !");
 		return false;
 	}
 
@@ -80,7 +79,6 @@ bool			check_path(const char* path){
 		return true;
 	}
 
-	printf(MESS_ERROR"The file path "TERMINAL_ORANGE"\"%s'"TERMINAL_DEFAULT" is invalid !", path);
 	return false;
 }
 
@@ -100,19 +98,20 @@ int				string_to_int(const char* string)
 }
 
 // Function to replace the "active" keyword argument from a command by the name of the active circuit
-void			replace_active_keyword(Model* model, char** args, int arg_count)
+bool			replace_active_keyword(Model* model, char** args, int arg_count)
 {
-	// If there's the "active" keyword in the command and there's an active cirucit
+	// If there's the "active" keyword in the command and if there's an active cirucit
 	// it will edit the args[2] value to the circuit name of the active circuit
 	if ((arg_count >= 3) && (strcmp(args[2], "active") == 0))
 	{
 		if(model->active_circuit != NULL)
 		{
 			args[2] = model->active_circuit->label;
+			return true;
 		}
 		else
 		{
-			printf(MESS_INFO"There's no active circuits, please use "OPTION_COM(circuit select)" command to set an "KEYWORD_ACTIVE" circuit.\n");
+			return false;
 		}
 	}
 }
