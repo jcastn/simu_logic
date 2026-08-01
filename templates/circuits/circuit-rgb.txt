@@ -6,52 +6,49 @@ $Circuit$ "circuit rgb"
         type:DIODE_RGB, label:"DIODE_RGB_1", (in:3, out:0) (x:0, y:0)
         type:DISPLAY_DEC, label:"DISPLAY_DEC_1", (in:3, out:0) (x:0, y:0)
 
-        type:SOURCE, label:"SOURCE_4", (in:0, out:1) (x:0, y:0)
-        type:SOURCE, label:"SOURCE_5", (in:0, out:1) (x:0, y:0)
-        type:SOURCE, label:"SOURCE_6", (in:0, out:1) (x:0, y:0)
-        type:DIODE_RGB, label:"DIODE_RGB_2", (in:3, out:0) (x:0, y:0)
-        type:DISPLAY_DEC, label:"DISPLAY_DEC_2", (in:3, out:0) (x:0, y:0)
+        //type:SOURCE, label:"SOURCE_4", (in:0, out:1) (x:0, y:0)
+        //type:SOURCE, label:"SOURCE_5", (in:0, out:1) (x:0, y:0)
+        //type:SOURCE, label:"SOURCE_6", (in:0, out:1) (x:0, y:0)
+        //type:DIODE_RGB, label:"DIODE_RGB_2", (in:3, out:0) (x:0, y:0)
+        //type:DISPLAY_DEC, label:"DISPLAY_DEC_2", (in:3, out:0) (x:0, y:0)
 
-        type:SOURCE, label:"SOURCE_7", (in:0, out:1) (x:0, y:0)
-        type:SOURCE, label:"SOURCE_8", (in:0, out:1) (x:0, y:0)
-        type:SOURCE, label:"SOURCE_9", (in:0, out:1) (x:0, y:0)
-        type:DIODE_RGB, label:"DIODE_RGB_3", (in:3, out:0) (x:0, y:0)
-        type:DISPLAY_DEC, label:"DISPLAY_DEC_3", (in:3, out:0) (x:0, y:0)
+        //type:SOURCE, label:"SOURCE_7", (in:0, out:1) (x:0, y:0)
+        //type:SOURCE, label:"SOURCE_8", (in:0, out:1) (x:0, y:0)
+        //type:SOURCE, label:"SOURCE_9", (in:0, out:1) (x:0, y:0)
+        //type:DIODE_RGB, label:"DIODE_RGB_3", (in:3, out:0) (x:0, y:0)
+        //type:DISPLAY_DEC, label:"DISPLAY_DEC_3", (in:3, out:0) (x:0, y:0)
 
     $Inversions$
         //label:"SOURCE_1"
         label:"SOURCE_2"
         label:"SOURCE_3"
 
-        label:"SOURCE_4"
-        //label:"SOURCE_5"
-        label:"SOURCE_6"
+        //label:"SOURCE_4"
+        ////label:"SOURCE_5"
+        //label:"SOURCE_6"
 
-        //label:"SOURCE_7"
-        label:"SOURCE_8"
-        //label:"SOURCE_9"
+        ////label:"SOURCE_7"
+        //label:"SOURCE_8"
+        ////label:"SOURCE_9"
 
     $Links$
         src:"SOURCE_1", src_port:1, dest:"DIODE_RGB_1", dest_port:1
         src:"SOURCE_2", src_port:1, dest:"DIODE_RGB_1", dest_port:2
         src:"SOURCE_3", src_port:1, dest:"DIODE_RGB_1", dest_port:3
-
         src:"SOURCE_1", src_port:1, dest:"DISPLAY_DEC_1", dest_port:1
         src:"SOURCE_2", src_port:1, dest:"DISPLAY_DEC_1", dest_port:2
         src:"SOURCE_3", src_port:1, dest:"DISPLAY_DEC_1", dest_port:3
 
-        src:"SOURCE_4", src_port:1, dest:"DIODE_RGB_2", dest_port:1
-        src:"SOURCE_5", src_port:1, dest:"DIODE_RGB_2", dest_port:2
-        src:"SOURCE_6", src_port:1, dest:"DIODE_RGB_2", dest_port:3
-
-        src:"SOURCE_4", src_port:1, dest:"DISPLAY_DEC_2", dest_port:1
-        src:"SOURCE_5", src_port:1, dest:"DISPLAY_DEC_2", dest_port:2
-        src:"SOURCE_6", src_port:1, dest:"DISPLAY_DEC_2", dest_port:3
-
-        src:"SOURCE_7", src_port:1, dest:"DIODE_RGB_3", dest_port:1
-        src:"SOURCE_8", src_port:1, dest:"DIODE_RGB_3", dest_port:2
-        src:"SOURCE_9", src_port:1, dest:"DIODE_RGB_3", dest_port:3
-
-        src:"SOURCE_7", src_port:1, dest:"DISPLAY_DEC_3", dest_port:1
-        src:"SOURCE_8", src_port:1, dest:"DISPLAY_DEC_3", dest_port:2
-        src:"SOURCE_9", src_port:1, dest:"DISPLAY_DEC_3", dest_port:3
+        //src:"SOURCE_4", src_port:1, dest:"DIODE_RGB_2", dest_port:1
+        //src:"SOURCE_5", src_port:1, dest:"DIODE_RGB_2", dest_port:2
+        //src:"SOURCE_6", src_port:1, dest:"DIODE_RGB_2", dest_port:3
+        //src:"SOURCE_4", src_port:1, dest:"DISPLAY_DEC_2", dest_port:1
+        //src:"SOURCE_5", src_port:1, dest:"DISPLAY_DEC_2", dest_port:2
+        //src:"SOURCE_6", src_port:1, dest:"DISPLAY_DEC_2", dest_port:3
+		
+        //src:"SOURCE_7", src_port:1, dest:"DIODE_RGB_3", dest_port:1
+        //src:"SOURCE_8", src_port:1, dest:"DIODE_RGB_3", dest_port:2
+        //src:"SOURCE_9", src_port:1, dest:"DIODE_RGB_3", dest_port:3
+        //src:"SOURCE_7", src_port:1, dest:"DISPLAY_DEC_3", dest_port:1
+        //src:"SOURCE_8", src_port:1, dest:"DISPLAY_DEC_3", dest_port:2
+        //src:"SOURCE_9", src_port:1, dest:"DISPLAY_DEC_3", dest_port:3

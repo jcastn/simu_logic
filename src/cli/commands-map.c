@@ -35,6 +35,8 @@ static const SubCommandMap circuit_options[] = {
 	{"unsel",		command_circuit_unselect,		2,		true},
 	{"simulate",	command_circuit_simulate,		3,		false},
 	{"simu",		command_circuit_simulate,		3,		true},
+	{"show",		command_circuit_show,			4,		false},
+	{"sh",			command_circuit_show,			4,		true},
 };
 
 

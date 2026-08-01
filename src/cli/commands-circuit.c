@@ -389,6 +389,91 @@ void	command_circuit_unselect(char* args[MAX_COMMAND_ARGS], Model *model, int ar
 	return;
 }
 
+
+// 'circuit show [components/truth] "circuit name"'
+void			command_circuit_show(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
+{
+	(void)arg_count;
+
+	if (strcmp(args[2], "help") == 0)
+	{
+		printf( "\n• "OPTION(show components)" :"
+				"\n  ▻ "COM_OPEN"circuit "OPTION(show components) KEYWORD_ALL COM_CLOSE"                           : Show all the components of all circuits."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(show components) KEYWORD_ACTIVE COM_CLOSE"                        : Show all the components of the active circuit."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(show components) OPTION_CIRCUIT(circuit name) COM_CLOSE"                : Show all the components of a circuit.\n"
+				"\n• "OPTION(show truth)" :"
+				"\n  ▻ "COM_OPEN"circuit "OPTION(show truth) KEYWORD_ALL COM_CLOSE"                                : Show the truth table of all circuits."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(show truth) KEYWORD_ACTIVE COM_CLOSE"                             : Show the truth table of the active circuit."
+				"\n  ▻ "COM_OPEN"circuit "OPTION(show truth) OPTION_CIRCUIT(circuit name) COM_CLOSE"                     : Show the a circuit.\n");
+		return;
+	}
+
+	if ((strcmp(args[2], "components") == 0) || (strcmp(args[2], "comp") == 0))
+	{
+		if (strcmp(args[3], "all") == 0)
+		{
+			show_components_from_model(model);
+		}
+		else if (strcmp(args[3], "help") == 0)
+		{
+			printf(	"\n• "OPTION(show components)" :"
+					"\n  ▻ "COM_OPEN"circuit "OPTION(show components) KEYWORD_ALL COM_CLOSE"                           : Show all the components of all circuits."
+					"\n  ▻ "COM_OPEN"circuit "OPTION(show components) KEYWORD_ACTIVE COM_CLOSE"                        : Show all the components of the active circuit."
+					"\n  ▻ "COM_OPEN"circuit "OPTION(show components) OPTION_CIRCUIT(circuit name) COM_CLOSE"                : Show all the components of a circuit.\n");
+			return;
+		}
+		else 
+		{
+			Circuit* circ = get_circuit_by_label(model, args[3]);
+			if (!circ)
+			{
+				printf(MESS_ERROR"Circuit \"%s\" not found", args[3]);
+				return;
+			}
+
+			show_components_from_circuit(circ);
+		}
+	}
+	else if (strcmp(args[2], "truth") == 0)
+	{
+		if (strcmp(args[3], "all") == 0)
+		{
+			int counter = 0;
+			while (counter < model->circuits_count)
+			{
+				Circuit* temp_truth = duplicate_circuit(model, model->circuits[counter], "temp-truth");
+				printf("\n\nTruth table of Circuit "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT" : ", model->circuits[counter]->label);
+				show_truth_table(temp_truth);
+				delete_circuit(model, temp_truth, true);
+				counter++;
+			}
+		}
+		else if (strcmp(args[3], "help") == 0)
+		{
+			printf(	"\n• "OPTION(show truth)" :"
+					"\n  ▻ "COM_OPEN"circuit "OPTION(show truth) KEYWORD_ALL COM_CLOSE"                                : Show the truth table of all circuits."
+					"\n  ▻ "COM_OPEN"circuit "OPTION(show truth) KEYWORD_ACTIVE COM_CLOSE"                             : Show the truth table of the active circuit."
+					"\n  ▻ "COM_OPEN"circuit "OPTION(show truth) OPTION_CIRCUIT(circuit name) COM_CLOSE"                     : Show the a circuit.\n");
+			return;
+		}
+		else
+		{
+			Circuit* circ = get_circuit_by_label(model, args[3]);
+			if (!circ)
+			{
+				printf(MESS_ERROR"Circuit \"%s\" not found", args[3]);
+				return;
+			}
+
+			Circuit* temp_truth = duplicate_circuit(model, circ, "temp-truth");
+			printf("\nTruth table of Circuit "TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT" :", args[3]);
+			show_truth_table(temp_truth);
+			delete_circuit(model, temp_truth, true);
+		}
+		
+	}
+}
+
 // Command circuit 
 void	command_circuit(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)
 {

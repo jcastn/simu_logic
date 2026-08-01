@@ -41,7 +41,7 @@ TypeComponent	string_to_typecomponent(const char* type_str, bool* found)
 		counter++;
 	}
 	// If the TypeComponent is not found, by default we return a NULL TypeComponent and the *found bool is keeped flase
-	return NULL;
+	return SOURCE;
 }
 
 
@@ -114,4 +114,5 @@ bool			replace_active_keyword(Model* model, char** args, int arg_count)
 			return false;
 		}
 	}
+	return true;
 }

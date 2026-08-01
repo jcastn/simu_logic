@@ -48,6 +48,13 @@ typedef enum {
 	BUS_NOT,
 } TypeComponent;
 
+typedef enum {
+	IN, 			
+	OUT,		
+	GATE,		
+	BUS,		
+} GroupComponent;
+
 typedef enum
 {
 	STATE_NONE,
@@ -147,6 +154,7 @@ struct	Model
 struct ComponentMap
 {
 	const char*		name;
+	GroupComponent	group;
 	const char*		color;
 	int				nb_in_ports_min;
 	int				nb_in_ports_max;

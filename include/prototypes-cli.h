@@ -14,7 +14,6 @@ void 					scan_user_entry					(Model* model, char* command_user);
 
 #ifndef DEBUG_MODE
 #include "../third_party/linenoise/linenoise.h"
-
 void					auto_complete_entry				(const char *user_entry, linenoiseCompletions *lc);
 #endif
 
@@ -25,6 +24,8 @@ void					show_links_from_circuit			(Circuit* circ);
 void					show_component					(Component* comp);
 void					list_loaded_circuits			(Model* model);
 void					cli_logger						(const char* message);
+void					show_truth_table				(Circuit *circ);
+
 
 
 // Commands
@@ -61,6 +62,8 @@ void					command_circuit_rearrange	(char* args[MAX_COMMAND_ARGS], Model *model, 
 void					command_circuit_simulate	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 void					command_circuit_select		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
 void					command_circuit_unselect	(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+void					command_circuit_show		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count);
+
 
 // Components options 
 

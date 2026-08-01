@@ -1,16 +1,16 @@
-// include/prototypes.h
+// include/prototypes-core.h
 #pragma once
 #include "structures.h"
 
 
 
-//Functions-models 
+// Models 
 Model*			create_model					();
 bool			delete_model					(Model* model,		bool flag_free_model);
 void			simulate_model					(Model* model);
 
 
-//Functions-circuits
+// Circuits
 Circuit*		create_circuit					(Model* model,		const char* label);
 bool			delete_circuit					(Model* model,		Circuit *circ,			bool flag_free_circuit);
 bool			rename_circuit					(Model* model,		Circuit* circ,			const char* new_label);
@@ -21,7 +21,7 @@ int				get_circuit_number_in_model		(Model* model,		Circuit* circ);
 Circuit*		duplicate_circuit				(Model* model,		Circuit* src_circ, 		const char* new_label);
 
 
-//Functions-components
+// Components
 Component*		create_component				(Circuit* circ,		TypeComponent type, 	const char* label,		int in_nbr,			int out_nbr);
 bool			delete_component				(Circuit* circ,		Component* comp);
 bool			rename_component				(Circuit* circ,		Component* comp,		const char* new_label);
@@ -31,7 +31,7 @@ bool			check_component_label			(Circuit* circ,		Component* comp,		const char* ne
 void			delete_all_component_links		(Circuit* circ,		Component* comp,		bool free_all);
 int				get_component_number_in_circuit	(Circuit* circ,		Component* comp);
 
-//Functions-links 
+// Links 
 Link*			create_link						(Circuit* circ, 	Component* src,			int src_port_number,	Component* dest,	int dest_port_number);
 void			delete_link						(Circuit* circ, 	Link* link);
 Link*			get_link						(Circuit* circ,		Component* src,			int src_port_number,	Component* dest,	int dest_port_number);

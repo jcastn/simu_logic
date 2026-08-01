@@ -3,7 +3,7 @@
 > A lightweight app to create, manage and simulate logic circuits from the terminal. Fully written in C, from scratch.
 
 ![License](https://img.shields.io/badge/license-GPL--3.0-blue)
-![Version](https://img.shields.io/badge/version-v0.16.4-green)
+![Version](https://img.shields.io/badge/version-v0.17.2-green)
 ![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)
 
 ---
@@ -115,9 +115,6 @@ cmake -B build && cmake --build build
 - **Dynamic Memory:**
 	- Circuit management (which can involve thousands of components and links at the same time) relies on a meticulous system to manage the memory allocations in real-time.
 
-- **Connection Safety & Validation:**
-	- Strict validation rules prevent port double-booking, invalid port bounds and orphan connections.
-
 
 ## 4. Interactive CLI & User Experience
 
@@ -159,6 +156,8 @@ For detailed syntax, subcommands, and available arguments, type `help commands` 
 	- `rearrange` (to rearrange the components of a circuit by using a topological sort algorithm)
 	- `import` (to import circuits from an external file)
 	- `export` (to export circuits to an external file)
+	- `show components` (to show the components of a circuit)
+	- `show truth` (to show the truth table of a circuit)
 
 - `component`: Interact with the components inside the active circuit (alias: `comp`).
 	Available options: 
@@ -178,7 +177,7 @@ For detailed syntax, subcommands, and available arguments, type `help commands` 
 - `list`: List all the loaded circuits or the content of a circuit.
 	Available options:  
 	- `circuit` (display a list of all loaded circuits)
-	- `components` (display all the components of a circuit)
+	- `components` (display all the components of a circuit (identical to `circuit show components`))
 	- `links` (display all the links of a circuit)
 
 - `help`: Open the user guide.
@@ -191,7 +190,7 @@ For detailed syntax, subcommands, and available arguments, type `help commands` 
 
 - `reset`: Reset the app to its loading state.
 
-- `run`: Reset the app to its loading state.
+- `run`: Run all the commands of a script file (folder `templates/scripts`).
 
 - `hello`: Display a "Hello World" message.
 
@@ -266,8 +265,8 @@ rm -rf build && cmake -B build && cmake --build build
 A `simu_logic.sh` script is available to automate the build process. Add it to your `PATH` (`~/.bashrc` or `~/.zshrc`) to use these commands from anywhere on your computer:
 
 Commands : 
-- `simu_logic debug` : to build, compile and run it in **debug mode**.
 - `simu_logic` : to build, compile and run it in **default mode**. 
+- `simu_logic debug` : to build, compile and run it in **debug mode**.
 - `simu_logic clear` : to clear the CMake `build` folder (needed when switching between from `debug` to `default` mode).
 
 
@@ -291,9 +290,10 @@ Or use `circuit import IDK` to browse for a file using the file picker.
 
 ## 2. Scripts templates 
 The repository includes a `templates/scripts/` folder with example scripts ready to run : 
-- `script-bonjour.txt` : A little demo of how the scripts works. 
+- `script-bonjour.txt` : A little demo of how the scripts works.
+- `script-rgb-truth.txt` : A script to see the components and the truth table of a circuit containing 3 sources, 1 DIODE_RGB and 1 DIPSPLAY_DEC. 
 
-You can import scripts using : 
+You can run scripts using : 
 ```
 run "templates/scripts/script-bonjour.txt"
 ```
@@ -304,7 +304,7 @@ Or use `run` to browse for a file using the file picker.
 
 # V. Dependencies
 
-**simu_logic** uses **2 external libraries**, both included as **git submodules**:
+**simu_logic** uses **2 external libraries**, the first one is included as a **git submodule**:
 
 | Library | Description | Integration | License |
 |---------------------------------------------------|-------------|-------------|---------|

@@ -6,27 +6,27 @@
 // 	comp->out_ports = calloc(1, sizeof(OutPort));
 
 const ComponentMap COMPONENT_MAP[COMPONENTS_COUNT] = {
-	// [comp_type]  = { "name",             color,       in_ports_min,       in_ports_max,  out_ports_min,      out_ports_max},
-	[SOURCE]		= { "SOURCE",			TERMINAL_CYAN,			0,					0,				1, 					1},
-	[CONST_ON]		= { "CONST_ON",			TERMINAL_CYAN,			0,					0,				1, 					1},
-	[CONST_OFF]		= { "CONST_OFF",		TERMINAL_CYAN,			0,					0,				1, 					1},
-	[DIODE]			= { "DIODE",			TERMINAL_BLUE,			1,					1,				0, 					0},
-	[DIODE_RGB]		= { "DIODE_RGB",		TERMINAL_BLUE,			3,					3,				0, 					0},
-	[DISPLAY_HEX]	= { "DISPLAY_HEX",		TERMINAL_YELLOW,		8,					8,				0, 					0},
-	[DISPLAY_DEC]	= { "DISPLAY_DEC",		TERMINAL_YELLOW,		8,					8,				0, 					0},
-	[DISPLAY_CHAR]	= { "DISPLAY_CHAR",		TERMINAL_YELLOW,		8,					8,				0, 					0},
-	[BUFFER]		= { "BUFFER",			TERMINAL_PINK,			1,					1,				1, 					1},
-	[GATE_NOT]		= { "GATE_NOT",			TERMINAL_PINK,			1,					1,				1, 					1},
-	[GATE_AND]		= { "GATE_AND",			TERMINAL_MAGENTA,		2, 	MAX_COMP_IN_PORTS,				1, 					1},
-	[GATE_OR]		= { "GATE_OR",			TERMINAL_MAGENTA,		2,	MAX_COMP_IN_PORTS,				1, 					1},
-	[GATE_XOR]		= { "GATE_XOR",			TERMINAL_MAGENTA,		2,	MAX_COMP_IN_PORTS,				1, 					1},
-	[GATE_NAND]		= { "GATE_NAND",		TERMINAL_PURPLE,		2,	MAX_COMP_IN_PORTS,				1, 					1},
-	[GATE_NOR]		= { "GATE_NOR",			TERMINAL_PURPLE,		2,	MAX_COMP_IN_PORTS,				1, 					1},
-	[GATE_NXOR]		= { "GATE_NXOR",		TERMINAL_PURPLE,		2,	MAX_COMP_IN_PORTS,				1, 					1},
-	[GATE_IMPLY]	= { "GATE_IMPLY",		TERMINAL_VIOLET,		2,					2,				1, 					1},
-	[GATE_NIMPLY]	= { "GATE_NIMPLY",		TERMINAL_VIOLET,		2,					2,				1, 					1},
-	[BUS_BUFFER]	= { "BUS_BUFFER",		TERMINAL_PINK,			1,	MAX_COMP_IN_PORTS,				1, 	MAX_COMP_IN_PORTS},
-	[BUS_NOT]		= { "BUS_NOT",			TERMINAL_PINK,			1,	MAX_COMP_IN_PORTS,				1, 	MAX_COMP_IN_PORTS}
+	// [comp_type]  = { "name",             group, 				color,       in_ports_min,       in_ports_max,  out_ports_min,      out_ports_max},
+	[SOURCE]		= { "SOURCE",			IN, 			TERMINAL_CYAN,			0,					0,				1, 					1},
+	[CONST_ON]		= { "CONST_ON",			IN,				TERMINAL_CYAN,			0,					0,				1, 					1},
+	[CONST_OFF]		= { "CONST_OFF",		IN,				TERMINAL_CYAN,			0,					0,				1, 					1},
+	[DIODE]			= { "DIODE",			OUT,			TERMINAL_BLUE,			1,					1,				0, 					0},
+	[DIODE_RGB]		= { "DIODE_RGB",		OUT,			TERMINAL_BLUE,			3,					3,				0, 					0},
+	[DISPLAY_HEX]	= { "DISPLAY_HEX",		OUT,			TERMINAL_YELLOW,		8,					8,				0, 					0},
+	[DISPLAY_DEC]	= { "DISPLAY_DEC",		OUT,			TERMINAL_YELLOW,		8,					8,				0, 					0},
+	[DISPLAY_CHAR]	= { "DISPLAY_CHAR",		OUT,			TERMINAL_YELLOW,		8,					8,				0, 					0},
+	[BUFFER]		= { "BUFFER",			GATE,			TERMINAL_PINK,			1,					1,				1, 					1},
+	[GATE_NOT]		= { "GATE_NOT",			GATE,			TERMINAL_PINK,			1,					1,				1, 					1},
+	[GATE_AND]		= { "GATE_AND",			GATE,			TERMINAL_MAGENTA,		2, 	MAX_COMP_IN_PORTS,				1, 					1},
+	[GATE_OR]		= { "GATE_OR",			GATE,			TERMINAL_MAGENTA,		2,	MAX_COMP_IN_PORTS,				1, 					1},
+	[GATE_XOR]		= { "GATE_XOR",			GATE,			TERMINAL_MAGENTA,		2,	MAX_COMP_IN_PORTS,				1, 					1},
+	[GATE_NAND]		= { "GATE_NAND",		GATE,			TERMINAL_PURPLE,		2,	MAX_COMP_IN_PORTS,				1, 					1},
+	[GATE_NOR]		= { "GATE_NOR",			GATE,			TERMINAL_PURPLE,		2,	MAX_COMP_IN_PORTS,				1, 					1},
+	[GATE_NXOR]		= { "GATE_NXOR",		GATE,			TERMINAL_PURPLE,		2,	MAX_COMP_IN_PORTS,				1, 					1},
+	[GATE_IMPLY]	= { "GATE_IMPLY",		GATE,			TERMINAL_VIOLET,		2,					2,				1, 					1},
+	[GATE_NIMPLY]	= { "GATE_NIMPLY",		GATE,			TERMINAL_VIOLET,		2,					2,				1, 					1},
+	[BUS_BUFFER]	= { "BUS_BUFFER",		BUS,			TERMINAL_PINK,			1,	MAX_COMP_IN_PORTS,				1, 	MAX_COMP_IN_PORTS},
+	[BUS_NOT]		= { "BUS_NOT",			BUS,			TERMINAL_PINK,			1,	MAX_COMP_IN_PORTS,				1, 	MAX_COMP_IN_PORTS}
 };
 
 // Function to create a component with : 

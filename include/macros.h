@@ -31,12 +31,13 @@
 #define COMPONENTS_IN_PORTS_STR		TOSTRING(COMPONENTS_IN_PORTS)
 
 #define ARRAY_SIZE(array)			(sizeof(array) / sizeof((array)[0]))
+#define MAX(a, b) 					((a) > (b) ? (a) : (b))
 
 #define PORT_DISPLAY(port)			((port) + 1)
 #define PORT_INPUT(port)			((port) - 1)
 
 #define APP_NAME					"simu-logic"
-#define APP_VERSION					"v0.17"
+#define APP_VERSION					"v0.17.2"
 #define APP_DEBUG					"debug"
 
 #define MESS_ERROR					TERMINAL_RED		"\n/!\\ ERROR : "			TERMINAL_DEFAULT

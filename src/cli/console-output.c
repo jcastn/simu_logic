@@ -1,5 +1,7 @@
 // src/cli/console-output.c
 #include "../../include/prototypes-cli.h"
+#include "../../include/prototypes-core.h"
+#include <stdio.h>
 
 static void		compute_color(ColorStatus color, const char** state_color, const char** state_text)
 {
@@ -40,7 +42,7 @@ static void		compute_color(ColorStatus color, const char** state_color, const ch
 	}
 	else
 	{
-		*state_color = TERMINAL_RED;
+		*state_color = TERMINAL_GRAY;
 		*state_text = "OFF";
 	}	
 }
@@ -403,4 +405,101 @@ void list_loaded_circuits(Model *model)
 void		cli_logger(const char* message)
 {
 	printf("%s", message);
+}
+
+static void	print_truth_table_separator(int string_sizes[], int columns)
+{
+	int counter = 0;
+	printf("\n•");
+	
+	while(counter < columns)
+	{
+		int dashes = string_sizes[counter] + 2;
+		for (int i = 0; i < dashes; i++) {
+			printf("-");
+		}
+		printf("•");
+		counter++;
+	}
+}
+
+void	show_truth_table(Circuit *circ)
+{
+	int counter = 0;
+	int counter_comp = 0;
+	int columns_count = 0;
+	int source_counter = 0;
+	const char* state_color;
+	const char* state_text;
+
+	int comp_table[circ->component_count];
+	int source_table[circ->component_count];
+	int string_sizes[circ->component_count];
+
+	while(counter < circ->component_count)
+	{
+		if ((COMPONENT_MAP[circ->components[counter]->type].group == IN) || (COMPONENT_MAP[circ->components[counter]->type].group == OUT))
+		{
+			if (circ->components[counter]->type == SOURCE)
+			{
+				source_table[source_counter] = counter;
+				source_counter++;
+				if (circ->components[counter]->status.binary == true)
+				{
+					invert_source_state(circ->components[counter]);
+				}
+			}
+			string_sizes[columns_count] = MAX((int)strlen(circ->components[counter]->label), STATE_SIZE_NUM);
+			comp_table[columns_count] = counter;
+			columns_count++;
+		}
+		counter++;
+	}
+	simulate_circuit(circ);
+
+	print_truth_table_separator(string_sizes, columns_count);
+
+	counter = 0;
+	// Print components names 
+	printf("\n|");
+	while(counter < columns_count)
+	{
+		printf(" %s%-*s" TERMINAL_DEFAULT " |", 
+				COMPONENT_MAP[circ->components[comp_table[counter]]->type].color, 
+				string_sizes[counter], 
+				circ->components[comp_table[counter]]->label);
+		counter++;
+	}
+	print_truth_table_separator(string_sizes, columns_count);
+
+	counter = 0;
+	while (counter < 1 << source_counter)
+	{
+		counter_comp = 0;
+		while(counter_comp < source_counter)
+		{
+			// We extract the bit corresponding to this source
+			int target_bit = (counter >> counter_comp) & 1;
+
+			
+			// If the source isn't aleready in the right state, we invert it
+			if (circ->components[source_table[counter_comp]]->status.binary != target_bit)
+			{
+				invert_source_state(circ->components[source_table[counter_comp]]);
+			}
+			counter_comp++;
+		}
+
+		printf("\n|");
+		counter_comp = 0;
+		while(counter_comp < columns_count)
+		{
+			get_component_out_status(circ->components[comp_table[counter_comp]], &state_color, &state_text);
+
+			printf(" %s%-*s" TERMINAL_DEFAULT " |", state_color, string_sizes[counter_comp], state_text);
+			counter_comp++;
+		}
+		counter++;
+	}
+	print_truth_table_separator(string_sizes, columns_count);
 }

@@ -1,0 +1,3 @@
+circ im all "templates/circuits/circuit-rgb.txt"
+circ show comp "circuit rgb"
+circ show truth "circuit rgb"

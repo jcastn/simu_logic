@@ -5,7 +5,7 @@
 static char* tfd_file(FileMode mode, void (*logger)(const char*)) {
 	char const *file_path = NULL;
 	char const *filters[1] = {"*.txt"};
-	char message[128];
+	char message[256];
 	
 	if (mode == IMPORT)
 	{
@@ -32,7 +32,7 @@ static char* tfd_file(FileMode mode, void (*logger)(const char*)) {
 
 static void	import_file_content(char* file_path, Model* model, void (*logger)(const char*))
 {
-	char message[128];
+	char message[256];
 	FILE *file = fopen(file_path, "r");
 	if (!file) 
 	{
@@ -194,7 +194,7 @@ static void	write_file_content(char* file_path, Model *model, int circuit_index,
 {
 	int circ;
 	int comp;
-	char message[128];
+	char message[256];
 
 	if(model->circuits_count == 0){
 		snprintf(message, sizeof(message), MESS_ERROR"Error ! The selected model contains no circuits, so there's nothing to export.");
@@ -355,7 +355,7 @@ static void run_file_content(char* file_path, Model* model, void (*logger)(const
 // - Argument 4: Number of the circuit to process (only works with EXPORT), use -1 to select all circuits
 void		file_process(char* file_path, FileMode file_mode, Model* model, int circuit_index, void (*logger)(const char*),	void (*process_line)(Model*, char*))
 {
-	char message[128];
+	char message[256];
 	bool needs_free = false;
 	// If the function file_process is called with a NULL value, the tfd_file() function is used to allow the user to choose a file from the File Explorer
 	if (!file_path)
