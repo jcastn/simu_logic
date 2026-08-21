@@ -26,11 +26,13 @@ void			run_loop()
 
 		if ((model->active_circuit != NULL) && (strlen(model->active_circuit->label) > 0))
 		{
-			snprintf(prompt, sizeof(prompt), TERMINAL_CYAN "[" APP_NAME " " APP_VERSION"] "TERMINAL_GREEN "\"%s\"" TERMINAL_CYAN" > "TERMINAL_DEFAULT, model->active_circuit->label);
+			//snprintf(prompt, sizeof(prompt), TERMINAL_CYAN "[" APP_NAME " " APP_VERSION"] "TERMINAL_GREEN "\"%s\"" TERMINAL_CYAN" > "TERMINAL_DEFAULT, model->active_circuit->label);
+			snprintf(prompt, sizeof(prompt), "[" APP_NAME " " APP_VERSION"] \"%s\"  > ", model->active_circuit->label);
 		}
 		else
 		{
-			snprintf(prompt, sizeof(prompt), TERMINAL_CYAN "[" APP_NAME " " APP_VERSION"] > "TERMINAL_DEFAULT);
+			//snprintf(prompt, sizeof(prompt), TERMINAL_CYAN "[" APP_NAME " " APP_VERSION"] > "TERMINAL_DEFAULT);
+			snprintf(prompt, sizeof(prompt), "[" APP_NAME " " APP_VERSION"] > ");
 		}
 
 		user_entry = linenoise(prompt);
