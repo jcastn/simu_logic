@@ -28,9 +28,9 @@ static const SubCommandMap circuit_options[] = {
 	{"export",		command_circuit_export,			4,		false},
 	{"ex",			command_circuit_export,			4,		true},
 	{"rearrange",	command_circuit_rearrange,		3,		false},
-	{"rea",		command_circuit_rearrange,		3,		true},
+	{"rea",			command_circuit_rearrange,		3,		true},
 	{"select",		command_circuit_select,			3,		false},
-	{"sel",		command_circuit_select,			3,		true},
+	{"sel",			command_circuit_select,			3,		true},
 	{"unselect",	command_circuit_unselect,		2,		false},
 	{"unsel",		command_circuit_unselect,		2,		true},
 	{"simulate",	command_circuit_simulate,		3,		false},
@@ -54,8 +54,8 @@ static const SubCommandMap component_options[] = {
 	{"show",		command_component_show,			3,		false},
 	{"sh",			command_component_show,			3,		true},
 	{"toggle",		command_component_toggle,		3,		false},
-	{"tog",		command_component_toggle,		3,		true},
-	{"set",		command_component_set,			4,		false},
+	{"tog",			command_component_toggle,		3,		true},
+	{"set",			command_component_set,			4,		false},
 };
 
 
@@ -99,7 +99,7 @@ static const CommandMap commands[] = {
 	{"link",		"manage the links of a circuit",				command_link,			2,		false,		link_options,			sizeof(link_options) / sizeof(SubCommandMap)},
 	{"list",		"display information about loaded circuits",	command_list,			2,		false,		list_options,			sizeof(list_options) / sizeof(SubCommandMap)},
 	{"ls",			"display information about loaded circuits",	command_list,			2,		true,		list_options,			sizeof(list_options) / sizeof(SubCommandMap)},
-	{"run",		"run each command of a file",					command_run,			1,		false,		NULL,					0},
+	{"run",			"run each command of a file",					command_run,			1,		false,		NULL,					0},
 	{"quit",		"leave the app",								command_quit,			1,		false,		NULL,					0},
 	{"exit",		"leave the app",								command_quit,			1,		true,		NULL,					0},
 	{"close",		"leave the app",								command_quit,			1,		true,		NULL,					0},

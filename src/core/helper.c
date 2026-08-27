@@ -116,3 +116,17 @@ bool			replace_active_keyword(Model* model, char** args, int arg_count)
 	}
 	return true;
 }
+
+int	find_char_in_str(char c, char *str)
+{
+	int i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == c)
+			return (1);
+		i++;
+	}
+	return (0);
+}

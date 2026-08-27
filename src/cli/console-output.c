@@ -136,13 +136,13 @@ void	show_components_from_circuit(Circuit* circ)
 {
 	int counter;
 	printf(	"\nCircuit %d ("TERMINAL_ORANGE"\"%s\""TERMINAL_DEFAULT"):\n%d Components and %d Links on %d Levels, \n", circ->id, circ->label, circ->component_count, circ->link_count, circ->max_level);
-	printf(	"•----------------------•----------------------•----------------•--------•-------•-------•--------•--------•------------------•\n"
-			"| Component Label      | Component Type       | State          | ID     | Level | Align | x      | y      | Ports            |\n"
-			"•----------------------•----------------------•----------------•--------•-------•-------•--------•--------•------------------•\n");
+	printf(	"┌──────────────────────┬──────────────────────┬────────────────┬────────┬───────┬───────┬────────┬────────┬──────────────────┐\n"
+			"│ Component Label      │ Component Type       │ State          │ ID     │ Level │ Align │ x      │ y      │ Ports            │\n"
+			"├──────────────────────┼──────────────────────┼────────────────┼────────┼───────┼───────┼────────┼────────┼──────────────────┤\n");
 
 	if (circ->component_count == 0)
 	{
-		printf("| "TERMINAL_GRAY"(empty)"TERMINAL_DEFAULT"              |                      |                |        |       |       |        |        |                  |\n");
+		printf("│ "TERMINAL_GRAY"(empty)"TERMINAL_DEFAULT"              │                      │                │        │       │       │        │        │                  │\n");
 	}
 
 	counter = 0;
@@ -158,7 +158,7 @@ void	show_components_from_circuit(Circuit* circ)
 
 		get_component_out_status(comp, &state_color, &state_text);
 		
-		printf("| %s%-"LABEL_SIZE"s" TERMINAL_DEFAULT " | %s%-"LABEL_SIZE"s" TERMINAL_DEFAULT " | %s%-"STATE_SIZE"s" TERMINAL_DEFAULT " | %-6d | %-5d | %-5d | %-6d | %-6d | In:%-4d Out:%-4d |\n", 
+		printf("│ %s%-"LABEL_SIZE"s" TERMINAL_DEFAULT " │ %s%-"LABEL_SIZE"s" TERMINAL_DEFAULT " │ %s%-"STATE_SIZE"s" TERMINAL_DEFAULT " │ %-6d │ %-5d │ %-5d │ %-6d │ %-6d │ In:%-4d Out:%-4d │\n", 
 			component_color, comp->label,
 			component_color, COMPONENT_MAP[comp->type].name,
 			state_color, state_text,
@@ -171,7 +171,7 @@ void	show_components_from_circuit(Circuit* circ)
 			comp->nb_out_ports);
 		counter++;
 	}
-	printf("•----------------------•----------------------•----------------•--------•-------•-------•--------•--------•------------------•\n");
+	printf( "└──────────────────────┴──────────────────────┴────────────────┴────────┴───────┴───────┴────────┴────────┴──────────────────┘\n");
 }
 
 
@@ -262,9 +262,9 @@ void	show_component(Component* comp)
 			comp->coordinates.level, comp->coordinates.alignment,
 			state_color, state_text);
 
-	printf(	"•-------------------------------•-------------------------------•\n"
-			"| Inbound links                 | Outbound links                |\n"
-			"•-------------------------------•-------------------------------•\n");
+	printf(	"┌───────────────────────────────┬───────────────────────────────┐\n"
+			"│ Inbound links                 │ Outbound links                │\n"
+			"├───────────────────────────────┼───────────────────────────────┤\n");
 
 	counter = 0;
 	counter_out_ports = 0;
@@ -358,10 +358,9 @@ void	show_component(Component* comp)
 		}
 
 		counter++;
-		printf("| %29s | %29s |\n", inbound, outbound);
+		printf("│ %29s │ %29s │\n", inbound, outbound);
 	}
-
-	printf("•-------------------------------•-------------------------------•\n");
+	printf("└───────────────────────────────┴───────────────────────────────┘\n");
 }
 
 void list_loaded_circuits(Model *model)
@@ -383,23 +382,23 @@ void list_loaded_circuits(Model *model)
 	counter = 0;
 	while (counter < model->circuits_count){
 		printf(	"\nLoaded circuits :\n\n"
-				"•----------------•----------------------•------------•------------•\n"
-				"| Circuit ID     | Circuit Label        | Components | Links      |\n"
-				"•----------------•----------------------•------------•------------•\n");
+				"┌────────────────┬──────────────────────┬────────────┬────────────┐\n"
+				"│ Circuit ID     │ Circuit Label        │ Components │ Links      │\n"
+				"├────────────────┼──────────────────────┼────────────┼────────────┤\n");
 		while(counter < model->circuits_count)
 		{
 			if (active_circuit_id == model->circuits[counter]->id)
 			{
-				printf("| "TERMINAL_GREEN"Circuit %-6d"TERMINAL_DEFAULT" | "TERMINAL_GREEN"%-"LABEL_SIZE"s"TERMINAL_DEFAULT" | "TERMINAL_GREEN"%-10d"TERMINAL_DEFAULT" | "TERMINAL_GREEN"%-10d"TERMINAL_DEFAULT" |\n", model->circuits[counter]->id, model->circuits[counter]->label, model->circuits[counter]->component_count, model->circuits[counter]->link_count);
+				printf("│ "TERMINAL_GREEN"Circuit %-6d"TERMINAL_DEFAULT" │ "TERMINAL_GREEN"%-"LABEL_SIZE"s"TERMINAL_DEFAULT" │ "TERMINAL_GREEN"%-10d"TERMINAL_DEFAULT" │ "TERMINAL_GREEN"%-10d"TERMINAL_DEFAULT" │\n", model->circuits[counter]->id, model->circuits[counter]->label, model->circuits[counter]->component_count, model->circuits[counter]->link_count);
 			}
 			else
 			{
-				printf("| Circuit %-6d | %-"LABEL_SIZE"s | %-10d | %-10d |\n", model->circuits[counter]->id, model->circuits[counter]->label, model->circuits[counter]->component_count, model->circuits[counter]->link_count);
+				printf("│ Circuit %-6d │ %-"LABEL_SIZE"s │ %-10d │ %-10d │\n", model->circuits[counter]->id, model->circuits[counter]->label, model->circuits[counter]->component_count, model->circuits[counter]->link_count);
 			}
 			counter++;
 		}
 	}
-	printf("•----------------•----------------------•------------•------------•\n");
+	printf("└────────────────┴──────────────────────┴────────────┴────────────┘\n");
 }
 
 void		cli_logger(const char* message)
@@ -409,18 +408,28 @@ void		cli_logger(const char* message)
 
 static void	print_truth_table_separator(int string_sizes[], int columns)
 {
-	int counter = 0;
-	printf("\n•");
+	static int call_count = 0;
+	int counter;
+	const char *borders[3][3] = {{"┌", "┬", "┐"}, {"├", "┼", "┤"}, {"└", "┴", "┘"}};
+	
+	if(call_count == 3)
+		call_count = 0;
+	counter = 0;
+	printf("\n%s", borders[call_count][0]);
 	
 	while(counter < columns)
 	{
 		int dashes = string_sizes[counter] + 2;
 		for (int i = 0; i < dashes; i++) {
-			printf("-");
+			printf("─");
 		}
-		printf("•");
+		if (counter + 1 != columns)
+			printf("%s", borders[call_count][1]);
+		else
+			printf("%s", borders[call_count][2]);
 		counter++;
 	}
+	call_count++;
 }
 
 void	show_truth_table(Circuit *circ)
@@ -461,10 +470,10 @@ void	show_truth_table(Circuit *circ)
 
 	counter = 0;
 	// Print components names 
-	printf("\n|");
+	printf("\n│");
 	while(counter < columns_count)
 	{
-		printf(" %s%-*s" TERMINAL_DEFAULT " |", 
+		printf(" %s%-*s" TERMINAL_DEFAULT " │", 
 				COMPONENT_MAP[circ->components[comp_table[counter]]->type].color, 
 				string_sizes[counter], 
 				circ->components[comp_table[counter]]->label);
@@ -490,13 +499,13 @@ void	show_truth_table(Circuit *circ)
 			counter_comp++;
 		}
 
-		printf("\n|");
+		printf("\n│");
 		counter_comp = 0;
 		while(counter_comp < columns_count)
 		{
 			get_component_out_status(circ->components[comp_table[counter_comp]], &state_color, &state_text);
 
-			printf(" %s%-*s" TERMINAL_DEFAULT " |", state_color, string_sizes[counter_comp], state_text);
+			printf(" %s%-*s" TERMINAL_DEFAULT " │", state_color, string_sizes[counter_comp], state_text);
 			counter_comp++;
 		}
 		counter++;

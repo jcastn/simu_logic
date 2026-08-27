@@ -1,8 +1,7 @@
 // include/prototypes-core.h
-#pragma once
-#include "structures.h"
-
-
+#ifndef PROTOTYPES_CORE_H
+# define PROTOTYPES_CORE_H
+# include "structures.h"
 
 // Models 
 Model*			create_model					();
@@ -54,10 +53,12 @@ bool			read_parent_status				(Component* comp,		int src_port_number);
 bool			check_path						(const char* path);
 int				string_to_int					(const char* string);
 bool			replace_active_keyword			(Model* model, char** args, int arg_count);
-
+int				find_char_in_str				(char c, char *str);
 
 // Rearrange circuit
 Component*		update_coordinates				(Component* comp, int x, int y);
 void			rearrange_circuit				(Circuit* circ, bool flag_rearrange_components);
 void			topological_sort				(Circuit* circ, bool flag_rearrange_components);
 //void			new_topological_sort			(Circuit* circ);
+
+#endif

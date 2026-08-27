@@ -1,27 +1,14 @@
 // include/structures.h
-#pragma once
-#include "macros.h"
+#ifndef STRUCTURES_H
+# define STRUCTURES_H
 
-#include <stdint.h>
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
+# include "macros.h"
 
-typedef struct	Coordinates		Coordinates;
-typedef	struct	OutPort			OutPort;
-typedef struct	Component		Component;
-typedef struct	Link			Link;
-typedef struct	TypeCounter		TypeCounter;
-typedef struct	Circuit			Circuit;
-typedef struct	Model			Model;
-typedef struct	CommandMap		CommandMap;
-typedef struct	SubCommandMap	SubCommandMap;
-typedef struct	ColorStatus		ColorStatus;
-typedef	struct	ComponentMap	ComponentMap;
-typedef union	CompStatus		CompStatus;
-
-// Enumerations 
+# include <stdint.h>
+# include <stdio.h>
+# include <stdbool.h>
+# include <stdlib.h>
+# include <string.h>
 
 // Types of components 
 // Please edit COMPONENTS_COUNT (macros.h) and COMPONENTS_MAP[] (functions-components.c) when adding or removing a component ! 
@@ -49,10 +36,10 @@ typedef enum {
 } TypeComponent;
 
 typedef enum {
-	IN, 			
-	OUT,		
-	GATE,		
-	BUS,		
+	IN,
+	OUT,
+	GATE,
+	BUS,
 } GroupComponent;
 
 typedef enum
@@ -70,47 +57,40 @@ typedef enum
 	COMMANDS
 } FileMode;
 
-// Structures 
-struct	Coordinates 
+typedef struct	Coordinates 
 {
 	int				x;
 	int				y;
 	int				level;
 	int				alignment;
-};
+}	Coordinates;
 
-struct	Link 
-{
-	Component*		src;
-	int				src_port_number;
-	Component*		dest;
-	int				dest_port_number;
-};
-
-struct	ColorStatus
+typedef struct	ColorStatus
 {
 	unsigned char	r : 1;
 	unsigned char	g : 1;
 	unsigned char	b : 1;
-};
+} ColorStatus;
 
-union CompStatus
+typedef union	CompStatus
 {
 	bool 			binary;
 	ColorStatus		rgb;
 	uint8_t			number;
 	uint8_t			raw_value;
 	unsigned char	character;
-};
+}	CompStatus;
 
-struct OutPort
+typedef struct	Link Link;
+
+typedef struct OutPort
 {
 	int				nb_out_links;
 	Link**			out_links;
-	CompStatus		status;	
-};
+	CompStatus		status;
+}	OutPort;
 
-struct	Component
+typedef struct	Component
 {
 	TypeComponent	type;
 	int				id;
@@ -119,16 +99,24 @@ struct	Component
 	int				nb_in_ports;
 	OutPort**		out_ports;
 	int				nb_out_ports;
-	CompStatus		status;	
+	CompStatus		status;
 	char			label[LABEL_SIZE_NUM+1];
-};
+}	Component;
 
-struct	TypeCounter
+typedef struct	Link 
+{
+	Component*		src;
+	int				src_port_number;
+	Component*		dest;
+	int				dest_port_number;
+} Link;
+
+typedef struct	TypeCounter
 {
 	int				count;
-};
+}	TypeCounter;
 
-struct	Circuit
+typedef struct	Circuit
 {
 	int 			id;
 	Component**		components;
@@ -137,21 +125,20 @@ struct	Circuit
 	int				link_count;
 	int				max_level;
 	TypeCounter		type_counter[COMPONENTS_COUNT];
-	//TypeCounter		type_counter[ARRAY_SIZE(COMPONENT_MAP)];
+	//TypeCounter	type_counter[ARRAY_SIZE(COMPONENT_MAP)];
 	char			label[LABEL_SIZE_NUM+1];
-};
+}	Circuit;
 
-struct	Model
+typedef struct	Model
 {
 	Circuit*		active_circuit;
 	Circuit**		circuits;
 	int				circuits_count;
 	char			label[LABEL_SIZE_NUM+1];
 	bool			run_loop;
+}	Model;
 
-};
-
-struct ComponentMap
+typedef struct	ComponentMap
 {
 	const char*		name;
 	GroupComponent	group;
@@ -160,27 +147,29 @@ struct ComponentMap
 	int				nb_in_ports_max;
 	int				nb_out_ports_min;
 	int				nb_out_ports_max;
-};
+}	ComponentMap;
 
 extern const ComponentMap COMPONENT_MAP[COMPONENTS_COUNT];
 
 typedef void (*Command)(char* args[MAX_COMMAND_ARGS], Model* model, int word_count);
 
-struct CommandMap
-{
-	char*						command;
-	char*						description;
-	Command						function;
-	int							needed_args;
-	bool						is_alias;
-	const SubCommandMap*		sub_commands;
-	int							sub_commands_count;
-};
-
-struct 	SubCommandMap
+typedef struct	SubCommandMap
 {
 	char*			command;
 	Command			function;
 	int				needed_args;
 	bool			is_alias;
-};
+}	SubCommandMap;
+
+typedef struct	CommandMap
+{
+	char*					command;
+	char*					description;
+	Command					function;
+	int						needed_args;
+	bool					is_alias;
+	const SubCommandMap*	sub_commands;
+	int						sub_commands_count;
+}	CommandMap;
+
+#endif

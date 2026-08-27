@@ -3,15 +3,15 @@
 
 static bool	op_and(bool a, bool b) 
 {
-	return a && b; 
+	return (a && b); 
 }
 static bool	op_or(bool a, bool b) 
 {
-	return a || b; 
+	return (a || b); 
 }
 static bool	op_xor(bool a, bool b) 
 {
-	return a ^ b;
+	return (a ^ b);
 }
 
 static void	set_out_port_status(Component* comp, int port_number, CompStatus status)

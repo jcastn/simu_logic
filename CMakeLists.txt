@@ -34,7 +34,8 @@ option(DEBUG_MODE "Enable debug mode" OFF)
 target_compile_options(simu-logic-app PRIVATE 
 	-Wall
 	-Wextra
-	#-Werror
+	-Werror
+	#-g
 	-finput-charset=UTF-8
 	-fexec-charset=UTF-8
 )

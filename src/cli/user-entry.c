@@ -1,5 +1,7 @@
 // src/cli/user-entry.c
 #include "../../include/prototypes-cli.h"
+#include "../../include/prototypes-core.h"
+#include <stdio.h>
 
 #ifndef DEBUG_MODE
 #include "../../third_party/linenoise/linenoise.h"
@@ -64,58 +66,54 @@ void		auto_complete_entry(const char *user_entry, linenoiseCompletions *lc)
 
 void 			scan_user_entry(Model* model, char* command_user)
 {
-	char* args[MAX_COMMAND_ARGS] = {NULL};
-	int arg_count = 0;
-	char* letter = command_user;
+	char* args[MAX_COMMAND_ARGS + 1] = {NULL};
+	int arg_count;
+	int i;
 
-	while (*letter != '\0' && arg_count < MAX_COMMAND_ARGS)
+	i = 0;
+	arg_count = 0;
+	while (command_user[i] != '\0' && arg_count < MAX_COMMAND_ARGS)
 	{
 		// Skip spaces between args
-		while (*letter == ' ' || *letter == '\t' || *letter == '\n' || *letter == '\r')
-		{
-			letter++;
-		}
+		while (command_user[i] && find_char_in_str(command_user[i], " \t\n\r"))
+			i++;
 
-		if (*letter == '\0')
-		{
+		if (command_user[i] == '\0')
 			break;
-		}
 
 		// args in quotes (Strings)
-		if (*letter == '"') 
+		if (command_user[i] && command_user[i] == '"') 
 		{
-			letter++;
-			args[arg_count] = letter;
+			i++;
+			args[arg_count] = &command_user[i];
 
-			while (*letter != '"' && *letter != '\0' && *letter != '\n') 
-			{
-				letter++;
-			}
+			while (command_user[i] && !find_char_in_str(command_user[i], "\"\n"))
+				i++;
 
-			if (*letter == '"' || *letter == '\n') 
+			if (command_user[i] && find_char_in_str(command_user[i], "\"\n"))
 			{
-				*letter = '\0';
-				letter++;
+				command_user[i] = '\0';
+				i++;
 			}
 		}
 		// args not in quotes
 		else 
 		{
-			args[arg_count] = letter;
+			args[arg_count] = &command_user[i];
 
-			while (*letter != ' ' && *letter != '\t' && *letter != '\n' && *letter != '\r' && *letter != '\0')
-			{
-				letter++;
-			}
+			while (command_user[i] && !find_char_in_str(command_user[i], " \t\n\r"))
+				i++;
 
-			if (*letter != '\0')
+			if (command_user[i] != '\0')
 			{
-				*letter = '\0';
-				letter++;
+				command_user[i] = '\0';
+				i++;
 			}
 		}
+		//printf("arg %d : %s\n", arg_count, args[arg_count]);
 		arg_count++;
 	}
+	args[arg_count] = NULL;
 
 	if (!args[0])
 	{
