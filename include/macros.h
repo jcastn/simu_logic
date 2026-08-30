@@ -22,13 +22,15 @@
 # define TERMINAL_DEFAULT			"\e[0;0m"
 
 # define COMPONENTS_COUNT			20
-# define MAX_COMMAND_ARGS			6
+# define MAX_COMMAND_ARGS			7
 # define MAX_COMP_IN_PORTS			8
 # define LABEL_SIZE_NUM				20
 # define STATE_SIZE_NUM				14
+# define MESSAGE_SIZE_NUM           512               
 
 # define LABEL_SIZE					TOSTRING(LABEL_SIZE_NUM)
 # define STATE_SIZE					TOSTRING(STATE_SIZE_NUM)
+# define MESSAGE_SIZE				TOSTRING(MESSAGE_SIZE_NUM)
 # define COMPONENTS_IN_PORTS_STR	TOSTRING(COMPONENTS_IN_PORTS)
 
 # define ARRAY_SIZE(array)			(sizeof(array) / sizeof((array)[0]))
@@ -38,7 +40,7 @@
 # define PORT_INPUT(port)			((port) - 1)
 
 # define APP_NAME					"simu-logic"
-# define APP_VERSION				"v0.17.4"
+# define APP_VERSION				"v0.17.5"
 # define APP_DEBUG					"debug"
 
 # define MESS_ERROR					TERMINAL_RED		"\n/!\\ ERROR : "			TERMINAL_DEFAULT

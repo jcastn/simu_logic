@@ -3,7 +3,7 @@
 > A lightweight app to create, manage and simulate logic circuits from the terminal. Fully written in C, from scratch.
 
 ![License](https://img.shields.io/badge/license-GPL--3.0-lightgrey)
-![Version](https://img.shields.io/badge/version-v0.17.4-lightgrey)
+![Version](https://img.shields.io/badge/version-v0.17.5-lightgrey)
 ![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)
 
 ---

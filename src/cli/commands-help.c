@@ -19,7 +19,7 @@ void	display_help	(char* command_name, char* command_description)
 		{
 			if (list_options[counter].is_alias == false)
 			{
-				exec_command((char*[]){command_name, list_options[counter].command, "help", NULL, NULL}, NULL, 3);
+				exec_command((char*[]){command_name, list_options[counter].command, "help", NULL, NULL, NULL, NULL}, NULL, 3);
 			}
 			counter++;
 		}

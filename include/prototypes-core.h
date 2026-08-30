@@ -45,8 +45,14 @@ void			propagate_eval_from_component	(Component* comp);
 // In / Out
 void			file_process					(char* file_path, 	FileMode file_mode, 	Model* model, 	int circuit_index,	void (*logger)(const char*),	void (*process_line)(Model* , char*));
 
-// Helper 
+
+
+// Init platform
 void			init_platform					(void);
+
+
+
+// Helper 
 void			shift_pointer_array				(void** array,			int start_index,	int current_count);
 TypeComponent	string_to_typecomponent			(const char* type_str,	bool* found);
 bool			read_parent_status				(Component* comp,		int src_port_number);

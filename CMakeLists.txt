@@ -16,6 +16,7 @@ add_executable(simu-logic-app
 	src/core/helper.c 
 	src/core/in-out.c 
 	src/core/rearrange-circuit.c
+	src/core/init-platform.c
 
 	src/cli/console-output.c 
 	src/cli/run-loop.c

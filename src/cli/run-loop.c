@@ -2,6 +2,7 @@
 #include "../../third_party/linenoise/linenoise.h"
 #include "../../include/prototypes-cli.h"
 #include "../../include/prototypes-core.h"
+#include <errno.h>
 
 #ifdef DEBUG_MODE
 #include <unistd.h>
@@ -44,6 +45,11 @@ void			run_loop()
 		user_entry = linenoise(prompt);
 		if (!user_entry) 
 		{
+            if (errno == EAGAIN)
+            {
+                cli_logger(MESS_INFO "CTRL+C disabled, please use 'quit' command to leave the app.");
+                continue;
+            }
 			break;
 		}
 
