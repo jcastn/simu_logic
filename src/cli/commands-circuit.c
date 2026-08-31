@@ -1,6 +1,6 @@
 // src/cli/commands-circuit.c
-#include "../../include/prototypes-core.h"
-#include "../../include/prototypes-cli.h"
+#include "prototypes-core.h"
+#include "prototypes-cli.h"
 
 // "circuit create"
 void	command_circuit_create(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)

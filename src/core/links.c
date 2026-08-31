@@ -1,5 +1,5 @@
 // src/core/links.c
-#include "../../include/prototypes-core.h"
+#include "prototypes-core.h"
 
 // Function to connect components by a Link 
 // Parameters : source component, destination component, port number of the destination

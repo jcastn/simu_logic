@@ -1,6 +1,6 @@
 // src/cli/console-output.c
-#include "../../include/prototypes-cli.h"
-#include "../../include/prototypes-core.h"
+#include "prototypes-cli.h"
+#include "prototypes-core.h"
 #include <stdio.h>
 
 static void		compute_color(ColorStatus color, const char** state_color, const char** state_text)

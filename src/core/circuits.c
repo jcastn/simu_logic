@@ -1,5 +1,5 @@
 // src/core/circuits.c
-#include "../../include/prototypes-core.h"
+#include "prototypes-core.h"
 
 Circuit*	create_circuit(Model* model, const char* label)
 {

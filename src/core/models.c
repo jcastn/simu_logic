@@ -1,5 +1,5 @@
 // src/core/models.c
-#include "../../include/prototypes-core.h"
+#include "prototypes-core.h"
 
 Model*		create_model()
 {

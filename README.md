@@ -3,7 +3,7 @@
 > A lightweight app to create, manage and simulate logic circuits from the terminal. Fully written in C, from scratch.
 
 ![License](https://img.shields.io/badge/license-GPL--3.0-lightgrey)
-![Version](https://img.shields.io/badge/version-v0.17.5-lightgrey)
+![Version](https://img.shields.io/badge/version-v0.17.6-lightgrey)
 ![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)
 
 ---
@@ -20,8 +20,6 @@
 - [III. Compilation](#iii-compilation)
 	- [1. Prerequisites](#1-prerequisites)
 	- [2. Compilation steps](#2-compilation-steps)
-	- [3. Debug mode](#3-debug-mode)
-	- [4. Helper script](#4-helper-script-simu_logicsh)
 - [IV. Templates](#iv-templates--file-management)
 	- [1. Circuits templates](#1-circuits-templates)
 	- [2. Scripts templates](#2-scripts-templates)
@@ -211,8 +209,7 @@ For detailed syntax, subcommands, and available arguments, type `help commands` 
 ### Required tools
 
 - **Git**
-- **GCC** (or any C compiler)
-- **CMake** (≥ 3.16)
+- **GCC** && **Make**
 
 ### Platform-specific toolchains
 
@@ -227,49 +224,19 @@ For detailed syntax, subcommands, and available arguments, type `help commands` 
 	git clone --recursive https://github.com/jcastn/simu_logic
 	```
 
-2. **Configure** the build:
-	```bash
-	cd simu_logic
-	cmake -B build                             # macOS / Linux
-	cmake -B build -G "MinGW Makefiles"        # Windows
-	```
+2. **Compile** the project with make:
+    - `make` : compile the app in default mode.
+    - `make re` : delete all build files and recompile the app in default mode.
+    - `make clean` : delete all build files
+    - `make fclean` : delete all build files and app binary.
+    - `make debug` : delete all build files and  recompile the app in debug mode. 
 
-3. **Compile** and **run**:
+3. **Run** the app:
 	```bash
-	cmake --build build
 	./build/simu-logic-app                     # macOS / Linux
 	.\build\simu-logic-app.exe                 # Windows
 	```
-
-> **Tip:** Once built, you can recompile and run in one line:
-> ```bash
-> cmake --build build && ./build/simu-logic-app
-> ```
-
-
-## 3. Debug mode
-
-Build and run with the debugger:
-```bash
-cmake -B build -DDEBUG_MODE=ON && cmake --build build
-lldb ./build/simu-logic-app
-```
-
-To switch back to normal mode, clean the build folder first:
-```bash
-rm -rf build && cmake -B build && cmake --build build
-```
  
-## 4. Helper script (simu_logic.sh)
-
-A `simu_logic.sh` script is available to automate the build process. Add it to your `PATH` (`~/.bashrc` or `~/.zshrc`) to use these commands from anywhere on your computer:
-
-Commands : 
-- `simu_logic` : to build, compile and run it in **default mode**. 
-- `simu_logic debug` : to build, compile and run it in **debug mode**.
-- `simu_logic clear` : to clear the CMake `build` folder (needed when switching between from `debug` to `default` mode).
-
-
 ---
 
 # IV. Templates (circuits and scripts)

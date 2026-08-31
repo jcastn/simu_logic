@@ -1,5 +1,5 @@
 // src/core/components.c
-#include "../../include/prototypes-core.h"
+#include "prototypes-core.h"
 
 
 

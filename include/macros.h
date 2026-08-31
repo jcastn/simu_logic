@@ -39,9 +39,9 @@
 # define PORT_DISPLAY(port)			((port) + 1)
 # define PORT_INPUT(port)			((port) - 1)
 
-# define APP_NAME					"simu-logic"
-# define APP_VERSION				"v0.17.5"
-# define APP_DEBUG					"debug"
+# define APP_NAME					"simu_logic_app"
+# define APP_DEBUG					"simu_logic_debug"
+# define APP_VERSION				"v0.17.6"
 
 # define MESS_ERROR					TERMINAL_RED		"\n/!\\ ERROR : "			TERMINAL_DEFAULT
 # define MESS_SYNTAX				TERMINAL_RED		"\n/!\\ WRONG SYNTAX : "	TERMINAL_DEFAULT

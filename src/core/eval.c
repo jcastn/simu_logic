@@ -1,5 +1,5 @@
 // src/core/eval.c
-#include "../../include/prototypes-core.h"
+#include "prototypes-core.h"
 
 static bool	op_and(bool a, bool b) 
 {

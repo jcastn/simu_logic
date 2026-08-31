@@ -1,6 +1,6 @@
 // src/cli/commands-list.c
-#include "../../include/prototypes-core.h"
-#include "../../include/prototypes-cli.h"
+#include "prototypes-core.h"
+#include "prototypes-cli.h"
 
 // list circuits
 void			command_list_circuit		(char* args[MAX_COMMAND_ARGS], Model *model, int arg_count)

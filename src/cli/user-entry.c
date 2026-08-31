@@ -1,6 +1,6 @@
 // src/cli/user-entry.c
-#include "../../include/prototypes-cli.h"
-#include "../../include/prototypes-core.h"
+#include "prototypes-cli.h"
+#include "prototypes-core.h"
 #include <stdio.h>
 
 #ifndef DEBUG_MODE
