@@ -41,7 +41,7 @@
 
 # define APP_NAME					"simu_logic_app"
 # define APP_DEBUG					"simu_logic_debug"
-# define APP_VERSION				"v0.17.6"
+# define APP_VERSION				"v0.17.7"
 
 # define MESS_ERROR					TERMINAL_RED		"\n/!\\ ERROR : "			TERMINAL_DEFAULT
 # define MESS_SYNTAX				TERMINAL_RED		"\n/!\\ WRONG SYNTAX : "	TERMINAL_DEFAULT

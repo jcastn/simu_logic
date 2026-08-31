@@ -1,6 +1,6 @@
 // src/core/in-out.c
 #include "prototypes-core.h"
-#include "tinyfiledialogs.h"
+#include "tinyfiledialogs/tinyfiledialogs.h"
 
 static char* tfd_file(FileMode mode, void (*logger)(const char*)) {
 	char const *file_path = NULL;

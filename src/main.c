@@ -5,8 +5,6 @@
 
 int main(void)
 {
-	init_platform();
-
 	run_loop();
 
 	return (0);

@@ -1,5 +1,5 @@
 // src/cli/run-loop.c
-#include "linenoise.h"
+#include "linenoise/linenoise.h"
 #include "prototypes-cli.h"
 #include "prototypes-core.h"
 #include <errno.h>
@@ -23,7 +23,7 @@ void			run_loop()
 
 	while(model->run_loop)
 	{
-		printf("\n\n");
+		printf("\n");
 
 		if ((model->active_circuit != NULL) && (strlen(model->active_circuit->label) > 0))
 		{
@@ -78,15 +78,15 @@ void			run_loop()
 
 	while(model->run_loop)
 	{
-		printf("\n\n");
+		printf("\n");
 		usleep(10000);
 
 		if ((model->active_circuit != NULL) && (strlen(model->active_circuit->label) > 0))		
 		{
-			printf("\n" TERMINAL_CYAN "[" APP_DEBUG " " APP_VERSION"] "TERMINAL_GREEN "\"%s\"" TERMINAL_CYAN" > "TERMINAL_DEFAULT, model->active_circuit->label);
+			printf(TERMINAL_YELLOW "[" APP_DEBUG " " APP_VERSION"] "TERMINAL_GREEN "\"%s\"" TERMINAL_CYAN" > "TERMINAL_DEFAULT, model->active_circuit->label);
 		}
 		else {
-			printf("\n" TERMINAL_CYAN "[" APP_DEBUG " " APP_VERSION"] > "TERMINAL_DEFAULT);
+			printf(TERMINAL_YELLOW "[" APP_DEBUG " " APP_VERSION"] > "TERMINAL_DEFAULT);
 		}
 
 		if (fgets(prompt, sizeof(prompt), stdin) != NULL)

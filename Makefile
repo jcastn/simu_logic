@@ -22,7 +22,6 @@ SRCS		:= \
 	src/core/components.c \
 	src/core/eval.c \
 	src/core/helper.c \
-	src/core/init-platform.c \
 	src/core/in-out.c \
 	src/core/links.c \
 	src/core/models.c \
@@ -41,16 +40,8 @@ OBJS		:= $(SRCS:%.c=$(OBJ_DIR)/%.o)
 
 # Compiler and flags
 CC		:= gcc
-INCLUDES	:= -Iinclude -Ithird_party/linenoise -Ithird_party/tinyfiledialogs
-CHARSET		:= -finput-charset=UTF-8 -fexec-charset=UTF-8
-CFLAGS		:= -Wall -Wextra -Werror $(CHARSET) $(INCLUDES)
-LDFLAGS		:= 
-
-# More flags for Windows
-ifeq ($(OS),Windows_NT)
-	CFLAGS	+= -D_WIN32_WINNT=0x0600 -DWINVER=0x0600
-	LDFLAGS	+= -lole32 -luuid -lshell32
-endif
+INCLUDES	:= -Iinclude -Ithird_party
+CFLAGS		:= -Wall -Wextra -Werror $(INCLUDES)
 
 # Bash commands
 RM		:= rm -rf
@@ -64,20 +55,20 @@ all: $(NAME)
 
 # If debug mode, add debug flags
 debug : fclean
-	@$(MAKE) $(DEBUG_NAME) CFLAGS="$(CFLAGS) -g3 -DDEBUG_MODE"
+	@$(MAKE) --no-print-directory $(DEBUG_NAME) CFLAGS="$(CFLAGS) -g3 -DDEBUG_MODE"
 
 # Compile app in default mode
 $(NAME): $(OBJS)
-	$(CC) $(OBJS) $(LDFLAGS) -o $(NAME)
+	$(CC) $(OBJS) -o $(NAME)
 
 # Compile app in debug mode
 $(DEBUG_NAME): $(OBJS)
-	$(CC) $(OBJS) $(LDFLAGS) -o $(DEBUG_NAME)
+	$(CC) $(OBJS) -o $(DEBUG_NAME)
 
 # Shutup warns from third-party
 $(OBJ_DIR)/third_party/%.o: third_party/%.c
 	@$(DIR_DUP)
-	$(CC) $(CHARSET) -w -c -o $@ $<
+	$(CC) -w -c -o $@ $<
 
 # Compile obejcts
 $(OBJ_DIR)/%.o: %.c

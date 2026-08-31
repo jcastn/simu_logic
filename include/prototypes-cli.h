@@ -15,7 +15,7 @@ void					run_loop						();
 void 					scan_user_entry					(Model* model, char* command_user);
 
 #ifndef DEBUG_MODE
-#include "../third_party/linenoise/linenoise.h"
+#include "linenoise/linenoise.h"
 void					auto_complete_entry				(const char *user_entry, linenoiseCompletions *lc);
 #endif
 

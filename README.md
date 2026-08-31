@@ -3,8 +3,8 @@
 > A lightweight app to create, manage and simulate logic circuits from the terminal. Fully written in C, from scratch.
 
 ![License](https://img.shields.io/badge/license-GPL--3.0-lightgrey)
-![Version](https://img.shields.io/badge/version-v0.17.6-lightgrey)
-![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)
+![Version](https://img.shields.io/badge/version-v0.17.7-lightgrey)
+![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%2WSL-lightgrey)
 
 ---
 
@@ -33,8 +33,8 @@
 ```
 git clone --recursive https://github.com/jcastn/simu_logic
 cd simu_logic
-cmake -B build && cmake --build build
-./build/simu-logic-app
+make
+./simu_logic_app
 ```
 
 ---
@@ -92,7 +92,6 @@ cmake -B build && cmake --build build
 |--------------|-------------------------------------------------------------------------------|
 | `BUS_NOT`    | Bus of NOT gates — each inbound port is inverted to its linked outbound port. |
 | `BUS_BUFFER` | Bus of buffers — each inbound port is replicated to its linked outbound port. |
-
 
 ## 2. Circuit Engine & Real-Time Simulation
 
@@ -200,22 +199,18 @@ For detailed syntax, subcommands, and available arguments, type `help commands` 
 
 ### Supported platforms
 
-
-- MacOS (Sequoia/Tahoe)
-- Windows (10/11)
-- Linux (Arch, Debian)
+- MacOS (Sequoia, Tahoe and older)
+- Linux (Arch, Debian, Fedora...)
+- Windows (10/11) via WSL (Windows Subsystem for Linux)
 
 
 ### Required tools
 
 - **Git**
-- **GCC** && **Make**
+- **GCC**
+- **Make**
 
-### Platform-specific toolchains
-
-- **Windows:** [w64devkit](https://github.com/skeeto/w64devkit/releases) or MinGW-w64 with CMake.
-- **macOS:** Command Line Tools (`xcode-select --install`) or Xcode from the App Store.
-
+(Get them with brew (macOS), pacman (Arch) or apt-get (Debian))
 
 ## 2. Compilation steps
 
@@ -229,12 +224,11 @@ For detailed syntax, subcommands, and available arguments, type `help commands` 
     - `make re` : delete all build files and recompile the app in default mode.
     - `make clean` : delete all build files
     - `make fclean` : delete all build files and app binary.
-    - `make debug` : delete all build files and  recompile the app in debug mode. 
+    - `make debug` : delete all build files and recompile the app in debug mode. 
 
 3. **Run** the app:
 	```bash
-	./build/simu-logic-app                     # macOS / Linux
-	.\build\simu-logic-app.exe                 # Windows
+	.simu-logic-app 
 	```
  
 ---
@@ -265,7 +259,7 @@ You can run scripts using :
 run "templates/scripts/script-bonjour.txt"
 ```
 
-Or use `run` to browse for a file using the file picker. 
+Or use `run IDK` to browse for a file using the file picker. 
 
 ---
 
